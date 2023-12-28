@@ -1,16 +1,71 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 .header {
-    height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    background-color: #a1cceb;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Use space-between to push logo to the left and buttons to the right */
+  background-color: #a1cceb;
 }
 
 .header .logo {
-    height: 110px;
-    left: 102px;
-    position: relative;
-    top: 0;
-    width: 253px;
+  height: 140px;
+  width: 300px;
+  margin-left: 80px;
 }
+
+.header .logo:hover{
+  cursor: pointer;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  margin-right: 5cqw;
+}
+
+.buttons button {
+  margin-left: 10px;
+  font-family: "Roboto Slab", serif;
+  font-size: 18px;
+  padding: 5px;
+  border: 2px solid #500412;
+  color: #500412;
+  background-color: #a1cceb;
+  transition-property: color, background-color;
+  transition-duration: 0.3s;
+}
+
+.buttons button:hover {
+  color: #a1cceb;
+  background-color: #500412;
+}
+
+.user-type {
+  margin-left: 10px;
+  font-family: "Roboto Slab", serif;
+  font-size: 18px;
+  padding: 5px;
+  border: 2px solid #500412;
+  color: #500412;
+  background-color: #a1cceb;
+  transition-property: color, background-color;
+  transition-duration: 0.3s;
+}
+
+.user-type:hover {
+  color: #a1cceb;
+  background-color: #500412;
+}
+
+.user-type option:hover {
+  color: #a1cceb;
+  background-color: #500412;
+}
+

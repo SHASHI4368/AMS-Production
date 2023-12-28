@@ -1,19 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300&display=swap");
 
 footer {
-  width: 100vw;
+  /* width: 100vw; */
   background-color: #a1cceb;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 16px;
-  color: #500412;
-  font-family: 'Roboto Slab', serif;
-  font-size: 20px;
-  font-weight: 600;
 }
 
-.top-container{
+.top-container {
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -30,23 +26,39 @@ footer {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  align-items: left;
 }
 
-.icon-phone{
+.icon-phone {
   width: 18px;
   height: 20px;
   color: #500412;
+  margin-right: 10px;
+  margin-top: 10px;
 }
 
-.phone{
- display: flex;
- gap: 10px;
- align-items: center;
- justify-content: left;
+.phone {
+  display: flex;
+  align-items: center;
+  justify-content: left;
 }
 
-.bottom-container{
- display: flex;
- justify-content: center;
- margin-top: 40px;
+.bottom-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+footer p {
+  color: #500412;
+  font-family: "Roboto Slab", serif;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.bottom-container {
+  color: #500412;
+  font-family: "Roboto Slab", serif;
+  font-size: 20px;
+  font-weight: 500;
 }
