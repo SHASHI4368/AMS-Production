@@ -8,16 +8,17 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 function App() {
-  const [userType, setUserType] = useState("Student");
+  const [userType, setUserType] = useState(JSON.parse(sessionStorage.getItem("userType")) || "Student");
   const [isSignIn, setIsSignIn] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+
   return (
     <div className="App">
       <Header userType={userType} setUserType={setUserType} isSignIn={isSignIn} setIsSignIn={setIsSignIn} setIsSignUp={setIsSignUp} />
       <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/login">
-          <Login userType={userType} isSignIn={isSignIn} isSignUp={isSignUp} />
+          <Login userType={userType} isSignIn={isSignIn} isSignUp={isSignUp} setIsSignIn={setIsSignIn} setIsSignUp={setIsSignUp} />
         </Route>
       </Switch>
       <Footer />

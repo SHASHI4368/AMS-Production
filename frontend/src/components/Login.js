@@ -8,24 +8,26 @@ import StaffVerificationForm from "./StaffVerificationForm";
 import StaffDetailForm from "./StaffDetailForm";
 import StudentDetailForm from "./StudentDetailForm";
 import StudentLoginForm from "./StudentLoginForm";
+import StudentSignUpForm from "./StudentSignUpForm";
 import { Route, Switch, useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const Login = ({userType, isSignIn, isSignUp}) => {
+const Login = ({userType, isSignIn, setIsSignIn, isSignUp, setIsSignUp}) => {
 
-  useEffect(() => {
-    console.log(isSignIn);
-    console.log(userType);
-  })
+  useEffect(() => {},[
+    setIsSignIn(JSON.parse(sessionStorage.getItem("isSignIn"))),
+    setIsSignUp(JSON.parse(sessionStorage.getItem("isSignUp")))
+  ])
+
   return (
     <main className="login">
       <div className="back-img">
         <img src={Uni} />
       </div>
-      {userType === "Staff" && isSignIn && <StaffLoginForm />}
-      {userType === "Student" && isSignIn && <StudentLoginForm />}
-      {userType === "Staff" && isSignUp && <StaffSignUpForm />}
-      {userType === "Student" && isSignUp}
+      {(userType === "Staff" && isSignIn) && <StaffLoginForm />}
+      {(userType === "Student" && isSignIn) && <StudentLoginForm />}
+      {(userType === "Staff" && isSignUp) && <StaffSignUpForm />}
+      {(userType === "Student" && isSignUp) && <StudentSignUpForm />}
       {/* <StaffLoginForm /> */}
       {/* <StaffSignUpForm /> */}
       {/* <StaffEmailForm /> */}

@@ -24,7 +24,7 @@
   width: 100%;
 }
 .signup-form {
-  margin-top: 40px;
+  margin-top: -5px;
   width: 50%;
   display: flex;
   flex-direction: column;
@@ -263,4 +263,8 @@ h3{
 
 .Lname{
   margin-left: 20px;
+}
+
+.std-signup-form{
+  margin-top: 65px;
 }
