@@ -31,6 +31,24 @@
       "email": "vbhs@engug.ruh.ac.lk",
       "password": "kamal",
       "id": 7
+    },
+    {
+      "firstName": "nimal",
+      "lastName": "silva",
+      "regNo": "EG/2018/431",
+      "department": "CEE",
+      "email": "abcd@engug.ruh.ac.lk",
+      "password": "nimal",
+      "id": 8
+    },
+    {
+      "firstName": "sdfds",
+      "lastName": "sdfdsfdfs",
+      "regNo": "EG/2018/2020",
+      "department": "Computer",
+      "email": "abcdw@engug.ruh.ac.lk",
+      "password": "sddsfsdf",
+      "id": 9
     }
   ]
 }

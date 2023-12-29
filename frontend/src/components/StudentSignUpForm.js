@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/lecsignup.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import api from "../api/students";
 
@@ -8,6 +8,25 @@ const StudentSignUpForm = ({ passCode, setPassCode, students, setStudents, stdEm
   const [isValidEmail, setIsValidEmail] = useState(false);
   const [message, setMessage] = useState("");
   const history = useHistory();
+
+  useEffect(() => {
+    const getAllStudents = async () => {
+      try {
+        const response = await api.get("/students");
+        setStudents(response.data);
+        console.log(response.data);
+      } catch (err) {
+        if (err.response) {
+          console.log(err.response.data.message);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+        } else {
+          console.log(err.message);
+        }
+      }
+    };
+    getAllStudents();
+  });
 
   const handleSubmit =  (e) => {
     e.preventDefault();

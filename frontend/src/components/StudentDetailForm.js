@@ -32,7 +32,7 @@ const StudentDetailForm = ({stdEmail, setStdEmail}) => {
         tempRegNo
       )
     ) {
-      setRegNo(tempRegNo);
+      setRegNo(e.target.value);
       setMessage("");
     } else {
       setMessage("Please enter a valid registration number");
