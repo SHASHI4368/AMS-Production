@@ -14,6 +14,8 @@ import { useState, useEffect } from "react";
 
 const Login = ({userType, isSignIn, setIsSignIn, isSignUp, setIsSignUp}) => {
 
+  const [passCode, setPassCode] = useState("");
+
   useEffect(() => {},[
     setIsSignIn(JSON.parse(sessionStorage.getItem("isSignIn"))),
     setIsSignUp(JSON.parse(sessionStorage.getItem("isSignUp")))
@@ -24,12 +26,26 @@ const Login = ({userType, isSignIn, setIsSignIn, isSignUp, setIsSignUp}) => {
       <div className="back-img">
         <img src={Uni} />
       </div>
-      {(userType === "Staff" && isSignIn) && <StaffLoginForm />}
-      {(userType === "Student" && isSignIn) && <StudentLoginForm />}
-      {(userType === "Staff" && isSignUp) && <StaffSignUpForm />}
-      {(userType === "Student" && isSignUp) && <StudentSignUpForm />}
-      {/* <StaffLoginForm /> */}
-      {/* <StaffSignUpForm /> */}
+
+      <Switch>
+        <Route exact path="/login">
+          {userType === "Staff" && isSignIn && <StaffLoginForm />}
+          {userType === "Student" && isSignIn && <StudentLoginForm />}
+          {userType === "Staff" && isSignUp && <StaffSignUpForm />}
+          {userType === "Student" && isSignUp && (
+            <StudentSignUpForm passCode={passCode} setPassCode={setPassCode} />
+          )}
+        </Route>
+        <Route path="/login/verify">
+          <StaffVerificationForm
+            passCode={passCode}
+            setPassCode={setPassCode}
+          />
+        </Route>
+        <Route path="/login/std-details">
+          <StudentDetailForm />
+        </Route>
+      </Switch>
       {/* <StaffEmailForm /> */}
       {/* <StaffVerificationForm/> */}
       {/* <StaffDetailForm/> */}
