@@ -156,7 +156,7 @@ p {
   margin-left: 20px;
 }
 
-.login-form{
+.login-form {
   margin-top: 40px;
   width: 50%;
   display: flex;
@@ -165,12 +165,12 @@ p {
   align-items: center;
 }
 
-#email{
+#email {
   margin-top: 40px;
 }
 
 .verification-form {
- margin-top: 40px;
+  margin-top: 40px;
   width: 50%;
   display: flex;
   flex-direction: column;
@@ -178,7 +178,7 @@ p {
   align-items: center;
 }
 
-h3{
+h3 {
   font-size: 20px;
   font-weight: 400;
   color: #500412;
@@ -188,14 +188,14 @@ h3{
   margin-top: 20px;
 }
 
-.code{
- display: flex;
- flex-direction: row;
- justify-content: center;
- margin-top: 40px;
+.code {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 40px;
 }
 
-.code input{
+.code input {
   width: 70px;
   margin: 10px;
   height: 70px;
@@ -204,19 +204,19 @@ h3{
   padding: 0;
 }
 
-.verification-form p{
+.verification-form p {
   margin-top: 30px;
   font-size: 18px;
   font-weight: 400;
 }
 
-.verify-btn{
- transition-property: background-color;
- transition-duration: 0.5s;
+.verify-btn {
+  transition-property: background-color;
+  transition-duration: 0.5s;
 }
-.verify-btn:hover{
- background-color: #500412;
- opacity: 0.9;
+.verify-btn:hover {
+  background-color: #500412;
+  opacity: 0.9;
 }
 
 .detail-form {
@@ -228,12 +228,12 @@ h3{
   align-items: center;
 }
 
-.detail-form h2{
- font-size: 30px;
+.detail-form h2 {
+  font-size: 30px;
 }
 
-.department{
- background-color: #d2e2e9;
+.department {
+  background-color: #d2e2e9;
   border: none;
   border-radius: 3px;
   font-size: 20px;
@@ -247,24 +247,54 @@ h3{
   width: 450px;
 }
 
-.std-name{
- display: flex;
- flex-direction: row;
- justify-content: center;
- width: 100%;
+.std-name {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
 }
 
-.std-name input{
+.reg-number {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.reg-no{
+  margin-left: -43px;
+  width: 300px;
+}
+
+.batch{
+  background-color: #d2e2e9;
+  border: none;
+  border-radius: 3px;
+  font-size: 20px;
+  font-weight: 400;
+  height: 40px;
+  letter-spacing: 0;
+  line-height: 15px;
+  padding: 0;
+  padding-left: 17px;
+  position: relative;
+  width: 100px;
+  margin-left: 50px;
+  margin-right: -45px;
+}
+
+.std-name input {
   width: 215px;
   height: 40px;
   font-size: 20px;
   padding-left: 20px;
 }
 
-.Lname{
+.Lname {
   margin-left: 20px;
 }
 
-.std-signup-form{
+.std-signup-form {
   margin-top: 65px;
 }

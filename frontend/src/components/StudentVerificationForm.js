@@ -2,10 +2,11 @@ import "../styles/lecsignup.css";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
-const StaffVerificationForm = ({ passCode, setPassCode }) => {
+const StudentVerificationForm = ({passCode, setPassCode}) => {
+  
   useEffect(() => {
     setPassCode(JSON.parse(sessionStorage.getItem("passCode")));
-  }, []);
+  },[])
 
   const history = useHistory();
   const [one, setOne] = useState("");
@@ -25,7 +26,7 @@ const StaffVerificationForm = ({ passCode, setPassCode }) => {
       sessionStorage.setItem("passCode", JSON.stringify(""));
       history.push("/login/std-details");
     }
-  };
+  }
 
   return (
     <div className="verification-form">
@@ -61,16 +62,12 @@ const StaffVerificationForm = ({ passCode, setPassCode }) => {
             onChange={(e) => setFour(e.target.value)}
           />
         </div>
-        {message && (
+        {message &&
           <p className="message" style={{ color: "red", fontSize: "15px" }}>
             {message}
           </p>
-        )}
-        <button
-          type="button"
-          className="verify-btn back-btn"
-          onClick={handleSubmit}
-        >
+        }
+        <button type="button" className="verify-btn back-btn" onClick={handleSubmit}>
           Verify
         </button>
         <p>
@@ -79,6 +76,6 @@ const StaffVerificationForm = ({ passCode, setPassCode }) => {
       </form>
     </div>
   );
-};
+}
 
-export default StaffVerificationForm;
+export default StudentVerificationForm

@@ -2,27 +2,41 @@ import React from "react";
 import "../styles/lecsignup.css";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import api from "../api/students";
 
-const StudentSignUpForm = ({passCode, setPassCode}) => {
-  const [email, setEmail] = useState("");
+const StudentSignUpForm = ({ passCode, setPassCode, students, setStudents, stdEmail, setStdEmail }) => {
   const [isValidEmail, setIsValidEmail] = useState(false);
   const [message, setMessage] = useState("");
   const history = useHistory();
 
-  const handleSubmit = (e) => {
+  const handleSubmit =  (e) => {
     e.preventDefault();
-    if (email === "") {
+    if (stdEmail === "") {
       setMessage("Email is required");
       console.log(message);
-    } else if (!email.includes("engug.ruh.ac.lk")) {
+    } else if (!stdEmail.includes("engug.ruh.ac.lk")) {
       setMessage("Please enter a valid email");
       console.log(message);
-    }else{
-     history.push("/login/verify");
-     const code = Math.floor(Math.random() * 9999);
-     setPassCode(code);
-     sessionStorage.setItem("passCode", JSON.stringify(code));
-     alert("Your passcode is: " + code);
+    } else {
+      const student = students.find((student) => student.email === stdEmail);
+      if (!student) {
+        history.push("/login/verify");
+        const code = Math.floor(Math.random() * 9999);
+        setPassCode(code);
+        sessionStorage.setItem("passCode", JSON.stringify(code));
+        sessionStorage.setItem("stdEmail", JSON.stringify(stdEmail));
+        alert("Your passcode is: " + code);
+        // const id = students.length ? students[students.length - 1].id + 1 : 1;
+        // const newStudent = {
+        //   id,
+        //   email: email,
+        //   passCode: code.toString(),
+        // };
+        // sessionStorage.setItem("newStudent", JSON.stringify(newStudent));
+
+      } else {
+        setMessage("Email already exists");
+      }
     }
   };
 
@@ -35,16 +49,16 @@ const StudentSignUpForm = ({passCode, setPassCode}) => {
           type="email"
           className="email"
           placeholder="Faculty Email"
-          value={email}
+          value={stdEmail}
           onChange={(e) => {
-            setEmail(e.target.value);
+            setStdEmail(e.target.value);
           }}
         />
-        {message && 
-         <p className="message" style={{color: "red", fontSize:"15px"}}>
-          {message}
-         </p>
-        }
+        {message && (
+          <p className="message" style={{ color: "red", fontSize: "15px" }}>
+            {message}
+          </p>
+        )}
         <button type="submit" className="submit-btn" onClick={handleSubmit}>
           Continue
         </button>

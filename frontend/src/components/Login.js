@@ -4,7 +4,8 @@ import "../styles/leclogin.css";
 import StaffLoginForm from "./StaffLoginForm";
 import StaffSignUpForm from "./StaffSignUpForm";
 import StaffEmailForm from "./StaffEmailForm";
-import StaffVerificationForm from "./StaffVerificationForm";
+import StaffVerificationForm from "./StudentVerificationForm";
+import StudentVerificationForm from "./StudentVerificationForm";
 import StaffDetailForm from "./StaffDetailForm";
 import StudentDetailForm from "./StudentDetailForm";
 import StudentLoginForm from "./StudentLoginForm";
@@ -12,9 +13,10 @@ import StudentSignUpForm from "./StudentSignUpForm";
 import { Route, Switch, useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const Login = ({userType, isSignIn, setIsSignIn, isSignUp, setIsSignUp}) => {
+const Login = ({userType, isSignIn, setIsSignIn, isSignUp, setIsSignUp, students, setStudents}) => {
 
   const [passCode, setPassCode] = useState("");
+  const [stdEmail, setStdEmail] = useState("");
 
   useEffect(() => {},[
     setIsSignIn(JSON.parse(sessionStorage.getItem("isSignIn"))),
@@ -33,17 +35,17 @@ const Login = ({userType, isSignIn, setIsSignIn, isSignUp, setIsSignUp}) => {
           {userType === "Student" && isSignIn && <StudentLoginForm />}
           {userType === "Staff" && isSignUp && <StaffSignUpForm />}
           {userType === "Student" && isSignUp && (
-            <StudentSignUpForm passCode={passCode} setPassCode={setPassCode} />
+            <StudentSignUpForm passCode={passCode} setPassCode={setPassCode} students={students} setStudents={setStudents} stdEmail={stdEmail} setStdEmail={setStdEmail} />
           )}
         </Route>
         <Route path="/login/verify">
-          <StaffVerificationForm
+          <StudentVerificationForm
             passCode={passCode}
             setPassCode={setPassCode}
           />
         </Route>
         <Route path="/login/std-details">
-          <StudentDetailForm />
+          <StudentDetailForm stdEmail={stdEmail} setStdEmail={setStdEmail} />
         </Route>
       </Switch>
       {/* <StaffEmailForm /> */}

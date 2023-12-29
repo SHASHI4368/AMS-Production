@@ -1,5 +1,36 @@
 {
- "students":[
-  
- ]
+  "students": [
+    {
+      "id": 4,
+      "email": "shashika@engug.ruh.ac.lk",
+      "passCode": "2437"
+    },
+    {
+      "firstName": "Shashika",
+      "lastName": "Gurunayake",
+      "regNo": "EG/2020/436",
+      "department": "Computer",
+      "email": "s@engug.ruh.ac.lk",
+      "password": "shashika",
+      "id": 5
+    },
+    {
+      "firstName": "amal",
+      "lastName": "peries",
+      "regNo": "EG/2020/406",
+      "department": "Computer",
+      "email": "abc@engug.ruh.ac.lk",
+      "password": "amal",
+      "id": 6
+    },
+    {
+      "firstName": "kamal",
+      "lastName": "peries",
+      "regNo": "EG/2020/436",
+      "department": "MENA",
+      "email": "vbhs@engug.ruh.ac.lk",
+      "password": "kamal",
+      "id": 7
+    }
+  ]
 }
