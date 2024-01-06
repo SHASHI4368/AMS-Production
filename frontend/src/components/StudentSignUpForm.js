@@ -40,18 +40,13 @@ const StudentSignUpForm = ({ passCode, setPassCode, students, setStudents, stdEm
       const student = students.find((student) => student.email === stdEmail);
       if (!student) {
         history.push("/login/verify");
-        const code = Math.floor(Math.random() * 9999);
+        const code = `${Math.floor(Math.random() * 10)}${Math.floor(
+          Math.random() * 10
+        )}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}`;
         setPassCode(code);
         sessionStorage.setItem("passCode", JSON.stringify(code));
         sessionStorage.setItem("stdEmail", JSON.stringify(stdEmail));
         alert("Your passcode is: " + code);
-        // const id = students.length ? students[students.length - 1].id + 1 : 1;
-        // const newStudent = {
-        //   id,
-        //   email: email,
-        //   passCode: code.toString(),
-        // };
-        // sessionStorage.setItem("newStudent", JSON.stringify(newStudent));
 
       } else {
         setMessage("Email already exists");

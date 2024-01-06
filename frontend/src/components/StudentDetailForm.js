@@ -122,6 +122,7 @@ const StudentDetailForm = ({stdEmail, setStdEmail}) => {
           <option value="DMME">DMME</option>
           <option value="MENA">MENA</option>
           <option value="Computer">Computer</option>
+          <option value="1st Year" >1st Year</option>
         </select>
         <label htmlFor="email">Email</label>
         <input
