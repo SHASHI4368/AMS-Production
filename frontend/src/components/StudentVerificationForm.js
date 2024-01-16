@@ -1,11 +1,26 @@
 import "../styles/lecsignup.css";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
-const StudentVerificationForm = ({passCode, setPassCode}) => {
-  
+const StudentVerificationForm = ({passCode, setPassCode, stdEmail, setStdEmail}) => {
+
+  const getPasscode = async (Email) => {
+    try {
+      const url = `http://localhost:8080/db/tempUser/${Email}`;
+      const response = await axios.get(url, {
+        withCredentials: true,
+      });
+      const tempUser = response.data.find((user) => user.Email === Email);
+      return tempUser.Verification_Code;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
-    setPassCode(JSON.parse(sessionStorage.getItem("passCode")));
+    setStdEmail(JSON.parse(sessionStorage.getItem("stdEmail")));
+    setPassCode(getPasscode(JSON.parse(sessionStorage.getItem("stdEmail"))));
   },[])
 
   const history = useHistory();
@@ -16,16 +31,30 @@ const StudentVerificationForm = ({passCode, setPassCode}) => {
 
   const [message, setMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (one === "" || two === "" || three === "" || four === "") {
-      setMessage("Please enter the code");
-    } else if (`${one}${two}${three}${four}` !== passCode.toString()) {
-      setMessage("Incorrect code");
-    } else {
-      sessionStorage.setItem("passCode", JSON.stringify(""));
-      history.push("/login/std-details");
+    const Email = JSON.parse(sessionStorage.getItem("stdEmail"));
+    try {
+      const url = `http://localhost:8080/db/tempUser/${Email}`;
+      const response = await axios.get(url, {
+        withCredentials: true,
+      });
+      const tempUser = response.data.find((user) => user.Email === Email);
+      const code = tempUser.Verification_Code;
+      if (one === "" || two === "" || three === "" || four === "") {
+        setMessage("Please enter the code");
+      } else if (`${one}${two}${three}${four}` !== code) {
+        console.log(code);
+        setMessage("Incorrect code");
+      } else {
+        sessionStorage.setItem("passCode", JSON.stringify(""));
+        history.push("/login/std-details");
+      }
+
+    } catch (err) {
+      console.log(err);
     }
+    
   }
 
   return (

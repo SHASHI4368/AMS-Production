@@ -13,10 +13,12 @@ import StudentSignUpForm from "./StudentSignUpForm";
 import { Route, Switch, useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const Login = ({userType, isSignIn, setIsSignIn, isSignUp, setIsSignUp, students, setStudents}) => {
+const Login = ({userType, isSignIn, setIsSignIn, isSignUp, setIsSignUp, students, setStudents, staff, setStaff, staffCode }) => {
 
   const [passCode, setPassCode] = useState("");
   const [stdEmail, setStdEmail] = useState("");
+
+  
 
   useEffect(() => {},[
     setIsSignIn(JSON.parse(sessionStorage.getItem("isSignIn"))),
@@ -33,19 +35,34 @@ const Login = ({userType, isSignIn, setIsSignIn, isSignUp, setIsSignUp, students
         <Route exact path="/login">
           {userType === "Staff" && isSignIn && <StaffLoginForm />}
           {userType === "Student" && isSignIn && <StudentLoginForm />}
-          {userType === "Staff" && isSignUp && <StaffSignUpForm />}
+          {userType === "Staff" && isSignUp && <StaffSignUpForm staff={staff} setStaff={setStaff} />}
           {userType === "Student" && isSignUp && (
-            <StudentSignUpForm passCode={passCode} setPassCode={setPassCode} students={students} setStudents={setStudents} stdEmail={stdEmail} setStdEmail={setStdEmail} />
+            <StudentSignUpForm
+              passCode={passCode}
+              setPassCode={setPassCode}
+              students={students}
+              setStudents={setStudents}
+              stdEmail={stdEmail}
+              setStdEmail={setStdEmail}
+            />
           )}
         </Route>
-        <Route path="/login/verify">
+        <Route exact path="/login/student/verify">
           <StudentVerificationForm
             passCode={passCode}
             setPassCode={setPassCode}
+            stdEmail={stdEmail}
+            setStdEmail={setStdEmail}
           />
         </Route>
-        <Route path="/login/std-details">
+        <Route exact path="/login/std-details">
           <StudentDetailForm stdEmail={stdEmail} setStdEmail={setStdEmail} />
+        </Route>
+        <Route exact path="/login/staff/verify">
+          <StaffVerificationForm
+            passCode={passCode}
+            setPassCode={setPassCode}
+          />
         </Route>
       </Switch>
       {/* <StaffEmailForm /> */}

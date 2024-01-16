@@ -7,6 +7,7 @@ import api from "./api/students";
 import Login from "./components/Login";
 import { Route, Switch, useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 function App() {
   const [userType, setUserType] = useState(
@@ -15,25 +16,11 @@ function App() {
   const [isSignIn, setIsSignIn] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [students, setStudents] = useState([]);
+  const [staff, setStaff] = useState(null);
 
-  useEffect(() => {
-    const getAllStudents = async () => {
-      try {
-        const response = await api.get("/students");
-        setStudents(response.data);
-        console.log(response.data);
-      } catch (err) {
-        if (err.response) {
-          console.log(err.response.data.message);
-          console.log(err.response.status);
-          console.log(err.response.headers);
-        } else {
-          console.log(err.message);
-        }
-      }
-    };
-    getAllStudents();
-  },[]);
+  // useEffect(() => {
+  //   setStaff(null);
+  // } ,[]);
 
   return (
     <div className="App">
@@ -55,6 +42,8 @@ function App() {
             setIsSignUp={setIsSignUp}
             students={students}
             setStudents={setStudents}
+            staff={staff}
+            setStaff={setStaff}
           />
         </Route>
       </Switch>

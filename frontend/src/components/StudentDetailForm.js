@@ -3,6 +3,7 @@ import "../styles/lecsignup.css";
 import { useState } from "react";
 import api from "../api/students";
 import { useHistory } from "react-router-dom";
+import axios from 'axios';
 
 const StudentDetailForm = ({stdEmail, setStdEmail}) => {
 
@@ -39,6 +40,50 @@ const StudentDetailForm = ({stdEmail, setStdEmail}) => {
     }
   };
 
+  const addStudent = async (
+    Reg_number,
+    First_name,
+    Last_name,
+    Department,
+    Email,
+    Batch
+  ) => {
+    try {
+      const url = `http://localhost:8080/db/students`;
+      const response = await axios.post(url, {
+        Reg_number,
+        First_name,
+        Last_name,
+        Department,
+        Email,
+        Batch,
+      });
+      console.log(response.data);
+      alert("Successfully registered");
+      sessionStorage.setItem("isSignUp", JSON.stringify(false));
+      sessionStorage.setItem("isSignIn", JSON.stringify(true));
+      history.push("/login");
+    } catch (err) {
+      if (err.response) {
+        console.log(err.response.data.message);
+        console.log(err.response.status);
+        console.log(err.response.headers);
+      } else {
+        console.log(err.message);
+      }
+    }
+  };
+
+  const deleteTempUser = async (Email) => {
+    try {
+      const url = `http://localhost:8080/db/tempUser/${Email}`;
+      const response = await axios.delete(url);
+      console.log(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (firstName === "") {
@@ -52,29 +97,8 @@ const StudentDetailForm = ({stdEmail, setStdEmail}) => {
     } else if (password === "") {
       setMessage("Password is required");
     } else {
-      try {
-        const response = await api.post("/students", {
-          firstName,
-          lastName,
-          regNo,
-          department,
-          email: stdEmail,
-          password,
-        });
-        console.log(response.data);
-        alert("Successfully registered");
-        sessionStorage.setItem("isSignUp", JSON.stringify(false));
-        sessionStorage.setItem("isSignIn", JSON.stringify(true));
-        history.push("/login");
-      } catch (err) {
-        if (err.response) {
-          console.log(err.response.data.message);
-          console.log(err.response.status);
-          console.log(err.response.headers);
-        } else {
-          console.log(err.message);
-        }
-      }
+      deleteTempUser(stdEmail);
+      addStudent(regNo, firstName, lastName, department, stdEmail, batch);
     }
   };
 

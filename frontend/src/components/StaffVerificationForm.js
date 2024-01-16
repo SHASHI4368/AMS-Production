@@ -3,9 +3,7 @@ import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
 const StaffVerificationForm = ({ passCode, setPassCode }) => {
-  useEffect(() => {
-    setPassCode(JSON.parse(sessionStorage.getItem("passCode")));
-  }, []);
+  
 
   const history = useHistory();
   const [one, setOne] = useState("");
