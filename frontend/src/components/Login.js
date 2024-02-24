@@ -13,17 +13,25 @@ import StudentSignUpForm from "./StudentSignUpForm";
 import { Route, Switch, useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const Login = ({userType, isSignIn, setIsSignIn, isSignUp, setIsSignUp, students, setStudents, staff, setStaff, staffCode }) => {
-
+const Login = ({
+  userType,
+  isSignIn,
+  setIsSignIn,
+  isSignUp,
+  setIsSignUp,
+  students,
+  setStudents,
+  staff,
+  setStaff,
+  staffCode,
+}) => {
   const [passCode, setPassCode] = useState("");
   const [stdEmail, setStdEmail] = useState("");
 
-  
-
-  useEffect(() => {},[
+  useEffect(() => {}, [
     setIsSignIn(JSON.parse(sessionStorage.getItem("isSignIn"))),
-    setIsSignUp(JSON.parse(sessionStorage.getItem("isSignUp")))
-  ])
+    setIsSignUp(JSON.parse(sessionStorage.getItem("isSignUp"))),
+  ]);
 
   return (
     <main className="login">
@@ -35,7 +43,9 @@ const Login = ({userType, isSignIn, setIsSignIn, isSignUp, setIsSignUp, students
         <Route exact path="/login">
           {userType === "Staff" && isSignIn && <StaffLoginForm />}
           {userType === "Student" && isSignIn && <StudentLoginForm />}
-          {userType === "Staff" && isSignUp && <StaffSignUpForm staff={staff} setStaff={setStaff} />}
+          {userType === "Staff" && isSignUp && (
+            <StaffSignUpForm staff={staff} setStaff={setStaff} />
+          )}
           {userType === "Student" && isSignUp && (
             <StudentSignUpForm
               passCode={passCode}
@@ -48,12 +58,7 @@ const Login = ({userType, isSignIn, setIsSignIn, isSignUp, setIsSignUp, students
           )}
         </Route>
         <Route exact path="/login/student/verify">
-          <StudentVerificationForm
-            passCode={passCode}
-            setPassCode={setPassCode}
-            stdEmail={stdEmail}
-            setStdEmail={setStdEmail}
-          />
+          <StudentVerificationForm/>
         </Route>
         <Route exact path="/login/std-details">
           <StudentDetailForm stdEmail={stdEmail} setStdEmail={setStdEmail} />
@@ -63,6 +68,9 @@ const Login = ({userType, isSignIn, setIsSignIn, isSignUp, setIsSignUp, students
             passCode={passCode}
             setPassCode={setPassCode}
           />
+        </Route>
+        <Route exact path="/login/staff-details">
+          <StaffDetailForm />
         </Route>
       </Switch>
       {/* <StaffEmailForm /> */}

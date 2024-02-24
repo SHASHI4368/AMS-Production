@@ -3,7 +3,16 @@ import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 
-const StudentVerificationForm = ({passCode, setPassCode, stdEmail, setStdEmail}) => {
+const StudentVerificationForm = () => {
+
+  const [passCode, setPassCode] = useState("");
+  const [one, setOne] = useState("");
+  const [two, setTwo] = useState("");
+  const [three, setThree] = useState("");
+  const [four, setFour] = useState("");
+  const [message, setMessage] = useState("");
+
+  const history = useHistory();
 
   const getPasscode = async (Email) => {
     try {
@@ -19,43 +28,30 @@ const StudentVerificationForm = ({passCode, setPassCode, stdEmail, setStdEmail})
   };
 
   useEffect(() => {
-    setStdEmail(JSON.parse(sessionStorage.getItem("stdEmail")));
-    setPassCode(getPasscode(JSON.parse(sessionStorage.getItem("stdEmail"))));
-  },[])
+    if (JSON.parse(sessionStorage.getItem("userType")) === "Staff") {
+      setPassCode(
+        getPasscode(JSON.parse(sessionStorage.getItem("staffEmail")))
+      );
+    } else {
+      setPassCode(getPasscode(JSON.parse(sessionStorage.getItem("stdEmail"))));
+    }
+  }, []);
 
-  const history = useHistory();
-  const [one, setOne] = useState("");
-  const [two, setTwo] = useState("");
-  const [three, setThree] = useState("");
-  const [four, setFour] = useState("");
-
-  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const Email = JSON.parse(sessionStorage.getItem("stdEmail"));
-    try {
-      const url = `http://localhost:8080/db/tempUser/${Email}`;
-      const response = await axios.get(url, {
-        withCredentials: true,
-      });
-      const tempUser = response.data.find((user) => user.Email === Email);
-      const code = tempUser.Verification_Code;
-      if (one === "" || two === "" || three === "" || four === "") {
-        setMessage("Please enter the code");
-      } else if (`${one}${two}${three}${four}` !== code) {
-        console.log(code);
-        setMessage("Incorrect code");
+    if (one === "" || two === "" || three === "" || four === "") {
+      setMessage("Please enter the code");
+    } else if (`${one}${two}${three}${four}` === passCode) {
+      setMessage("Incorrect code");
+    } else {
+      if (JSON.parse(sessionStorage.getItem("userType")) === "Staff") {
+        history.push("/login/staff-details");
       } else {
-        sessionStorage.setItem("passCode", JSON.stringify(""));
         history.push("/login/std-details");
       }
-
-    } catch (err) {
-      console.log(err);
     }
-    
-  }
+  };
 
   return (
     <div className="verification-form">
@@ -91,12 +87,16 @@ const StudentVerificationForm = ({passCode, setPassCode, stdEmail, setStdEmail})
             onChange={(e) => setFour(e.target.value)}
           />
         </div>
-        {message &&
+        {message && (
           <p className="message" style={{ color: "red", fontSize: "15px" }}>
             {message}
           </p>
-        }
-        <button type="button" className="verify-btn back-btn" onClick={handleSubmit}>
+        )}
+        <button
+          type="button"
+          className="verify-btn back-btn"
+          onClick={handleSubmit}
+        >
           Verify
         </button>
         <p>
@@ -105,6 +105,6 @@ const StudentVerificationForm = ({passCode, setPassCode, stdEmail, setStdEmail})
       </form>
     </div>
   );
-}
+};
 
-export default StudentVerificationForm
+export default StudentVerificationForm;
