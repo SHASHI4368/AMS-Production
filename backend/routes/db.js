@@ -6,7 +6,9 @@ const {
   getTempUserByID,
   deleteTempUser,
   updateVerificationCode,
-  deleteStudent
+  deleteStudent,
+  getStaffList,
+  addStaff,
 } = require("../controllers/dbController");
 const dbRouter = require('express').Router();
 // const sqlite = require("sqlite3").verbose();
@@ -27,8 +29,12 @@ dbRouter.get('/tempUsers', getAllTempUsers);
 dbRouter.get('/tempUser/:Email', getTempUserByID);
 dbRouter.delete('/tempUser/:Email', deleteTempUser);
 dbRouter.put('/tempUser', updateVerificationCode);
+dbRouter.get('/staffList', getStaffList);
+dbRouter.post('/staff', addStaff);
 
 module.exports = dbRouter;
+
+// const sql = `alter table STUDENT add column Password varchar(20) not null;`;
 
 // const sql = `
 
@@ -43,19 +49,24 @@ module.exports = dbRouter;
 //     primary key(Reg_number)
 // );
 
+// const sql = `
 // create table LECTURER(
 // 	Email varchar(50) not null,
 //     First_name varchar(20) not null,
 //     Last_name varchar(20) not null,
 //     Department varchar(30) not null,
 //     Picture_URL varchar(100),
+//     Password varchar(30) not null,
 //     primary key(Email)
 // );
+//
 
 // create table TEMP_USER(
 // 	Email varchar(50) not null,
 //     Verification_Code varchar(4) not null,
-//     Picture_URL varchar(50),
+//     Picture_URL varchar(100),
+//     First_Name varchar(50),
+//     Last_Name varchar(50),
 //     Verified boolean default false,
 //     primary key(Email)
 // );

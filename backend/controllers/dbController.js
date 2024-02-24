@@ -24,14 +24,54 @@ const getStudents = (req, res) => {
   }
 };
 
+const getStaffList = (req, res) => {
+  const sql = `select * from LECTURER`;
+  try {
+    db.all(sql, [], (err, rows) => {
+      if (err) {
+        res.status(500).json(err.message);
+        res.send(400).json(err.message);
+      } else {
+        return res.json(rows);
+      }
+    });
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
 const addStudent = (req, res) => {
-  const { Reg_number, First_name, Last_name, Department, Email, Batch } =
+  const { Reg_number, First_name, Last_name, Department, Email, Batch, Password } =
     req.body;
-  const sql = `insert into STUDENT(Reg_number, First_name, Last_name, Department, Email, Batch) values(?,?,?,?,?,?)`;
+  const sql = `insert into STUDENT(Reg_number, First_name, Last_name, Department, Email, Batch, Password) values(?,?,?,?,?,?,?)`;
   try {
     db.run(
       sql,
-      [Reg_number, First_name, Last_name, Department, Email, Batch],
+      [Reg_number, First_name, Last_name, Department, Email, Batch, Password],
+      (err) => {
+        if (err) {
+          res.status(500).json(err.message);
+          res.send(400).json(err.message);
+        } else {
+          return res.json({
+            message: "Student added successfully",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
+const addStaff = (req, res) => {
+  const { First_name, Last_name, Department, Email, Picture_URL, Password } =
+    req.body;
+  const sql = `insert into LECTURER(First_name, Last_name, Department, Email, Picture_URL, Password) values(?,?,?,?,?,?)`;
+  try {
+    db.run(
+      sql,
+      [First_name, Last_name, Department, Email, Picture_URL, Password],
       (err) => {
         if (err) {
           res.status(500).json(err.message);
@@ -68,19 +108,23 @@ const deleteStudent = (req, res) => {
 }
 
 const addTempUser = (req, res) => {
-  const { Email, Verification_Code } = req.body;
-  const sql = `insert into TEMP_USER(Email, Verification_Code) values(?,?)`;
+  const { Email, Verification_Code, First_Name, Last_Name, Picture_URL } = req.body;
+  const sql = `insert into TEMP_USER(Email, Verification_Code, First_Name, Last_Name, Picture_URL) values(?,?,?,?,?)`;
   try {
-    db.run(sql, [Email, Verification_Code], (err) => {
-      if (err) {
-        res.status(500).json(err.message);
-        res.send(400).json(err.message);
-      } else {
-        return res.json({
-          message: "User added successfully",
-        });
+    db.run(
+      sql,
+      [Email, Verification_Code, First_Name, Last_Name, Picture_URL],
+      (err) => {
+        if (err) {
+          res.status(500).json(err.message);
+          res.send(400).json(err.message);
+        } else {
+          return res.json({
+            message: "User added successfully",
+          });
+        }
       }
-    });
+    );
   } catch (err) {
     res.status(500).json(err.message);
   }
@@ -166,4 +210,6 @@ module.exports = {
   deleteTempUser,
   updateVerificationCode,
   deleteStudent,
+  getStaffList,
+  addStaff
 };

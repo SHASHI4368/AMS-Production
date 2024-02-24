@@ -46,7 +46,8 @@ const StudentDetailForm = ({stdEmail, setStdEmail}) => {
     Last_name,
     Department,
     Email,
-    Batch
+    Batch,
+    Password
   ) => {
     try {
       const url = `http://localhost:8080/db/students`;
@@ -57,6 +58,7 @@ const StudentDetailForm = ({stdEmail, setStdEmail}) => {
         Department,
         Email,
         Batch,
+        Password
       });
       console.log(response.data);
       alert("Successfully registered");
@@ -98,7 +100,7 @@ const StudentDetailForm = ({stdEmail, setStdEmail}) => {
       setMessage("Password is required");
     } else {
       deleteTempUser(stdEmail);
-      addStudent(regNo, firstName, lastName, department, stdEmail, batch);
+      addStudent(regNo, firstName, lastName, department, stdEmail, batch, password);
     }
   };
 
@@ -155,7 +157,7 @@ const StudentDetailForm = ({stdEmail, setStdEmail}) => {
          placeholder="Faculty Email"
          value={stdEmail} 
         />
-        <label htmlFor="password">Email</label>
+        <label htmlFor="password">Password</label>
         <input 
           type="password" 
           className="password" 
