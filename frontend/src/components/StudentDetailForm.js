@@ -62,6 +62,9 @@ const StudentDetailForm = () => {
       });
       console.log(response.data);
       alert("Successfully registered");
+      sessionStorage.setItem("isSignUp", JSON.stringify(false));
+      sessionStorage.setItem("isSignIn", JSON.stringify(true));
+      history.push("/login/student");
       history.push("/login/student");
     } catch (err) {
       if (err.response) {
