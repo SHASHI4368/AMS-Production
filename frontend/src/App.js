@@ -8,11 +8,15 @@ import Login from "./components/Login";
 import { Route, Switch, useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import StudentLoginForm from "./components/StudentLoginForm";
+import StaffLoginForm from "./components/StaffLoginForm";
+import StaffSignUpForm from "./components/StaffSignUpForm";
+import StudentSignUpForm from "./components/StudentSignUpForm";
+import VerificationForm from "./components/VerificationForm";
+import StudentDetailForm from "./components/StudentDetailForm";
+import StaffDetailForm from "./components/StaffDetailForm";
 
 function App() {
-  const [userType, setUserType] = useState(
-    JSON.parse(sessionStorage.getItem("userType")) || "Student"
-  );
   const [isSignIn, setIsSignIn] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [students, setStudents] = useState([]);
@@ -24,16 +28,31 @@ function App() {
 
   return (
     <div className="App">
-      <Header
-        userType={userType}
-        setUserType={setUserType}
-        isSignIn={isSignIn}
-        setIsSignIn={setIsSignIn}
-        setIsSignUp={setIsSignUp}
-      />
+      <Header />
       <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/login">
+        <Route exact path="/" component={Home} />
+        <Route exact path="/login/student">
+          <StudentLoginForm />
+        </Route>
+        <Route exact path="/login/staff">
+          <StaffLoginForm />
+        </Route>
+        <Route exact path="/signup/staff">
+          <StaffSignUpForm staff={staff} setStaff={setStaff} />
+        </Route>
+        <Route exact path="/signup/student">
+          <StudentSignUpForm />
+        </Route>
+        <Route exact path="/signup/verify">
+          <VerificationForm />
+        </Route>
+        <Route exact path="/signup/student/std-details">
+          <StudentDetailForm />
+        </Route>
+        <Route exact path="/signup/staff/staff-details">
+          <StaffDetailForm />
+        </Route>
+        {/* <Route exact path="/login">
           <Login
             userType={userType}
             isSignIn={isSignIn}
@@ -45,7 +64,7 @@ function App() {
             staff={staff}
             setStaff={setStaff}
           />
-        </Route>
+        </Route> */}
       </Switch>
       <Footer />
     </div>

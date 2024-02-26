@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
 import "../styles/lecsignup.css";
+import Uni from "../resources/University.jpg";
 import { useState } from "react";
 import api from "../api/students";
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
 
-const StudentDetailForm = ({stdEmail, setStdEmail}) => {
+const StudentDetailForm = () => {
 
   const history = useHistory();
-
+  const [stdEmail, setStdEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [regNo, setRegNo] = useState("");
@@ -105,6 +106,10 @@ const StudentDetailForm = ({stdEmail, setStdEmail}) => {
   };
 
   return (
+    <main className="login">
+      <div className="back-img">
+        <img src={Uni} />
+      </div>
     <div className="detail-form">
       <form className="detail-form" onSubmit={(e) => e.preventDefault()} >
         <h2>SIGN UP</h2>
@@ -175,6 +180,7 @@ const StudentDetailForm = ({stdEmail, setStdEmail}) => {
         </button>
       </form>
     </div>
+  </main>
   );
 }
 

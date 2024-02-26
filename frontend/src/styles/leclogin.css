@@ -77,42 +77,42 @@ label {
   cursor: pointer;
 }
 
-p{
+p {
   margin-top: 10px;
   font-size: 20px;
   font-weight: 600;
 }
 
-.google-btn{
- display: flex;
- flex-direction: row;
- justify-content: center;
- align-items: center;
- width: 300px;
- height: 50px;
- border: none;
- border-radius: 10px;
- background-color: #DF8544;
- color: #fff;
- transition-property: background-color;
- transition-duration: 0.5s;
- margin-top: 10px;
+.google-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  height: 50px;
+  border: none;
+  border-radius: 10px;
+  background-color: #df8544;
+  color: #fff;
+  transition-property: background-color;
+  transition-duration: 0.5s;
+  margin-top: 10px;
 }
 
-.google-btn:hover{
+.google-btn:hover {
   background-color: #db9539;
   color: #eee7e3;
-  border: 1px solid #DF8544;
+  border: 1px solid #df8544;
   cursor: pointer;
 }
 
-.google-icon{
+.google-icon {
   height: 25px;
   width: 25px;
   margin-right: 10px;
 }
 
-.google-btn p{
+.google-btn p {
   margin: 0;
   padding: 0;
   font-size: 16px;
@@ -120,23 +120,28 @@ p{
 }
 
 .std-login-form {
-  margin-top: 40px;
+  margin-top: 28px;
   width: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.std-login-form h2{
+.std-login-form h2 {
   margin-top: 10px;
 }
 
-.login-form h2{
+.login-form h2 {
   margin-top: -60px;
 }
 
-.std-login-form p{
+.std-login-form p {
   margin-top: 40px;
   font-size: 18px;
   font-weight: 400;
+}
+
+#create-btn {
+  font-size: 15px;
+  margin-top: 30px;
 }

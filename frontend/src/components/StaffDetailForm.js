@@ -1,5 +1,6 @@
 import "../styles/lecsignup.css";
 import React from "react";
+import Uni from "../resources/University.jpg";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
@@ -69,7 +70,7 @@ const StaffDetailForm = () => {
       alert("Successfully registered");
       sessionStorage.setItem("isSignUp", JSON.stringify(false));
       sessionStorage.setItem("isSignIn", JSON.stringify(true));
-      history.push("/login");
+      history.push("/login/staff");
     } catch (err) {
       if (err.response) {
         console.log(err.response.data.message);
@@ -98,55 +99,60 @@ const StaffDetailForm = () => {
   };
 
   return (
-    <div className="detail-form">
-      <form className="detail-form">
-        <h2>SIGN UP</h2>
-        <label htmlFor="name">name</label>
-        <input
-          type="text"
-          className="name"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <label htmlFor="department">Department</label>
-        <select
-          name="department"
-          className="department"
-          onChange={(e) => setDepartment(e.target.value)}
-        >
-          <option value="DEIE">DEIE</option>
-          <option value="CEE">CEE</option>
-          <option value="DMME">DMME</option>
-          <option value="MENA">MENA</option>
-          <option value="Computer">Computer</option>
-        </select>
-        <label htmlFor="email">Email</label>
-        <input
-          type="email"
-          className="email"
-          placeholder="Faculty Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <label htmlFor="password">Email</label>
-        <input
-          type="password"
-          className="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {message && (
-          <p className="message" style={{ color: "red", fontSize: "15px" }}>
-            {message}
-          </p>
-        )}
-        <button type="submit" className="submit-btn" onClick={handleSubmit}>
-          Continue
-        </button>
-      </form>
-    </div>
+    <main className="login">
+      <div className="back-img">
+        <img src={Uni} />
+      </div>
+      <div className="detail-form">
+        <form className="detail-form">
+          <h2>SIGN UP</h2>
+          <label htmlFor="name">name</label>
+          <input
+            type="text"
+            className="name"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <label htmlFor="department">Department</label>
+          <select
+            name="department"
+            className="department"
+            onChange={(e) => setDepartment(e.target.value)}
+          >
+            <option value="DEIE">DEIE</option>
+            <option value="CEE">CEE</option>
+            <option value="DMME">DMME</option>
+            <option value="MENA">MENA</option>
+            <option value="Computer">Computer</option>
+          </select>
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            className="email"
+            placeholder="Faculty Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <label htmlFor="password">Email</label>
+          <input
+            type="password"
+            className="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {message && (
+            <p className="message" style={{ color: "red", fontSize: "15px" }}>
+              {message}
+            </p>
+          )}
+          <button type="submit" className="submit-btn" onClick={handleSubmit}>
+            Continue
+          </button>
+        </form>
+      </div>
+    </main>
   );
 };
 

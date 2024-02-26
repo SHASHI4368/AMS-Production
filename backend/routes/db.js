@@ -29,6 +29,8 @@ module.exports = dbRouter;
 
 // const sql = `alter table STUDENT drop column Password;`;
 // const sql = `alter table STUDENT add column Password varchar(100) not null;`;
+// const sql = `alter table LECTURER drop column Password;`;
+// const sql = `alter table LECTURER add column Password varchar(100) not null;`;
 
 // const sql = `
 

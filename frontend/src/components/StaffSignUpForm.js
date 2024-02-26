@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../styles/lecsignup.css";
+import Uni from "../resources/University.jpg";
 import { FaGoogle } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
@@ -144,7 +145,7 @@ const StaffSignUpForm = ({ staff, setStaff }) => {
           updateVerificationCode(staffEmail, code);
         }
         // sessionStorage.setItem("stdEmail", JSON.stringify(stdEmail));
-        history.push("/login/staff/verify");
+        history.push("/signup/verify");
       } else {
         setMessage("Email already exists");
       }
@@ -152,6 +153,10 @@ const StaffSignUpForm = ({ staff, setStaff }) => {
   };
 
   return (
+    <main className="login">
+      <div className="back-img">
+        <img src={Uni} />
+      </div>
     <div className="signup-form">
       <form className="signup-form">
         <h2>SIGN UP</h2>
@@ -178,6 +183,7 @@ const StaffSignUpForm = ({ staff, setStaff }) => {
         </button>
       </form>
     </div>
+    </main>
   );
 };
 

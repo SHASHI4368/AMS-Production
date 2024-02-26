@@ -1,36 +1,32 @@
-import React, { useEffect } from 'react';
-import Logo from '../resources/Logo.png';
-import '../styles/header.css';
-import { useHistory } from 'react-router-dom';
+import React, { useEffect } from "react";
+import Logo from "../resources/Logo.png";
+import "../styles/header.css";
+import { useHistory } from "react-router-dom";
+import { useState } from "react";
 
-const Header = ({userType, setUserType, isSignIn, setIsSignIn, setIsSignUp}) => {
+const Header = () => {
+  const [userType, setUserType] = useState(
+    JSON.parse(sessionStorage.getItem("userType")) || "Student"
+  );
 
   const history = useHistory();
 
   const navigateHome = () => {
     history.push("/");
-  }
+  };
   const handleSelect = (e) => {
     setUserType(e.target.value);
     sessionStorage.setItem("userType", JSON.stringify(e.target.value));
-  }
+  };
 
   const handleLogin = () => {
-    setIsSignIn(true);
-    sessionStorage.setItem("isSignIn", JSON.stringify(true));
-    setIsSignUp(false);
-    sessionStorage.setItem("isSignUp", JSON.stringify(false));
-    history.push("/login");
+    if (JSON.parse(sessionStorage.getItem("userType")) === "Student") {
+      history.push("/login/student");
+    } else {
+      history.push("/login/staff");
+    }
+  };
 
-  }
-
-  const handleSignUp = () => {
-    setIsSignUp(true);
-    sessionStorage.setItem("isSignUp", JSON.stringify(true));
-    setIsSignIn(false);
-    sessionStorage.setItem("isSignIn", JSON.stringify(false));
-    history.push("/login");
-  }
   return (
     <div className="header">
       <img className="logo" alt="Logo" src={Logo} onClick={navigateHome} />
@@ -47,12 +43,12 @@ const Header = ({userType, setUserType, isSignIn, setIsSignIn, setIsSignUp}) => 
         <button className="loginbtn" onClick={handleLogin}>
           LOGIN
         </button>
-        <button className="signup" onClick={handleSignUp}>
+        {/* <button className="signup" onClick={handleSignUp}>
           SIGN UP
-        </button>
+        </button> */}
       </div>
     </div>
   );
-}
+};
 
-export default Header
+export default Header;

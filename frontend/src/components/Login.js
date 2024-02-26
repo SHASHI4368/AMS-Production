@@ -4,8 +4,8 @@ import "../styles/leclogin.css";
 import StaffLoginForm from "./StaffLoginForm";
 import StaffSignUpForm from "./StaffSignUpForm";
 import StaffEmailForm from "./StaffEmailForm";
-import StaffVerificationForm from "./StudentVerificationForm";
-import StudentVerificationForm from "./StudentVerificationForm";
+import StaffVerificationForm from "./VerificationForm";
+import StudentVerificationForm from "./VerificationForm";
 import StaffDetailForm from "./StaffDetailForm";
 import StudentDetailForm from "./StudentDetailForm";
 import StudentLoginForm from "./StudentLoginForm";
@@ -40,26 +40,8 @@ const Login = ({
       </div>
 
       <Switch>
-        <Route exact path="/login">
-          {userType === "Staff" && isSignIn && <StaffLoginForm />}
-          {userType === "Student" && isSignIn && <StudentLoginForm />}
-          {userType === "Staff" && isSignUp && (
-            <StaffSignUpForm staff={staff} setStaff={setStaff} />
-          )}
-          {userType === "Student" && isSignUp && (
-            <StudentSignUpForm
-              passCode={passCode}
-              setPassCode={setPassCode}
-              students={students}
-              setStudents={setStudents}
-              stdEmail={stdEmail}
-              setStdEmail={setStdEmail}
-            />
-          )}
-        </Route>
-        <Route exact path="/login/student/verify">
-          <StudentVerificationForm/>
-        </Route>
+        
+        
         <Route exact path="/login/std-details">
           <StudentDetailForm stdEmail={stdEmail} setStdEmail={setStdEmail} />
         </Route>

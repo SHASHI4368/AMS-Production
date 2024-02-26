@@ -112,14 +112,15 @@ const handleStdLogin = async (req, res) => {
 };
 
 
-const addStaff = (req, res) => {
+const addStaff = async (req, res) => {
   const { First_name, Last_name, Department, Email, Picture_URL, Password } =
     req.body;
   const sql = `insert into LECTURER(First_name, Last_name, Department, Email, Picture_URL, Password) values(?,?,?,?,?,?)`;
   try {
+    const hashedPassword = await bcrypt.hash(Password, 10);
     db.run(
       sql,
-      [First_name, Last_name, Department, Email, Picture_URL, Password],
+      [First_name, Last_name, Department, Email, Picture_URL, hashedPassword],
       (err) => {
         if (err) {
           res.status(500).json(err.message);

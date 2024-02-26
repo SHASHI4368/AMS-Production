@@ -1,26 +1,27 @@
 import React from "react";
 import "../styles/lecsignup.css";
+import Uni from "../resources/University.jpg";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import api from "../api/students";
 import axios from "axios";
 
-const StudentSignUpForm = ({
-  passCode,
-  setPassCode,
-  students,
-  setStudents,
-  stdEmail,
-  setStdEmail,
-}) => {
-  const [isValidEmail, setIsValidEmail] = useState(false);
+const StudentSignUpForm = (
+  {
+    // passCode,
+    // setPassCode,
+    // students,
+    // setStudents,
+    // stdEmail,
+    // setStdEmail,
+  }
+) => {
   const [message, setMessage] = useState("");
   const history = useHistory();
   const [tempUsers, setTempUsers] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [stdEmail, setStdEmail] = useState("");
 
   const sendVerificationMail = async (email, code) => {
-    sessionStorage.setItem("staffCode", JSON.stringify(code));
-    sessionStorage.setItem("passCode", JSON.stringify(code));
     sessionStorage.setItem("stdEmail", JSON.stringify(stdEmail));
     try {
       const url = `http://localhost:8080/mail/student/verify`;
@@ -39,7 +40,7 @@ const StudentSignUpForm = ({
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   const addTempUser = async (Email, Verification_Code) => {
     try {
@@ -99,7 +100,7 @@ const StudentSignUpForm = ({
       const code = `${Math.floor(Math.random() * 10)}${Math.floor(
         Math.random() * 10
       )}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}`;
-      setPassCode(code);
+      // setPassCode(code);
       const student = students.find((student) => student.Email === stdEmail);
       const tempUser = tempUsers.find(
         (tempUser) => tempUser.Email === stdEmail
@@ -109,11 +110,11 @@ const StudentSignUpForm = ({
         if (!tempUser) {
           addTempUser(stdEmail, code);
         }
-        if(tempUser && !tempUser.Verified){
+        if (tempUser && !tempUser.Verified) {
           updateVerificationCode(stdEmail, code);
         }
         sessionStorage.setItem("stdEmail", JSON.stringify(stdEmail));
-        history.push("/login/student/verify");
+        history.push("/signup/verify");
       } else {
         setMessage("Email already exists");
       }
@@ -121,29 +122,34 @@ const StudentSignUpForm = ({
   };
 
   return (
-    <div className="std-signup-form">
-      <form className="signup-form" onSubmit={(e) => e.preventDefault()}>
-        <h2>SIGN UP</h2>
-        <label htmlFor="email">Email</label>
-        <input
-          type="email"
-          className="email"
-          placeholder="Faculty Email"
-          value={stdEmail}
-          onChange={(e) => {
-            setStdEmail(e.target.value);
-          }}
-        />
-        {message && (
-          <p className="message" style={{ color: "red", fontSize: "15px" }}>
-            {message}
-          </p>
-        )}
-        <button type="submit" className="submit-btn" onClick={handleSubmit}>
-          Continue
-        </button>
-      </form>
-    </div>
+    <main className="login">
+      <div className="back-img">
+        <img src={Uni} />
+      </div>
+      <div className="std-signup-form">
+        <form className="signup-form" onSubmit={(e) => e.preventDefault()}>
+          <h2>SIGN UP</h2>
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            className="email"
+            placeholder="Faculty Email"
+            value={stdEmail}
+            onChange={(e) => {
+              setStdEmail(e.target.value);
+            }}
+          />
+          {message && (
+            <p className="message" style={{ color: "red", fontSize: "15px" }}>
+              {message}
+            </p>
+          )}
+          <button type="submit" className="submit-btn" onClick={handleSubmit}>
+            Continue
+          </button>
+        </form>
+      </div>
+    </main>
   );
 };
 
