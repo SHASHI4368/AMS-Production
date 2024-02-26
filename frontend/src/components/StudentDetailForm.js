@@ -65,7 +65,7 @@ const StudentDetailForm = () => {
       alert("Successfully registered");
       sessionStorage.setItem("isSignUp", JSON.stringify(false));
       sessionStorage.setItem("isSignIn", JSON.stringify(true));
-      history.push("/login");
+      history.push("/login/student");
     } catch (err) {
       if (err.response) {
         console.log(err.response.data.message);
