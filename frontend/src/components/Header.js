@@ -9,6 +9,12 @@ const Header = () => {
     JSON.parse(sessionStorage.getItem("userType")) || "Student"
   );
 
+  useEffect(() => {
+    if(sessionStorage.getItem("userType") === null){
+      sessionStorage.setItem("userType", JSON.stringify("Student"));
+    }
+  },[]);
+
   const history = useHistory();
 
   const navigateHome = () => {

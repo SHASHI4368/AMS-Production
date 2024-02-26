@@ -52,19 +52,6 @@ function App() {
         <Route exact path="/signup/staff/staff-details">
           <StaffDetailForm />
         </Route>
-        {/* <Route exact path="/login">
-          <Login
-            userType={userType}
-            isSignIn={isSignIn}
-            isSignUp={isSignUp}
-            setIsSignIn={setIsSignIn}
-            setIsSignUp={setIsSignUp}
-            students={students}
-            setStudents={setStudents}
-            staff={staff}
-            setStaff={setStaff}
-          />
-        </Route> */}
       </Switch>
       <Footer />
     </div>

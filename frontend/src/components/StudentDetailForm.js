@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import "../styles/lecsignup.css";
 import Uni from "../resources/University.jpg";
 import { useState } from "react";
-import api from "../api/students";
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
 
@@ -63,9 +62,7 @@ const StudentDetailForm = () => {
       });
       console.log(response.data);
       alert("Successfully registered");
-      sessionStorage.setItem("isSignUp", JSON.stringify(false));
-      sessionStorage.setItem("isSignIn", JSON.stringify(true));
-      history.push("/login");
+      history.push("/login/student");
     } catch (err) {
       if (err.response) {
         console.log(err.response.data.message);
