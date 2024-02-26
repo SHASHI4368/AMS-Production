@@ -11,10 +11,10 @@ const {
   deleteStudent,
   getStaffList,
   addStaff,
-  // handleStdLogin,
+  handleStdLogin,
 } = require("../controllers/dbController");
 const dbRouter = require("express").Router();
-// const verifyJWT = require('../middlewares/verifyJWT');
+const verifyJWT = require('../middlewares/verifyJWT');
 dbRouter.use(
   cors({
     origin: "http://localhost:3000", // <-- location of the react app were connecting to
@@ -32,9 +32,9 @@ dbRouter.get("/tempUsers", getAllTempUsers);
 dbRouter.get("/tempUser/:Email", getTempUserByID);
 dbRouter.delete("/tempUser/:Email", deleteTempUser);
 dbRouter.put("/tempUser", updateVerificationCode);
-dbRouter.get("/staffList", getStaffList);
+dbRouter.get("/staffList", verifyJWT, getStaffList);
 dbRouter.post("/staff", addStaff);
-// dbRouter.get("/student/login", handleStdLogin);
+dbRouter.get("/student/login", handleStdLogin);
 
 module.exports = dbRouter;
 
@@ -42,7 +42,8 @@ module.exports = dbRouter;
 // const sql = `alter table STUDENT add column Password varchar(100) not null;`;
 // const sql = `alter table LECTURER drop column Password;`;
 // const sql = `alter table LECTURER add column Password varchar(100) not null;`;
-// const sql = `alter table STUDENT add column RefreshToken varchar(100) not null;`;
+// const sql = `alter table STUDENT drop column RefreshToken;`;
+// const sql = `alter table STUDENT add column RefreshToken varchar(100);`;
 
 // const sql = `
 

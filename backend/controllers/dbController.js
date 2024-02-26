@@ -83,56 +83,56 @@ const addStudent = async (req, res) => {
   }
 };
 
-// const handleStdLogin = async (req, res) => {
-//   const { Email, Password } = req.body;
-//   const sql = `select * from STUDENT where Email = ?`;
+const handleStdLogin = async (req, res) => {
+  const { Email, Password } = req.body;
+  const sql = `select * from STUDENT where Email = ?`;
 
-//   try {
-//     db.all(sql, [Email], async (err, rows) => {
-//       if (err) {
-//         return res.status(500).json({ error: err.message });
-//       }
+  try {
+    db.all(sql, [Email], async (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
 
-//       if (rows.length === 0) {
-//         return res.status(404).json({ message: "No user found" });
-//       }
+      if (rows.length === 0) {
+        return res.status(404).json({ message: "No user found" });
+      }
 
-//       const foundStudent = rows[0];
-//       const isMatch = await bcrypt.compare(Password, foundStudent.Password);
+      const foundStudent = rows[0];
+      const isMatch = await bcrypt.compare(Password, foundStudent.Password);
 
-//       if (!isMatch) {
-//         return res.json({ message: "Invalid credentials" });
-//       }
+      if (!isMatch) {
+        return res.json({ message: "Invalid credentials" });
+      }
 
-//       // Create JWT token
-//       const accessToken = jwt.sign(
-//         { Reg_number: foundStudent.Reg_number },
-//         process.env.ACCESS_TOKEN_SECRET,
-//         { expiresIn: "30s" }
-//       );
-//       const refreshToken = jwt.sign(
-//         { Reg_number: foundStudent.Reg_number },
-//         process.env.REFRESH_TOKEN_SECRET,
-//         { expiresIn: "1d" }
-//       );
+      // Create JWT token
+      const accessToken = jwt.sign(
+        { Reg_number: foundStudent.Reg_number },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "60s" }
+      );
+      const refreshToken = jwt.sign(
+        { Reg_number: foundStudent.Reg_number },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: "1d" }
+      );
 
-//       const sql = `update STUDENT set RefreshToken = ? where Email = ?`;
-//       db.run(sql, [refreshToken, Email], (err) => {
-//         if (err) {
-//           return res.status(500).json({ error: err.message });
-//         }
-//       });
-//       res.cookie("jwt", refreshToken, {
-//         httpOnly: true,
-//         maxAge: 1000 * 60 * 60 * 24,
-//       });
-//       res.json({ accessToken: accessToken });
-//       // return res.json(foundStudent);
-//     });
-//   } catch (err) {
-//     return res.status(500).json({ error: err.message });
-//   }
-// };
+      const sql = `update STUDENT set RefreshToken = ? where Email = ?`;
+      db.run(sql, [refreshToken, Email], (err) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+      });
+      res.cookie("jwt", refreshToken, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24,
+      });
+      res.json({ accessToken: accessToken });
+      // return res.json(foundStudent);
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
 
 const addStaff = async (req, res) => {
   const { First_name, Last_name, Department, Email, Picture_URL, Password } =
@@ -284,5 +284,5 @@ module.exports = {
   deleteStudent,
   getStaffList,
   addStaff,
-  // handleStdLogin,
+  handleStdLogin,
 };
