@@ -9,17 +9,9 @@ const {
   deleteStudent,
   getStaffList,
   addStaff,
+  handleStdLogin,
 } = require("../controllers/dbController");
 const dbRouter = require('express').Router();
-// const sqlite = require("sqlite3").verbose();
-
-// const db = new sqlite.Database("./ams.db", sqlite.OPEN_READWRITE, (err) => {
-//   if (err) {
-//     console.error(err.message);
-//   } else {
-//     console.log("Connected to the database.");
-//   }
-// });
 
 dbRouter.get('/students', getStudents);
 dbRouter.post('/students', addStudent);
@@ -31,10 +23,12 @@ dbRouter.delete('/tempUser/:Email', deleteTempUser);
 dbRouter.put('/tempUser', updateVerificationCode);
 dbRouter.get('/staffList', getStaffList);
 dbRouter.post('/staff', addStaff);
+dbRouter.get('/student/login', handleStdLogin);
 
 module.exports = dbRouter;
 
-// const sql = `alter table STUDENT add column Password varchar(20) not null;`;
+// const sql = `alter table STUDENT drop column Password;`;
+// const sql = `alter table STUDENT add column Password varchar(100) not null;`;
 
 // const sql = `
 
@@ -119,6 +113,17 @@ module.exports = dbRouter;
 //     foreign key(Student_reg) references STUDENT(Reg_number)
 // );
 // `;
+
+
+// const sqlite = require("sqlite3").verbose();
+
+// const db = new sqlite.Database("./ams.db", sqlite.OPEN_READWRITE, (err) => {
+//   if (err) {
+//     console.error(err.message);
+//   } else {
+//     console.log("Connected to the database.");
+//   }
+// });
 
 // db.run(sql, (err) => {
 //  if(err){

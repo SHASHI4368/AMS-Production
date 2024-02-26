@@ -1,4 +1,7 @@
 const sqlite = require("sqlite3").verbose();
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const db = new sqlite.Database("./ams.db", sqlite.OPEN_READWRITE, (err) => {
   if (err) {
@@ -40,14 +43,30 @@ const getStaffList = (req, res) => {
   }
 };
 
-const addStudent = (req, res) => {
-  const { Reg_number, First_name, Last_name, Department, Email, Batch, Password } =
-    req.body;
+const addStudent = async (req, res) => {
+  const {
+    Reg_number,
+    First_name,
+    Last_name,
+    Department,
+    Email,
+    Batch,
+    Password,
+  } = req.body;
   const sql = `insert into STUDENT(Reg_number, First_name, Last_name, Department, Email, Batch, Password) values(?,?,?,?,?,?,?)`;
   try {
+    const hashedPassword = await bcrypt.hash(Password, 10);
     db.run(
       sql,
-      [Reg_number, First_name, Last_name, Department, Email, Batch, Password],
+      [
+        Reg_number,
+        First_name,
+        Last_name,
+        Department,
+        Email,
+        Batch,
+        hashedPassword,
+      ],
       (err) => {
         if (err) {
           res.status(500).json(err.message);
@@ -63,6 +82,35 @@ const addStudent = (req, res) => {
     res.status(500).json(err.message);
   }
 };
+
+const handleStdLogin = async (req, res) => {
+  const { Email, Password } = req.body;
+  const sql = `select * from STUDENT where Email = ?`;
+
+  try {
+    db.all(sql, [Email], async (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (rows.length === 0) {
+        return res.status(404).json({ message: "No user found" });
+      }
+
+      const foundStudent = rows[0];
+      const isMatch = await bcrypt.compare(Password, foundStudent.Password);
+
+      if (!isMatch) {
+        return res.json({ message: "Invalid credentials" });
+      }
+
+      return res.json(foundStudent);
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
 
 const addStaff = (req, res) => {
   const { First_name, Last_name, Department, Email, Picture_URL, Password } =
@@ -105,10 +153,11 @@ const deleteStudent = (req, res) => {
   } catch (err) {
     res.status(500).json(err.message);
   }
-}
+};
 
 const addTempUser = (req, res) => {
-  const { Email, Verification_Code, First_Name, Last_Name, Picture_URL } = req.body;
+  const { Email, Verification_Code, First_Name, Last_Name, Picture_URL } =
+    req.body;
   const sql = `insert into TEMP_USER(Email, Verification_Code, First_Name, Last_Name, Picture_URL) values(?,?,?,?,?)`;
   try {
     db.run(
@@ -161,7 +210,7 @@ const getTempUserByID = (req, res) => {
   } catch (err) {
     res.status(500).json(err.message);
   }
-}
+};
 
 const updateVerificationCode = (req, res) => {
   const { Email, Verification_Code } = req.body;
@@ -180,10 +229,10 @@ const updateVerificationCode = (req, res) => {
   } catch (err) {
     res.status(500).json(err.message);
   }
-}
+};
 
 const deleteTempUser = (req, res) => {
-  const {Email} = req.params;
+  const { Email } = req.params;
   const sql = `delete from TEMP_USER where Email = ?`;
   try {
     db.run(sql, [Email], (err) => {
@@ -199,7 +248,7 @@ const deleteTempUser = (req, res) => {
   } catch (err) {
     res.status(500).json(err.message);
   }
-}
+};
 
 module.exports = {
   getStudents,
@@ -211,5 +260,6 @@ module.exports = {
   updateVerificationCode,
   deleteStudent,
   getStaffList,
-  addStaff
+  addStaff,
+  handleStdLogin,
 };
