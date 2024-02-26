@@ -8,10 +8,12 @@ const authRoute = require("./routes/auth");
 const mailRouter = require("./routes/mail");
 const dbRouter = require("./routes/db");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(
   cookieSession({
    name: 'session',

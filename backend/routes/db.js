@@ -1,5 +1,3 @@
-const cors = require("cors");
-
 const {
   getStudents,
   addStudent,
@@ -12,17 +10,12 @@ const {
   getStaffList,
   addStaff,
   handleStdLogin,
+  handleStdRefreshToken,
+  handleStdLogout,
 } = require("../controllers/dbController");
 const dbRouter = require("express").Router();
-const verifyJWT = require('../middlewares/verifyJWT');
-dbRouter.use(
-  cors({
-    origin: "http://localhost:3000", // <-- location of the react app were connecting to
-    credentials: true,
-    methods: "GET, PUT, POST, DELETE",
-  })
-);
 
+const verifyJWT = require("../middlewares/verifyJWT");
 
 dbRouter.get("/students", getStudents);
 dbRouter.post("/students", addStudent);
@@ -35,6 +28,9 @@ dbRouter.put("/tempUser", updateVerificationCode);
 dbRouter.get("/staffList", verifyJWT, getStaffList);
 dbRouter.post("/staff", addStaff);
 dbRouter.get("/student/login", handleStdLogin);
+dbRouter.get("/student/refresh", handleStdRefreshToken);
+dbRouter.get("/student/logout", handleStdLogout);
+dbRouter.use(verifyJWT);
 
 module.exports = dbRouter;
 

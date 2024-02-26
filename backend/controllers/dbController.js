@@ -134,6 +134,90 @@ const handleStdLogin = async (req, res) => {
   }
 };
 
+const handleStdRefreshToken = async (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies.jwt) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const RefreshToken = cookies.jwt;
+  //---------------------------------------------------------
+  const sql = `select * from STUDENT where RefreshToken = ?`;
+
+  try {
+    db.all(sql, [RefreshToken], async (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (rows.length === 0) {
+        return res.status(404).json({ message: "No user found" });
+      }
+
+      const foundStudent = rows[0];
+
+      //evaluate the refresh token
+      jwt.verify(
+        RefreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        (err, decoded) => {
+          if (err || foundStudent.Reg_number !== decoded.Reg_number) {
+            return res.status(403).json({ message: "Invalid refresh token" });
+          }
+          const accessToken = jwt.sign(
+            { Reg_number: foundStudent.Reg_number },
+            process.env.ACCESS_TOKEN_SECRET,
+            { expiresIn: "60s" }
+          );
+          return res.json({ accessToken: accessToken });
+        }
+      );
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+const handleStdLogout = async (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies.jwt) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const RefreshToken = cookies.jwt;
+  //---------------------------------------------------------
+  const sql = `select * from STUDENT where RefreshToken = ?`;
+  try {
+    db.all(sql, [RefreshToken], async (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (rows.length === 0) {
+        return res.status(404).json({ message: "No user found" });
+      }
+
+      const foundStudent = rows[0];
+
+      // delete the cookie if the student is already logged out
+      if (!foundStudent) {
+        res.clearCookie("jwt", { httpOnly: true });
+        return res.status(200).json({ message: "Logged out successfully" });
+      }
+
+      //delete the refreshtoken from the database
+      const sql = `update STUDENT set RefreshToken = ? where Email = ?`;
+      db.run(sql, [null, foundStudent.Email], (err) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+      });
+      res.clearCookie("jwt", { httpOnly: true });
+      return res.status(200).json({ message: "Logged out successfully" });
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
 const addStaff = async (req, res) => {
   const { First_name, Last_name, Department, Email, Picture_URL, Password } =
     req.body;
@@ -285,4 +369,6 @@ module.exports = {
   getStaffList,
   addStaff,
   handleStdLogin,
+  handleStdRefreshToken,
+  handleStdLogout,
 };
