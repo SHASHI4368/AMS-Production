@@ -4,6 +4,7 @@ import "../styles/header.css";
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import DropdownButton from "./helpers/DropdownButton";
 
 const Header = () => {
   const [userType, setUserType] = useState(
@@ -63,10 +64,8 @@ const Header = () => {
           <button className="loginbtn" onClick={handleLogoutButton}>
             HOME
           </button>
-          <button className="loginbtn" onClick={handleLogoutButton}>
-            DEPARTMENTS
-          </button>
-          <button className="loginbtn" onClick={handleLogoutButton}>
+          <DropdownButton />
+          <button className="loginbtn" id="appointments" onClick={handleLogoutButton}>
             APPOINTMENTS
           </button>
           <button
