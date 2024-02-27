@@ -11,12 +11,15 @@ const StudentLoginForm = () => {
   const [message, setMessage] = useState("");
   const history = useHistory();
 
+  axios.defaults.withCredentials = true;
+  
   const handleLogin = async (Email, Password) => {
     try {
       const url = `http://localhost:8080/db/student/login`;
       const response = await axios.post(url, { Email, Password });
       console.log(response);
       if (response.data.Status === "Success") {
+      sessionStorage.setItem("authorized", JSON.stringify(true));
         console.log("Login successful");
         history.push("/student/home");
       } else {

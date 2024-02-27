@@ -31,11 +31,18 @@
 }
 
 .buttons button {
-  margin-left: 10px;
+  margin-left: 0;
+  margin-right: 0;
   font-family: "Roboto Slab", serif;
   font-size: 18px;
-  padding: 5px;
-  border: 2px solid #500412;
+  width: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-right: 2px solid #500412;
+  /* border: none; */
+  border-left: none;
+  border-top: none;
+  border-bottom: none;
   color: #500412;
   background-color: #a1cceb;
   transition-property: color, background-color;
@@ -76,4 +83,11 @@
   height: 40px;
 }
 
+#logout-button {
+  border-right: none;
+}
 
+#login-btn {
+  border: 2px solid #500412;
+  margin-left: 15px;
+}

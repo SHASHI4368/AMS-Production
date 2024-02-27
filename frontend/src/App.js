@@ -22,6 +22,30 @@ function App() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [students, setStudents] = useState([]);
   const [staff, setStaff] = useState(null);
+  const [authorized, setAuthorized] = useState(false);
+
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const url = `http://localhost:8080/db/student/refresh`;
+        const response = await axios.get(url, {
+          withCredentials: true,
+        });
+        const accessToken = response.data.accessToken;
+        setAuthorized(true);
+        return accessToken;
+      } catch (err) {
+        setAuthorized(false);
+        sessionStorage.setItem("authorized", JSON.stringify(false));
+        console.log(err);
+      }
+    };
+
+    if (getToken() !== undefined) {
+      setAuthorized(true);
+      sessionStorage.setItem("authorized", JSON.stringify(true));
+    }
+  }, []);
 
   // useEffect(() => {
   //   setStaff(null);
@@ -29,7 +53,7 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
+      <Header/>
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/login/student">

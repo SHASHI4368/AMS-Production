@@ -129,7 +129,7 @@ const handleStdLogin = async (req, res) => {
         maxAge: 1000 * 60 * 60 * 24,
       });
       // res.json({ accessToken: accessToken });
-      return res.json({"Status": "Success"});
+      res.json({"Status": "Success"});
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
