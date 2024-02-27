@@ -27,7 +27,7 @@ dbRouter.delete("/tempUser/:Email", deleteTempUser);
 dbRouter.put("/tempUser", updateVerificationCode);
 dbRouter.get("/staffList", verifyJWT, getStaffList);
 dbRouter.post("/staff", addStaff);
-dbRouter.get("/student/login", handleStdLogin);
+dbRouter.post("/student/login", handleStdLogin);
 dbRouter.get("/student/refresh", handleStdRefreshToken);
 dbRouter.get("/student/logout", handleStdLogout);
 dbRouter.use(verifyJWT);

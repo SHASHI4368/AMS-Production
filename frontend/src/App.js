@@ -15,6 +15,7 @@ import StudentSignUpForm from "./components/StudentSignUpForm";
 import VerificationForm from "./components/VerificationForm";
 import StudentDetailForm from "./components/StudentDetailForm";
 import StaffDetailForm from "./components/StaffDetailForm";
+import StudentHome from "./components/StudentHome";
 
 function App() {
   const [isSignIn, setIsSignIn] = useState(false);
@@ -52,6 +53,7 @@ function App() {
         <Route exact path="/signup/staff/staff-details">
           <StaffDetailForm />
         </Route>
+        <Route exact path="/student/home" component={StudentHome} />
       </Switch>
       <Footer />
     </div>

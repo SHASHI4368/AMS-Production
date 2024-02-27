@@ -1,14 +1,39 @@
 import React from "react";
 import "../styles/leclogin.css";
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
 import Uni from "../resources/University.jpg";
 
 const StudentLoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const history = useHistory();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (Email, Password) => {
+    try {
+      const url = `http://localhost:8080/db/student/login`;
+      const response = await axios.post(url, { Email, Password });
+      console.log(response);
+      if (response.data.Status === "Success") {
+        console.log("Login successful");
+        history.push("/student/home");
+      } else {
+        setMessage("Invalid email or password");
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (email === "" || password === "") {
+      setMessage("Please fill all the fields");
+    } else {
+      handleLogin(email, password);
+    }
   };
 
   return (
@@ -34,9 +59,16 @@ const StudentLoginForm = () => {
             className="password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
           />
-          <button type="submit" className="submit-btn">
+          {message && (
+            <p className="message" style={{ color: "red", fontSize: "15px" }}>
+              {message}
+            </p>
+          )}
+          <button type="submit" className="submit-btn" onClick={handleSubmit}>
             Login
           </button>
           <p>
