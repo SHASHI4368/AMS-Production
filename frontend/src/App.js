@@ -3,8 +3,6 @@ import Header from "./components/Header";
 import Home from "./components/Home";
 import "./index.css";
 import "./styles/home.css";
-import api from "./api/students";
-import Login from "./components/Login";
 import { Route, Switch, useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -16,6 +14,7 @@ import VerificationForm from "./components/VerificationForm";
 import StudentDetailForm from "./components/StudentDetailForm";
 import StaffDetailForm from "./components/StaffDetailForm";
 import StudentHome from "./components/StudentHome";
+import Department from "./components/Department";
 
 function App() {
   const [isSignIn, setIsSignIn] = useState(false);
@@ -23,6 +22,29 @@ function App() {
   const [students, setStudents] = useState([]);
   const [staff, setStaff] = useState(null);
   const [authorized, setAuthorized] = useState(false);
+
+  const [staffList, setStaffList] = useState([]);
+
+  useEffect(() => {
+    const getAllStaff = async () => {
+      try {
+        const url = `http://localhost:8080/db/staffList`;
+        const response = await axios.get(url);
+        setStaffList(response.data);
+        sessionStorage.setItem("staffList", JSON.stringify(response.data));
+      } catch (err) {
+        if (err.response) {
+          console.log(err.response.data.message);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+        } else {
+          console.log(err.message);
+        }
+      }
+    };
+
+    getAllStaff();
+  }, []);
 
   useEffect(() => {
     const getToken = async () => {
@@ -47,13 +69,9 @@ function App() {
     }
   }, []);
 
-  // useEffect(() => {
-  //   setStaff(null);
-  // } ,[]);
-
   return (
     <div className="App">
-      <Header/>
+      <Header />
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/login/student">
@@ -78,6 +96,9 @@ function App() {
           <StaffDetailForm />
         </Route>
         <Route exact path="/student/home" component={StudentHome} />
+        <Route exact path="/student/department">
+          <Department staffList={staffList} />
+        </Route>
       </Switch>
       <Footer />
     </div>

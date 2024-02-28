@@ -1,14 +1,21 @@
 import React from "react";
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
 import "./style.css";
 
 const DropdownButton = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const options = ["DCEE", "DEIE", "DMME", "MENA", "Computer"];
+  const history = useHistory();
 
   const handleOptionSelect = (option) => {
-    setSelectedOption(option);
+    sessionStorage.setItem("department", JSON.stringify(option));
+    history.push("/student/department");
   };
+
+  // useState(() => {
+  //   setSelectedOption(JSON.parse(sessionStorage.getItem("department")));
+  // }, []);
 
   return (
     <div className="dropdown">
