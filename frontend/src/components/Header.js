@@ -29,8 +29,8 @@ const Header = () => {
     sessionStorage.setItem("userType", JSON.stringify(e.target.value));
   };
 
-  const handleLogin = () => {
-    if (JSON.parse(sessionStorage.getItem("userType")) === "Student") {
+  const handleLogin = (option) => {
+    if (option === "Student") {
       history.push("/login/student");
     } else {
       history.push("/login/staff");
@@ -56,6 +56,11 @@ const Header = () => {
     history.push("/login/student");
   };
 
+  const handleDepartmentSelect = (option) => {
+    sessionStorage.setItem("department", JSON.stringify(option));
+    history.push("/student/department");
+  };
+
   return (
     <div className="header">
       <img className="logo" alt="Logo" src={Logo} onClick={navigateHome} />
@@ -64,8 +69,16 @@ const Header = () => {
           <button className="loginbtn" onClick={handleLogoutButton}>
             HOME
           </button>
-          <DropdownButton />
-          <button className="loginbtn" id="appointments" onClick={handleLogoutButton}>
+          <DropdownButton
+            dropdownName="DEPARTMENT"
+            options={["DCEE", "DEIE", "DMME", "MENA", "Computer"]}
+            handleOptionSelect={handleDepartmentSelect}
+          />
+          <button
+            className="loginbtn"
+            id="appointments"
+            onClick={handleLogoutButton}
+          >
             APPOINTMENTS
           </button>
           <button
@@ -79,18 +92,12 @@ const Header = () => {
       )}
       {JSON.parse(sessionStorage.getItem("authorized")) === false && (
         <div className="buttons">
-          <select
-            name="userType"
-            className="user-type"
-            onChange={handleSelect}
-            defaultValue={userType}
-          >
-            <option value="Student">Student</option>
-            <option value="Staff">Staff</option>
-          </select>
-          <button className="loginbtn" id="login-btn" onClick={handleLogin}>
-            LOGIN
-          </button>
+          <DropdownButton
+            dropdownName="LOGIN"
+            options={["Student", "Staff"]}
+            handleOptionSelect={handleLogin}
+            id="loginbtn"
+          />
         </div>
       )}
     </div>

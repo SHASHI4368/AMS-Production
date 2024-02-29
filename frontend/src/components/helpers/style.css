@@ -14,8 +14,7 @@
   margin-right: 0;
   font-family: "Roboto Slab", serif;
   font-size: 18px;
-  min-width: 160px; /* Set min-width instead of width */
-  /* padding-right: 10px; */
+  min-width: 160px;
   border-right: 2px solid #500412;
   border-left: none;
   border-top: none;
@@ -26,6 +25,21 @@
   transition-duration: 0.3s;
   cursor: pointer;
   height: 40px;
+}
+
+#login-dropdown {
+  margin-left: 0;
+  margin-right: 0;
+  font-family: "Roboto Slab", serif;
+  font-size: 18px;
+  min-width: 160px;
+  border: 2px solid #500412;
+  color: #500412;
+  background-color: #a1cceb;
+  transition-property: color, background-color;
+  transition-duration: 0.3s;
+  cursor: pointer;
+  height: 50px;
 }
 
 .dropdown-content {
