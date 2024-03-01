@@ -12,14 +12,29 @@ const StudentLoginForm = () => {
   const history = useHistory();
 
   axios.defaults.withCredentials = true;
-  
+
+  const getRegNumber = async (Email) => {
+    try {
+      const url = `http://localhost:8080/db/student/regnumber/${Email}`;
+      const response = await axios.get(url);
+      console.log(response.data[0].Reg_number);
+      sessionStorage.setItem(
+        "regNumber",
+        JSON.stringify(response.data[0].Reg_number)
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   const handleLogin = async (Email, Password) => {
     try {
       const url = `http://localhost:8080/db/student/login`;
       const response = await axios.post(url, { Email, Password });
       console.log(response);
       if (response.data.Status === "Success") {
-      sessionStorage.setItem("authorized", JSON.stringify(true));
+        sessionStorage.setItem("authorized", JSON.stringify(true));
+        getRegNumber(Email);
         console.log("Login successful");
         history.push("/student/home");
       } else {

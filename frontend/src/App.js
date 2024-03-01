@@ -15,6 +15,7 @@ import StudentDetailForm from "./components/StudentDetailForm";
 import StaffDetailForm from "./components/StaffDetailForm";
 import StudentHome from "./components/StudentHome";
 import Department from "./components/Department";
+import Calendar from "./components/Calendar";
 
 function App() {
   const [isSignIn, setIsSignIn] = useState(false);
@@ -98,6 +99,9 @@ function App() {
         <Route exact path="/student/home" component={StudentHome} />
         <Route exact path="/student/department">
           <Department staffList={staffList} />
+        </Route>
+        <Route exact path="/calendar">
+          <Calendar/>
         </Route>
       </Switch>
       <Footer />
