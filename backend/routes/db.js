@@ -12,6 +12,12 @@ const {
   handleStdLogin,
   handleStdRefreshToken,
   handleStdLogout,
+  addAppointment,
+  getStudentRegNumber,
+  getAppointmentCount,
+  getAllAppointments,
+  getLastAppointment,
+  updateAppointment,
 } = require("../controllers/dbController");
 const dbRouter = require("express").Router();
 
@@ -25,12 +31,18 @@ dbRouter.get("/tempUsers", getAllTempUsers);
 dbRouter.get("/tempUser/:Email", getTempUserByID);
 dbRouter.delete("/tempUser/:Email", deleteTempUser);
 dbRouter.put("/tempUser", updateVerificationCode);
-dbRouter.get("/staffList",getStaffList);
+dbRouter.get("/staffList", getStaffList);
 dbRouter.post("/staff", addStaff);
 dbRouter.post("/student/login", handleStdLogin);
 dbRouter.get("/student/refresh", handleStdRefreshToken);
 dbRouter.get("/student/logout", handleStdLogout);
-dbRouter.use(verifyJWT);
+dbRouter.get("/appointment/count/:Lecturer_mail", getAppointmentCount);
+dbRouter.get("/appointment/last/:Lecturer_mail", getLastAppointment);
+dbRouter.post("/appointment/add", addAppointment);
+dbRouter.get("/appointments/:Lecturer_mail", getAllAppointments);
+dbRouter.get("/student/regnumber/:Email", getStudentRegNumber);
+dbRouter.put("/appointment", updateAppointment);
+// dbRouter.use(verifyJWT);
 
 module.exports = dbRouter;
 
@@ -76,54 +88,21 @@ module.exports = dbRouter;
 //     primary key(Email)
 // );
 
-// create table TIME_TABLE(
-// 	TT_ID int not null,
-//     Lecturer_Mail varchar(50) not null,
-//     primary key (TT_ID),
-//     foreign key(Lecturer_Mail) references LECTURER(Email)
-// );
-
-// create table MONTH(
-// 	M_ID int not null,
-//     MName varchar(15) not null,
-//     Time_table_ID int not null,
-//     MStatus varchar(20) default "Free",
-//     primary key (M_ID),
-//     foreign key(Time_table_ID) references TIME_TABLE(TT_ID)
-// );
-
-// create table DAY(
-// 	D_ID int not null,
-//     DName varchar(15) not null,
-//     Month_ID int not null,
-//     DStatus varchar(20) default "Free",
-//     Date int not null,
-//     primary key (D_ID),
-//     foreign key(Month_ID) references MONTH(M_ID)
-// );
-
-// create table HOUR(
-// 	H_ID int not null,
-//     Start_time time not null,
-//     End_time time not null,
-//     Day_ID int not null,
-//     HStatus varchar(20) default "Free",
-//     primary key (H_ID),
-//     foreign key(Day_ID) references DAY(D_ID)
-// );
-
-// create table APPOINTMENT(
-// 	Apt_ID int not null,
+// const sql = `drop table APPOINTMENT;`
+// const sql = `create table APPOINTMENT(
+// 	   Id int not null,
 //     Lecturer_mail varchar(50) not null,
-//     Hour_ID int not null,
 //     Student_reg varchar(11) not null,
-//     Apt_status varchar(20) default "Not attended",
-//     primary key (Apt_ID),
+//     Subject varchar(200) not null,
+//     Description varchar(500) not null,
+//     StartTime varchar(100) not null,
+//     EndTime varchar(100) not null,
+//     Apt_status varchar(20) default "Pending",
+//     primary key (Id),
 //     foreign key(Lecturer_mail) references LECTURER(Email),
-//     foreign key(Hour_ID) references HOUR(H_ID),
 //     foreign key(Student_reg) references STUDENT(Reg_number)
-// );
-// `;
+// );`
+//
 
 // const sqlite = require("sqlite3").verbose();
 

@@ -136,6 +136,23 @@ const handleStdLogin = async (req, res) => {
   }
 };
 
+const getStudentRegNumber = (req, res) => {
+  const { Email } = req.params;
+  const sql = `select Reg_number from STUDENT where Email = ?`;
+  try {
+    db.all(sql, [Email], (err, rows) => {
+      if (err) {
+        res.status(500).json(err.message);
+        res.send(400).json(err.message);
+      } else {
+        return res.json(rows);
+      }
+    });
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
 const handleStdRefreshToken = async (req, res) => {
   const cookies = req.cookies;
   if (!cookies.jwt) {
@@ -359,6 +376,114 @@ const deleteTempUser = (req, res) => {
   }
 };
 
+
+const getAppointmentCount = (req, res) => {
+  const { Lecturer_mail } = req.params;
+  const sql = `select count(*) from APPOINTMENT where Lecturer_mail = ?`;
+  try {
+    db.all(sql, [Lecturer_mail], (err, rows) => {
+      if (err) {
+        res.status(500).json(err.message);
+        res.send(400).json(err.message);
+      } else {
+        return res.json(rows);
+      }
+    });
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
+const getLastAppointment = (req, res) => {
+  const { Lecturer_mail } = req.params;
+  const sql = `select * from APPOINTMENT where Lecturer_mail = ? order by Id desc limit 1`;
+  try {
+    db.all(sql, [Lecturer_mail], (err, rows) => {
+      if (err) {
+        res.status(500).json(err.message);
+        res.send(400).json(err.message);
+      } else {
+        return res.json(rows);
+      }
+    });
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
+
+const addAppointment = (req, res) => {
+  const {
+    Id,
+    Lecturer_mail,
+    Student_reg,
+    Subject,
+    Description,
+    StartTime,
+    EndTime,
+    Apt_status,
+  } = req.body;
+  const sql = `insert into APPOINTMENT(Id, Lecturer_mail, Student_reg, Subject, Description, StartTime, EndTime, Apt_status) values(?,?,?,?,?,?,?,?)`;
+  try {
+    db.run(
+      sql,
+      [Id, Lecturer_mail, Student_reg, Subject, Description, StartTime, EndTime, Apt_status],
+      (err) => {
+        if (err) {
+          res.status(500).json(err.message);
+          res.send(400).json(err.message);
+        } else {
+          return res.json({
+            message: "Appointment added successfully",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+}
+
+const getAllAppointments = (req, res) => {
+  const { Lecturer_mail } = req.params;
+  const sql = `select * from APPOINTMENT where Lecturer_mail = ?`;
+  try {
+    db.all(sql, [Lecturer_mail], (err, rows) => {
+      if (err) {
+        res.status(500).json(err.message);
+        res.send(400).json(err.message);
+      } else {
+        return res.json(rows);
+      }
+    });
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
+const updateAppointment = (req, res) => {
+  const { Id, Subject, Description, StartTime, EndTime, Apt_status } = req.body;
+  const sql = `update APPOINTMENT set Subject = ?, Description = ?, StartTime = ?, EndTime = ?, Apt_status = ? where Id = ?`;
+  try {
+    db.run(
+      sql,
+      [Subject, Description, StartTime, EndTime, Apt_status ,Id],
+      (err) => {
+        if (err) {
+          res.status(500).json(err.message);
+          res.send(400).json(err.message);
+        } else {
+          return res.json({
+            message: "Appointment updated successfully",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
 module.exports = {
   getStudents,
   addStudent,
@@ -373,4 +498,10 @@ module.exports = {
   handleStdLogin,
   handleStdRefreshToken,
   handleStdLogout,
+  addAppointment,
+  getStudentRegNumber,
+  getAppointmentCount,
+  getAllAppointments,
+  getLastAppointment,
+  updateAppointment,
 };
