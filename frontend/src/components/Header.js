@@ -31,8 +31,10 @@ const Header = () => {
 
   const handleLogin = (option) => {
     if (option === "Student") {
+      sessionStorage.setItem("userType", JSON.stringify("Student"));
       history.push("/login/student");
     } else {
+      sessionStorage.setItem("userType", JSON.stringify("Staff"));
       history.push("/login/staff");
     }
   };

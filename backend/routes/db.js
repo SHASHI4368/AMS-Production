@@ -18,6 +18,7 @@ const {
   getAllAppointments,
   getLastAppointment,
   updateAppointment,
+  deleteAppointment,
 } = require("../controllers/dbController");
 const dbRouter = require("express").Router();
 
@@ -42,6 +43,7 @@ dbRouter.post("/appointment/add", addAppointment);
 dbRouter.get("/appointments/:Lecturer_mail", getAllAppointments);
 dbRouter.get("/student/regnumber/:Email", getStudentRegNumber);
 dbRouter.put("/appointment", updateAppointment);
+dbRouter.delete("/appointment/:Id", deleteAppointment);
 // dbRouter.use(verifyJWT);
 
 module.exports = dbRouter;

@@ -376,7 +376,6 @@ const deleteTempUser = (req, res) => {
   }
 };
 
-
 const getAppointmentCount = (req, res) => {
   const { Lecturer_mail } = req.params;
   const sql = `select count(*) from APPOINTMENT where Lecturer_mail = ?`;
@@ -410,7 +409,6 @@ const getLastAppointment = (req, res) => {
     res.status(500).json(err.message);
   }
 };
-
 
 const addAppointment = (req, res) => {
   const {
@@ -484,6 +482,25 @@ const updateAppointment = (req, res) => {
   }
 };
 
+const deleteAppointment = (req, res) => {
+  const { Id } = req.params;
+  const sql = `delete from APPOINTMENT where Id = ?`;
+  try {
+    db.run(sql, [Id], (err) => {
+      if (err) {
+        res.status(500).json(err.message);
+        res.send(400).json(err.message);
+      } else {
+        return res.json({
+          message: "Appointment deleted successfully",
+        });
+      }
+    });
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
 module.exports = {
   getStudents,
   addStudent,
@@ -504,4 +521,5 @@ module.exports = {
   getAllAppointments,
   getLastAppointment,
   updateAppointment,
+  deleteAppointment,
 };

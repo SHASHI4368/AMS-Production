@@ -4,6 +4,7 @@ import axios from "axios";
 import {
   Inject,
   ScheduleComponent,
+  ButtonComponent,
   Day,
   Week,
   Month,
@@ -19,6 +20,17 @@ import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { L10n } from "@syncfusion/ej2-base";
 
+L10n.load({
+  "en-US": {
+    schedule: {
+      saveButton: "Add",
+      cancelButton: "Close",
+      deleteButton: "Remove",
+      newEvent: "Add Event",
+    },
+  },
+});
+
 const Calendar = () => {
   const [selectedStaff, setSelectedStaff] = useState(
     JSON.parse(sessionStorage.getItem("selectedStaff"))
@@ -32,6 +44,7 @@ const Calendar = () => {
   });
 
   const [selectedAptId, setSelectedAptId] = useState(0);
+  const [deleteApt, setDeleteApt] = useState(false);
 
   const getDepName = () => {
     const dep = JSON.parse(sessionStorage.getItem("department"));
@@ -203,8 +216,12 @@ const Calendar = () => {
     try {
       const url = `http://localhost:8080/db/appointment/last/${Lecturer_mail}`;
       const response = await axios.get(url);
-      console.log(response.data.Id);
-      return response.data[0].Id;
+      console.log(response.data);
+      if (response.data.length === 0) {
+        return 1;
+      } else {
+        return response.data[0].Id;
+      }
     } catch (err) {
       console.log(err);
     }
@@ -234,21 +251,24 @@ const Calendar = () => {
   };
 
   const onPopupClose = async (e) => {
+    console.log(e.type);
     if (e.data != null) {
-      if (
+      if (e.type === "DeleteAlert") {
+        deleteAppointment(selectedAptId);
+      } else if (
         e.data.Subject !== "No title is provided" &&
         selectedAptId === undefined
       ) {
         const lastId = await getLastAppointment(selectedStaff.Email);
         addAppointment(
-          lastId + 1,
+          lastId +1,
           selectedStaff.Email,
           JSON.parse(sessionStorage.getItem("regNumber")),
           e.data.Subject,
           e.data.Description,
           e.data.StartTime,
           e.data.EndTime,
-          "Requested"
+          e.data.EventType
         );
       } else if (
         e.data.Subject !== "No title is provided" &&
@@ -264,11 +284,23 @@ const Calendar = () => {
           selectedAptId
         );
       }
+    } else {
+      console.log(true);
     }
   };
 
   const onPopupOpen = (e) => {
     setSelectedAptId(e.data.Id);
+  };
+
+  const deleteAppointment = async (Id) => {
+    try {
+      const url = `http://localhost:8080/db/appointment/${Id}`;
+      const response = await axios.delete(url);
+      console.log(response.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

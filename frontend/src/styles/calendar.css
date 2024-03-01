@@ -47,4 +47,10 @@
 .calendar {
   margin: 10px;
   border: 2px solid #86898b;
+  min-height: 100vh;
+}
+
+.box {
+  position: absolute;
+  z-index: 10;
 }
