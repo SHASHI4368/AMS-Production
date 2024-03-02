@@ -394,10 +394,9 @@ const getAppointmentCount = (req, res) => {
 };
 
 const getLastAppointment = (req, res) => {
-  const { Lecturer_mail } = req.params;
-  const sql = `select * from APPOINTMENT where Lecturer_mail = ? order by Id desc limit 1`;
+  const sql = `select * from APPOINTMENT order by Id desc limit 1`;
   try {
-    db.all(sql, [Lecturer_mail], (err, rows) => {
+    db.all(sql, (err, rows) => {
       if (err) {
         res.status(500).json(err.message);
         res.send(400).json(err.message);

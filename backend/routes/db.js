@@ -38,7 +38,7 @@ dbRouter.post("/student/login", handleStdLogin);
 dbRouter.get("/student/refresh", handleStdRefreshToken);
 dbRouter.get("/student/logout", handleStdLogout);
 dbRouter.get("/appointment/count/:Lecturer_mail", getAppointmentCount);
-dbRouter.get("/appointment/last/:Lecturer_mail", getLastAppointment);
+dbRouter.get("/appointment/last", getLastAppointment);
 dbRouter.post("/appointment/add", addAppointment);
 dbRouter.get("/appointments/:Lecturer_mail", getAllAppointments);
 dbRouter.get("/student/regnumber/:Email", getStudentRegNumber);

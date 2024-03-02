@@ -44,7 +44,6 @@ const Calendar = () => {
   });
 
   const [selectedAptId, setSelectedAptId] = useState(0);
-  const [deleteApt, setDeleteApt] = useState(false);
 
   const getDepName = () => {
     const dep = JSON.parse(sessionStorage.getItem("department"));
@@ -102,10 +101,32 @@ const Calendar = () => {
     setSelectedAptId(e.data.Id);
   };
 
+  const onDragStop = (e) => {
+   updateAppointment(
+     e.data.Subject,
+     e.data.Description,
+     e.data.StartTime,
+     e.data.EndTime,
+     e.data.EventType,
+     selectedAptId
+   );
+  };
+
   const onResizeStart = (e) => {
     e.interval = 10;
     setSelectedAptId(e.data.Id);
   };
+
+  const onResizeStop = (e) => {
+   updateAppointment(
+     e.data.Subject,
+     e.data.Description,
+     e.data.StartTime,
+     e.data.EndTime,
+     e.data.EventType,
+     selectedAptId
+   );
+  }
 
   const ediitorWindowTemplate = (e) => {
     return (
@@ -214,7 +235,7 @@ const Calendar = () => {
 
   const getLastAppointment = async (Lecturer_mail) => {
     try {
-      const url = `http://localhost:8080/db/appointment/last/${Lecturer_mail}`;
+      const url = `http://localhost:8080/db/appointment/last`;
       const response = await axios.get(url);
       console.log(response.data);
       if (response.data.length === 0) {
@@ -252,6 +273,7 @@ const Calendar = () => {
 
   const onPopupClose = async (e) => {
     console.log(e.type);
+    console.log(e.data);
     if (e.data != null) {
       if (e.type === "DeleteAlert") {
         deleteAppointment(selectedAptId);
@@ -260,6 +282,7 @@ const Calendar = () => {
         selectedAptId === undefined
       ) {
         const lastId = await getLastAppointment(selectedStaff.Email);
+        console.log(lastId);
         addAppointment(
           lastId +1,
           selectedStaff.Email,
@@ -271,9 +294,9 @@ const Calendar = () => {
           e.data.EventType
         );
       } else if (
-        e.data.Subject !== "No title is provided" &&
+        e.data !== null &&
         selectedAptId !== undefined &&
-        e.data.Description !== undefined
+        e.type === "Editor"
       ) {
         updateAppointment(
           e.data.Subject,
@@ -327,9 +350,9 @@ const Calendar = () => {
           currentView="Month"
           eventSettings={appointments}
           dragStart={onDragStart}
-          dragStop={onPopupClose}
+          dragStop={onDragStop}
           resizeStart={onResizeStart}
-          resizeStop={onPopupClose}
+          resizeStop={onResizeStop}
           editorTemplate={ediitorWindowTemplate}
           popupClose={onPopupClose}
           popupOpen={onPopupOpen}
