@@ -5,6 +5,7 @@ const passport = require('passport');
 const cookieSession = require('cookie-session');
 const passportStrategy = require("./passport");
 const authRoute = require("./routes/auth");
+const loginRoute = require("./routes/login");
 const mailRouter = require("./routes/mail");
 const dbRouter = require("./routes/db");
 const bodyParser = require("body-parser");
@@ -25,6 +26,15 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get("/clearCookies", (req, res) => {
+  // Clear 'session' cookie
+  res.clearCookie("session");
+  // Clear 'session.sig' cookie
+  res.clearCookie("session.sig");
+
+  res.send("Cookies cleared successfully.");
+});
+
 app.use(
  cors({
   origin: 'http://localhost:3000', // <-- location of the react app were connecting to
@@ -33,9 +43,19 @@ app.use(
  })
 );
 
+app.use('/login', loginRoute);
 app.use('/auth', authRoute);
 app.use('/mail', mailRouter);
 app.use('/db', dbRouter);
+
+app.get("/clearCookies", (req, res) => {
+  // Clear 'session' cookie
+  res.clearCookie("session");
+  // Clear 'session.sig' cookie
+  res.clearCookie("session.sig");
+
+  res.send("Cookies cleared successfully.");
+});
 
 app.get('/db/students', (req, res) => {
   const sql = `select * from STUDENT`;

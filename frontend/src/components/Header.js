@@ -24,11 +24,6 @@ const Header = () => {
     history.push("/");
   };
 
-  const handleSelect = (e) => {
-    setUserType(e.target.value);
-    sessionStorage.setItem("userType", JSON.stringify(e.target.value));
-  };
-
   const handleLogin = (option) => {
     if (option === "Student") {
       sessionStorage.setItem("userType", JSON.stringify("Student"));
@@ -39,7 +34,7 @@ const Header = () => {
     }
   };
 
-  const handleLogout = async () => {
+  const handleStdLogout = async () => {
     try {
       const url = `http://localhost:8080/db/student/logout`;
       const response = await axios.get(url, {
@@ -52,10 +47,28 @@ const Header = () => {
     }
   };
 
+  const handleStaffLogout = async () => {
+    try {
+      const url = `http://localhost:8080/auth/logout`;
+      await axios.get(url, {
+        withCredentials: true,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleLogoutButton = () => {
-    handleLogout();
-    sessionStorage.setItem("authorized", JSON.stringify(false));
-    history.push("/login/student");
+    if (userType === "Staff") {
+      handleStaffLogout();
+      sessionStorage.setItem("authorized", JSON.stringify(false));
+      sessionStorage.setItem("selectedStaffEmail", JSON.stringify(""));
+      history.push("/login/staff");
+    } else {
+      handleStdLogout();
+      sessionStorage.setItem("authorized", JSON.stringify(false));
+      history.push("/login/student");
+    }
   };
 
   const handleDepartmentSelect = (option) => {
@@ -66,32 +79,47 @@ const Header = () => {
   return (
     <div className="header">
       <img className="logo" alt="Logo" src={Logo} onClick={navigateHome} />
-      {JSON.parse(sessionStorage.getItem("authorized")) === true && (
-        <div className="buttons">
-          <button className="loginbtn" onClick={handleLogoutButton}>
-            HOME
-          </button>
-          <DropdownButton
-            dropdownName="DEPARTMENT"
-            options={["DCEE", "DEIE", "DMME", "MENA", "Computer"]}
-            handleOptionSelect={handleDepartmentSelect}
-          />
-          <button
-            className="loginbtn"
-            id="appointments"
-            onClick={handleLogoutButton}
-          >
-            APPOINTMENTS
-          </button>
-          <button
-            className="loginbtn"
-            id="logout-button"
-            onClick={handleLogoutButton}
-          >
-            LOGOUT
-          </button>
-        </div>
-      )}
+      {JSON.parse(sessionStorage.getItem("authorized")) === true &&
+        JSON.parse(sessionStorage.getItem("userType")) === "Student" && (
+          <div className="buttons">
+            <button className="loginbtn" onClick={handleLogoutButton}>
+              HOME
+            </button>
+            <DropdownButton
+              dropdownName="DEPARTMENT"
+              options={["DCEE", "DEIE", "DMME", "MENA", "Computer"]}
+              handleOptionSelect={handleDepartmentSelect}
+            />
+            <button className="loginbtn" id="appointments">
+              APPOINTMENTS
+            </button>
+            <button
+              className="loginbtn"
+              id="logout-button"
+              onClick={handleLogoutButton}
+            >
+              LOGOUT
+            </button>
+          </div>
+        )}
+      {JSON.parse(sessionStorage.getItem("authorized")) === true &&
+        JSON.parse(sessionStorage.getItem("userType")) === "Staff" && (
+          <div className="buttons">
+            <button className="loginbtn" onClick={handleLogoutButton}>
+              HOME
+            </button>
+            <button className="loginbtn" id="appointments">
+              APPOINTMENTS
+            </button>
+            <button
+              className="loginbtn"
+              id="logout-button"
+              onClick={handleLogoutButton}
+            >
+              LOGOUT
+            </button>
+          </div>
+        )}
       {JSON.parse(sessionStorage.getItem("authorized")) === false && (
         <div className="buttons">
           <DropdownButton

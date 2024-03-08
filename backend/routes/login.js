@@ -1,6 +1,6 @@
 const router = require("express").Router();
 require("dotenv").config();
-require('../passport');
+require("../passport");
 const passport = require("passport");
 
 router.get("/login/success", (req, res) => {
@@ -27,11 +27,10 @@ router.get("/google", passport.authenticate("google", ["profile", "email"]));
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    successRedirect: `${process.env.CLIENT_URL}/signup/staff`,
+    successRedirect: `${process.env.CLIENT_URL}/login/staff`,
     failureRedirect: "/login/failed",
   })
 );
-
 
 router.get("/logout", (req, res) => {
   req.logout();

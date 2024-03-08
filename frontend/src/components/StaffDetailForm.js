@@ -14,7 +14,7 @@ const StaffDetailForm = () => {
   const [password, setPassword] = useState("");
   const [img, setImg] = useState("");
   const [message, setMessage] = useState("");
-
+  const defaultImg = "https://www.w3schools.com/howto/img_avatar.png";
   const history = useHistory();
 
   useEffect(() => {
@@ -94,7 +94,14 @@ const StaffDetailForm = () => {
       setMessage("Email is required");
     } else {
       deleteTempUser(email);
-      addStaff(fName, lName, department, email, img, password);
+      addStaff(
+        fName,
+        lName,
+        department,
+        email,
+        img !== "" ? img : defaultImg,
+        password
+      );
     }
   };
 
@@ -106,14 +113,26 @@ const StaffDetailForm = () => {
       <div className="detail-form">
         <form className="detail-form">
           <h2>SIGN UP</h2>
-          <label htmlFor="name">name</label>
-          <input
-            type="text"
-            className="name"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+          <div className="std-name">
+            <input
+              type="text"
+              className="Fname"
+              placeholder="First Name"
+              value={fName}
+              onChange={(e) => {
+                setFName(e.target.value);
+              }}
+            />
+            <input
+              type="text"
+              className="Lname"
+              placeholder="Last Name"
+              value={lName}
+              onChange={(e) => {
+                setLName(e.target.value);
+              }}
+            />
+          </div>
           <label htmlFor="department">Department</label>
           <select
             name="department"
@@ -121,7 +140,7 @@ const StaffDetailForm = () => {
             onChange={(e) => setDepartment(e.target.value)}
           >
             <option value="DEIE">DEIE</option>
-            <option value="CEE">CEE</option>
+            <option value="DCEE">CEE</option>
             <option value="DMME">DMME</option>
             <option value="MENA">MENA</option>
             <option value="Computer">Computer</option>

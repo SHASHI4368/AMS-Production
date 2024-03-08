@@ -43,6 +43,23 @@ const getStaffList = (req, res) => {
   }
 };
 
+const getStaffPassword = (req, res) => {
+  const { Email } = req.params;
+  const sql = `select Original_password from LECTURER where Email = ?`;
+  try {
+    db.all(sql, [Email], (err, rows) => {
+      if (err) {
+        res.status(500).json(err.message);
+        res.send(400).json(err.message);
+      } else {
+        return res.json(rows);
+      }
+    });
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
 const addStudent = async (req, res) => {
   const {
     Reg_number,
@@ -129,12 +146,69 @@ const handleStdLogin = async (req, res) => {
         maxAge: 1000 * 60 * 60 * 24,
       });
       // res.json({ accessToken: accessToken });
-      res.json({"Status": "Success"});
+      res.json({ Status: "Success" });
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
 };
+
+const handleStaffLogin = async (req, res) => {
+  const { Email, Original_password } = req.body;
+  const sql = `select * from LECTURER where Email = ?`;
+
+  try {
+    db.all(sql, [Email], async (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (rows.length === 0) {
+        return res.status(404).json({ message: "No user found" });
+      }
+
+      const foundStaff = rows[0];
+      const isMatch = await bcrypt.compare(
+        Original_password,
+        foundStaff.Password
+      );
+
+      if (!isMatch) {
+        return res.json({ message: "Invalid credentials" });
+      }
+
+      // Create JWT token
+      const accessToken = jwt.sign(
+        { Email: foundStaff.Email },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "60s" }
+      );
+      const refreshToken = jwt.sign(
+        { Email: foundStaff.Email },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: "1d" }
+      );
+
+      const sql = `update LECTURER set RefreshToken = ? where Email = ?`;
+      db.run(sql, [refreshToken, Email], (err) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+      });
+      res.cookie("jwt", refreshToken, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+        maxAge: 1000 * 60 * 60 * 24,
+      });
+      // res.json({ accessToken: accessToken });
+      res.json({ Status: "Success" });
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+
+}
 
 const getStudentRegNumber = (req, res) => {
   const { Email } = req.params;
@@ -237,15 +311,65 @@ const handleStdLogout = async (req, res) => {
   }
 };
 
+const handleStaffLogout = async (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies.jwt) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const RefreshToken = cookies.jwt;
+  //---------------------------------------------------------
+  const sql = `select * from LECTURER where RefreshToken = ?`;
+  try {
+    db.all(sql, [RefreshToken], async (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (rows.length === 0) {
+        return res.status(404).json({ message: "No user found" });
+      }
+
+      const foundStaff = rows[0];
+
+      // delete the cookie if the staff is already logged out
+      if (!foundStaff) {
+        res.clearCookie("jwt", { httpOnly: true });
+        return res.status(200).json({ message: "Logged out successfully" });
+      }
+
+      //delete the refreshtoken from the database
+      const sql = `update LECTURER set RefreshToken = ? where Email = ?`;
+      db.run(sql, [null, foundStaff.Email], (err) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+      });
+      res.clearCookie("jwt", { httpOnly: true });
+      return res.status(200).json({ message: "Logged out successfully" });
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+
+}
+
 const addStaff = async (req, res) => {
-  const { First_name, Last_name, Department, Email, Picture_URL, Password } =
+  const { First_name, Last_name, Department, Email, Picture_URL, Password} =
     req.body;
-  const sql = `insert into LECTURER(First_name, Last_name, Department, Email, Picture_URL, Password) values(?,?,?,?,?,?)`;
+  const sql = `insert into LECTURER(First_name, Last_name, Department, Email, Picture_URL, Password, Original_password) values(?,?,?,?,?,?,?)`;
   try {
     const hashedPassword = await bcrypt.hash(Password, 10);
     db.run(
       sql,
-      [First_name, Last_name, Department, Email, Picture_URL, hashedPassword],
+      [
+        First_name,
+        Last_name,
+        Department,
+        Email,
+        Picture_URL,
+        hashedPassword,
+        Password,
+      ],
       (err) => {
         if (err) {
           res.status(500).json(err.message);
@@ -257,6 +381,23 @@ const addStaff = async (req, res) => {
         }
       }
     );
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
+const getStaffByEmail = (req, res) => {
+  const { Email } = req.params;
+  const sql = `select * from LECTURER where Email = ?`;
+  try {
+    db.all(sql, [Email], (err, rows) => {
+      if (err) {
+        res.status(500).json(err.message);
+        res.send(400).json(err.message);
+      } else {
+        return res.json(rows);
+      }
+    });
   } catch (err) {
     res.status(500).json(err.message);
   }
@@ -424,7 +565,16 @@ const addAppointment = (req, res) => {
   try {
     db.run(
       sql,
-      [Id, Lecturer_mail, Student_reg, Subject, Description, StartTime, EndTime, Apt_status],
+      [
+        Id,
+        Lecturer_mail,
+        Student_reg,
+        Subject,
+        Description,
+        StartTime,
+        EndTime,
+        Apt_status,
+      ],
       (err) => {
         if (err) {
           res.status(500).json(err.message);
@@ -439,7 +589,7 @@ const addAppointment = (req, res) => {
   } catch (err) {
     res.status(500).json(err.message);
   }
-}
+};
 
 const getAllAppointments = (req, res) => {
   const { Lecturer_mail } = req.params;
@@ -464,7 +614,7 @@ const updateAppointment = (req, res) => {
   try {
     db.run(
       sql,
-      [Subject, Description, StartTime, EndTime, Apt_status ,Id],
+      [Subject, Description, StartTime, EndTime, Apt_status, Id],
       (err) => {
         if (err) {
           res.status(500).json(err.message);
@@ -521,4 +671,8 @@ module.exports = {
   getLastAppointment,
   updateAppointment,
   deleteAppointment,
+  handleStaffLogin,
+  getStaffByEmail,
+  handleStaffLogout,
+  getStaffPassword,
 };

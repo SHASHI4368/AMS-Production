@@ -5,7 +5,8 @@ import { FaGoogle } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 
-const StaffSignUpForm = ({ staff, setStaff }) => {
+const StaffSignUpForm = () => {
+  const [staff, setStaff] = useState(null);
   const [allStaff, setAllStaff] = useState([]);
   const [message, setMessage] = useState("");
   const [tempUsers, setTempUsers] = useState([]);
@@ -16,10 +17,28 @@ const StaffSignUpForm = ({ staff, setStaff }) => {
   const history = useHistory();
 
   useEffect(() => {
+    const clearCookies = async () => {
+      try {
+        const url = `http://localhost:8080/clearCookies`;
+        const response = await axios.get(url, { withCredentials: true });
+        if (response.ok) {
+          console.log("Cookies cleared successfully");
+        } else {
+          console.error("Failed to clear cookies");
+        }
+      } catch (error) {
+        console.error("Error clearing cookies:", error);
+      }
+    };
+
     const getStaff = async () => {
       try {
         const url = `http://localhost:8080/auth/login/success`;
         const { data } = await axios.get(url, { withCredentials: true });
+        sessionStorage.setItem(
+          "staffEmail",
+          JSON.stringify(data.user._json.email)
+        );
         setStaff(data.user._json);
         setPicture(data.user._json.picture);
         setFName(data.user._json.given_name);
@@ -30,13 +49,33 @@ const StaffSignUpForm = ({ staff, setStaff }) => {
       }
     };
 
-    setStaff(null);
     getStaff();
+    clearCookies();
   }, []);
 
   useEffect(() => {
     setStaffEmail(staff ? staff.email : "");
   }, [staff]);
+
+  useEffect(() => {
+    const checkStaffIsThere = async () => {
+      try {
+        const url = `http://localhost:8080/db/staff/${JSON.parse(
+          sessionStorage.getItem("staffEmail")
+        )}`;
+        const response = await axios.get(url);
+        if (response.data[0] !== undefined) {
+          sessionStorage.setItem("selectedStaffEmail", JSON.stringify(response.data[0].Email));
+          sessionStorage.setItem("staffEmail", JSON.stringify(""));
+          history.push("/login/staff");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    checkStaffIsThere();
+  });
 
   const handleGoogleAuth = (e) => {
     e.preventDefault();
@@ -157,32 +196,32 @@ const StaffSignUpForm = ({ staff, setStaff }) => {
       <div className="back-img">
         <img src={Uni} />
       </div>
-    <div className="signup-form">
-      <form className="signup-form">
-        <h2>SIGN UP</h2>
-        <label htmlFor="email">Email</label>
-        <input
-          type="email"
-          className="email"
-          placeholder="Faculty Email"
-          Value={staffEmail ? staffEmail : " "}
-          onChange={(e) => setStaffEmail(e.target.value)}
-        />
-        {message && (
-          <p className="message" style={{ color: "red", fontSize: "15px" }}>
-            {message}
-          </p>
-        )}
-        <button type="submit" className="submit-btn" onClick={handleSubmit}>
-          Continue
-        </button>
-        <p>Or</p>
-        <button className="google-btn" onClick={handleGoogleAuth}>
-          <FaGoogle className="google-icon" />
-          <p>CONTINUE WITH GOOGLE</p>
-        </button>
-      </form>
-    </div>
+      <div className="signup-form">
+        <form className="signup-form">
+          <h2>SIGN UP</h2>
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            className="email"
+            placeholder="Faculty Email"
+            Value={staffEmail ? staffEmail : " "}
+            onChange={(e) => setStaffEmail(e.target.value)}
+          />
+          {message && (
+            <p className="message" style={{ color: "red", fontSize: "15px" }}>
+              {message}
+            </p>
+          )}
+          <button type="submit" className="submit-btn" onClick={handleSubmit}>
+            Continue
+          </button>
+          <p>Or</p>
+          <button className="google-btn" onClick={handleGoogleAuth}>
+            <FaGoogle className="google-icon" />
+            <p>CONTINUE WITH GOOGLE</p>
+          </button>
+        </form>
+      </div>
     </main>
   );
 };

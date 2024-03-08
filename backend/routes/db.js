@@ -19,6 +19,10 @@ const {
   getLastAppointment,
   updateAppointment,
   deleteAppointment,
+  handleStaffLogin,
+  getStaffByEmail,
+  handleStaffLogout,
+  getStaffPassword,
 } = require("../controllers/dbController");
 const dbRouter = require("express").Router();
 
@@ -35,6 +39,8 @@ dbRouter.put("/tempUser", updateVerificationCode);
 dbRouter.get("/staffList", getStaffList);
 dbRouter.post("/staff", addStaff);
 dbRouter.post("/student/login", handleStdLogin);
+dbRouter.post("/staff/login", handleStaffLogin);
+dbRouter.get("staff/logout", handleStaffLogout);
 dbRouter.get("/student/refresh", handleStdRefreshToken);
 dbRouter.get("/student/logout", handleStdLogout);
 dbRouter.get("/appointment/count/:Lecturer_mail", getAppointmentCount);
@@ -44,6 +50,8 @@ dbRouter.get("/appointments/:Lecturer_mail", getAllAppointments);
 dbRouter.get("/student/regnumber/:Email", getStudentRegNumber);
 dbRouter.put("/appointment", updateAppointment);
 dbRouter.delete("/appointment/:Id", deleteAppointment);
+dbRouter.get("/staff/:Email", getStaffByEmail);
+dbRouter.get("/staff/password/:Email", getStaffPassword);
 // dbRouter.use(verifyJWT);
 
 module.exports = dbRouter;
@@ -54,6 +62,7 @@ module.exports = dbRouter;
 // const sql = `alter table LECTURER add column Password varchar(100) not null;`;
 // const sql = `alter table STUDENT drop column RefreshToken;`;
 // const sql = `alter table STUDENT add column RefreshToken varchar(100);`;
+// const sql = `alter table LECTURER add column RefreshToken varchar(100);`;
 
 // const sql = `
 
@@ -107,6 +116,8 @@ module.exports = dbRouter;
 //
 
 // const sqlite = require("sqlite3").verbose();
+
+// const sql = `alter table LECTURER add column Original_password varchar(100) not null;`;
 
 // const db = new sqlite.Database("./ams.db", sqlite.OPEN_READWRITE, (err) => {
 //   if (err) {

@@ -16,12 +16,10 @@ import StaffDetailForm from "./components/StaffDetailForm";
 import StudentHome from "./components/StudentHome";
 import Department from "./components/Department";
 import Calendar from "./components/Calendar";
+import StaffHome from "./components/StaffHome";
 
 function App() {
-  const [isSignIn, setIsSignIn] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [students, setStudents] = useState([]);
-  const [staff, setStaff] = useState(null);
+  
   const [authorized, setAuthorized] = useState(false);
 
   const [staffList, setStaffList] = useState([]);
@@ -58,15 +56,15 @@ function App() {
         setAuthorized(true);
         return accessToken;
       } catch (err) {
-        setAuthorized(false);
-        sessionStorage.setItem("authorized", JSON.stringify(false));
+        // setAuthorized(false);
+        // sessionStorage.setItem("authorized", JSON.stringify(false));
         console.log(err);
       }
     };
 
     if (getToken() !== undefined) {
       setAuthorized(true);
-      sessionStorage.setItem("authorized", JSON.stringify(true));
+      // sessionStorage.setItem("authorized", JSON.stringify(true));
     }
   }, []);
 
@@ -82,7 +80,7 @@ function App() {
           <StaffLoginForm />
         </Route>
         <Route exact path="/signup/staff">
-          <StaffSignUpForm staff={staff} setStaff={setStaff} />
+          <StaffSignUpForm />
         </Route>
         <Route exact path="/signup/student">
           <StudentSignUpForm />
@@ -101,7 +99,10 @@ function App() {
           <Department staffList={staffList} />
         </Route>
         <Route exact path="/calendar">
-          <Calendar/>
+          <Calendar />
+        </Route>
+        <Route exact path="/staff/home">
+          <StaffHome />
         </Route>
       </Switch>
       <Footer />
