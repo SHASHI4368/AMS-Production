@@ -99,13 +99,17 @@ module.exports = dbRouter;
 //     primary key(Email)
 // );
 
+
+
+// const sqlite = require("sqlite3").verbose();
+
 // const sql = `drop table APPOINTMENT;`
 // const sql = `create table APPOINTMENT(
 // 	   Id int not null,
 //     Lecturer_mail varchar(50) not null,
-//     Student_reg varchar(11) not null,
-//     Subject varchar(200) not null,
-//     Description varchar(500) not null,
+//     Student_reg varchar(11),
+//     Subject varchar(200),
+//     Description varchar(500),
 //     StartTime varchar(100) not null,
 //     EndTime varchar(100) not null,
 //     Apt_status varchar(20) default "Pending",
@@ -113,11 +117,7 @@ module.exports = dbRouter;
 //     foreign key(Lecturer_mail) references LECTURER(Email),
 //     foreign key(Student_reg) references STUDENT(Reg_number)
 // );`
-//
 
-// const sqlite = require("sqlite3").verbose();
-
-// const sql = `alter table LECTURER add column Original_password varchar(100) not null;`;
 
 // const db = new sqlite.Database("./ams.db", sqlite.OPEN_READWRITE, (err) => {
 //   if (err) {

@@ -15,6 +15,9 @@ const Header = () => {
     if (sessionStorage.getItem("userType") === null) {
       sessionStorage.setItem("userType", JSON.stringify("Student"));
     }
+    if (sessionStorage.getItem("authorized") === null) {
+      sessionStorage.setItem("authorized", JSON.stringify(false));
+    }
     console.log(JSON.parse(sessionStorage.getItem("authorized")));
   }, []);
 
@@ -67,6 +70,7 @@ const Header = () => {
     } else {
       handleStdLogout();
       sessionStorage.setItem("authorized", JSON.stringify(false));
+      sessionStorage.setItem("regNumber", JSON.stringify(""));
       history.push("/login/student");
     }
   };
@@ -75,6 +79,11 @@ const Header = () => {
     sessionStorage.setItem("department", JSON.stringify(option));
     history.push("/student/department");
   };
+
+  const handleStaffCalendar = (e) => {
+    e.preventDefault();
+    history.push("/staff/calendar");
+  }
 
   return (
     <div className="header">
@@ -110,6 +119,13 @@ const Header = () => {
             </button>
             <button className="loginbtn" id="appointments">
               APPOINTMENTS
+            </button>
+            <button
+              className="loginbtn"
+              id="appointments"
+              onClick={handleStaffCalendar}
+            >
+              CALENDAR
             </button>
             <button
               className="loginbtn"

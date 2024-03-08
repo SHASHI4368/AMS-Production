@@ -54,3 +54,27 @@
   position: absolute;
   z-index: 10;
 }
+
+.e-schedule .e-appointment-details {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  /* background-color: #ffffff !important; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.template-wrap {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.new {
+  color: #ffdea2;
+}

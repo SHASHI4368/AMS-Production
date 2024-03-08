@@ -15,11 +15,11 @@ import StudentDetailForm from "./components/StudentDetailForm";
 import StaffDetailForm from "./components/StaffDetailForm";
 import StudentHome from "./components/StudentHome";
 import Department from "./components/Department";
-import Calendar from "./components/Calendar";
 import StaffHome from "./components/StaffHome";
+import StudentCalendar from "./components/StudentCalendar";
+import StaffCalendar from "./components/StaffCalendar";
 
 function App() {
-  
   const [authorized, setAuthorized] = useState(false);
 
   const [staffList, setStaffList] = useState([]);
@@ -98,8 +98,11 @@ function App() {
         <Route exact path="/student/department">
           <Department staffList={staffList} />
         </Route>
-        <Route exact path="/calendar">
-          <Calendar />
+        <Route exact path="/student/calendar">
+          <StudentCalendar />
+        </Route>
+        <Route exact path="/staff/calendar">
+          <StaffCalendar />
         </Route>
         <Route exact path="/staff/home">
           <StaffHome />
