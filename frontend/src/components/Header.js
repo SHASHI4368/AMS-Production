@@ -80,10 +80,10 @@ const Header = () => {
     history.push("/student/department");
   };
 
-  const handleStaffCalendar = (e) => {
-    e.preventDefault();
+  const handleStaffCalendar = () => {
     history.push("/staff/calendar");
-  }
+    window.location.reload();
+  };
 
   return (
     <div className="header">
@@ -114,9 +114,7 @@ const Header = () => {
       {JSON.parse(sessionStorage.getItem("authorized")) === true &&
         JSON.parse(sessionStorage.getItem("userType")) === "Staff" && (
           <div className="buttons">
-            <button className="loginbtn" onClick={handleLogoutButton}>
-              HOME
-            </button>
+            <button className="loginbtn">HOME</button>
             <button className="loginbtn" id="appointments">
               APPOINTMENTS
             </button>
