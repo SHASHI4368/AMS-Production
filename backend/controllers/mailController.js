@@ -89,7 +89,36 @@ const sendVerificationMail = (req, res) => {
   });
 };
 
+const sendAppointmentAddedMail = (req, res) => {
+  const {lecMail, content} = req.body;
+  let config = {
+    service: "gmail",
+    auth: {
+      user: EMAIL,
+      pass: PASSWORD,
+    },
+  };
+  let transporter = nodemailer.createTransport(config);
+  let message = {
+    from: EMAIL,
+    to: lecMail,
+    subject: "Request for an appointment",
+    html: content,
+  };
+
+  transporter.sendMail(message, (err) => {
+    if (err) {
+      res.status(500).json(err.message);
+    } else {
+      res.status(201).json({
+        msg: "Request sent successfully",
+      });
+    }
+  });
+}
+
 module.exports = {
  sendMail,
- sendVerificationMail
+ sendVerificationMail,
+  sendAppointmentAddedMail
 }

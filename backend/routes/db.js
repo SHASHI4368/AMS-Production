@@ -23,6 +23,7 @@ const {
   getStaffByEmail,
   handleStaffLogout,
   getStaffPassword,
+  getStudentDetails,
 } = require("../controllers/dbController");
 const dbRouter = require("express").Router();
 
@@ -30,6 +31,7 @@ const verifyJWT = require("../middlewares/verifyJWT");
 
 dbRouter.get("/students", getStudents);
 dbRouter.post("/students", addStudent);
+dbRouter.get("/student/details/:department/:year/:regNumber", getStudentDetails);
 dbRouter.delete("/students/", deleteStudent);
 dbRouter.post("/tempUser", addTempUser);
 dbRouter.get("/tempUsers", getAllTempUsers);

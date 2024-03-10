@@ -53,7 +53,6 @@ const getTime = (value) => {
   const formattedHours = String(hours).padStart(2, "0");
   const formattedMinutes = String(minutes).padStart(2, "0");
   const formattedTime = `${formattedHours}:${formattedMinutes}`;
-  console.log(formattedTime);
   if (formattedTime === "NaN:NaN") {
     return "";
   } else {
@@ -90,6 +89,8 @@ const StudentCalendar = () => {
   const [selectedStaff, setSelectedStaff] = useState(
     JSON.parse(sessionStorage.getItem("selectedStaff"))
   );
+
+  const [student, setStudent] = useState({});
 
   const [appointments, setAppointments] = useState({
     dataSource: [],
@@ -288,7 +289,13 @@ const StudentCalendar = () => {
         EndTime,
         Apt_status,
       });
-      console.log(response.data);
+      sendAppointmentAddedMail(
+        Subject,
+        Description,
+        StartTime,
+        EndTime,
+        selectedStaff.Email
+      );
     } catch (err) {
       if (err.response) {
         console.log(err.response.data.message);
@@ -360,7 +367,7 @@ const StudentCalendar = () => {
           e.data.EndTime,
           e.data.EventType
         );
-        window.location.reload();
+        // window.location.reload();
       } else if (
         e.data !== null &&
         selectedAptId !== undefined &&
@@ -391,6 +398,58 @@ const StudentCalendar = () => {
       const url = `http://localhost:8080/db/appointment/${Id}`;
       const response = await axios.delete(url);
       console.log(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+const getStudentDetails = async (Reg_number) => {
+  try {
+    const url = `http://localhost:8080/db/student/details/${Reg_number}`;
+    const { data } = await axios.get(url, Reg_number);
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+  const getDate = (value) => {
+    const date = new Date(value);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const formattedDate = `${day}/${month}/${year}`;
+    return formattedDate;
+  };
+
+  const sendAppointmentAddedMail = async (
+    subject,
+    description,
+    from,
+    to,
+    lecMail
+  ) => {
+    const student = await getStudentDetails(
+      JSON.parse(sessionStorage.getItem("regNumber"))
+    );
+    try {
+      const url = `http://localhost:8080/mail/student/request/appointment`;
+      const content = `
+        <h1>${subject}</h1>
+        <h2>Student Details:</h2>
+        <p>Reg Number: ${student[0].Reg_number}</p>
+        <p>Name: ${student[0].First_name} ${student[0].Last_name}</p>
+        <p>Department: ${student[0].Department}</p>
+        <p>Email: ${student[0].Email}</p>
+        <p>Batch: ${student[0].Batch}</p>
+        <br>
+        <h2>Appointment Description:</h2>
+        <p>Date: ${getDate(from)}</p>
+        <p>Time: ${getTime(from)} - ${getTime(to)}</p>
+        <p>Description: ${description}</p>
+      `;
+      const { data } = await axios.post(url, { lecMail, content});
+      console.log(data);
     } catch (err) {
       console.log(err);
     }

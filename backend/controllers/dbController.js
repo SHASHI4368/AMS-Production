@@ -422,6 +422,25 @@ const deleteStudent = (req, res) => {
   }
 };
 
+const getStudentDetails = (req, res) => {
+  const { department, year, regNumber } = req.params;
+  const Reg_number = `${department}/${year}/${regNumber}`;
+  const sql = `select * from STUDENT where Reg_number = ?`;
+  try {
+    db.all(sql, [Reg_number], (err, rows) => {
+      if (err) {
+        res.status(500).json(err.message);
+        res.send(400).json(err.message);
+      } else {
+        return res.json(rows);
+      }
+    });
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+
+};
+
 const addTempUser = (req, res) => {
   const { Email, Verification_Code, First_Name, Last_Name, Picture_URL } =
     req.body;
@@ -675,4 +694,5 @@ module.exports = {
   getStaffByEmail,
   handleStaffLogout,
   getStaffPassword,
+  getStudentDetails,
 };
