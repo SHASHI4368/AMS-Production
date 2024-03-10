@@ -55,26 +55,105 @@
   z-index: 10;
 }
 
-.e-schedule .e-appointment-details {
-  padding: 0 !important;
-  margin: 0 !important;
-  border: 0 !important;
-  /* background-color: #ffffff !important; */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.e-schedule .e-vertical-view .e-content-wrap .e-appointment {
+  border-radius: 8px;
+}
+
+.e-schedule
+  .e-vertical-view
+  .e-content-wrap
+  .e-appointment
+  .e-appointment-details {
+  padding: 0;
+  height: 100%;
+}
+
+.e-schedule .template-wrap {
+  height: 100%;
+  white-space: normal;
+}
+
+.e-schedule .template-wrap .subject {
+  font-weight: 400;
+  font-size: 20px;
+  padding: 4px 4px 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-transform: capitalize;
+  text-align: center;
+}
+
+.e-schedule .template-wrap .time {
+  height: 70px;
+  font-size: 15px;
+  padding: 4px 6px 4px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.schedule-cell-dimension.e-schedule
+  .e-vertical-view
+  .e-date-header-wrap
+  table
+  col,
+.schedule-cell-dimension.e-schedule .e-vertical-view .e-content-wrap table col {
+  width: 200px;
+}
+
+.schedule-cell-dimension.e-schedule
+  .e-vertical-view
+  .e-time-cells-wrap
+  table
+  td,
+.schedule-cell-dimension.e-schedule .e-vertical-view .e-work-cells {
+  height: 100px;
+}
+
+.schedule-cell-dimension.e-schedule .e-month-view .e-work-cells,
+.schedule-cell-dimension.e-schedule
+  .e-month-view
+  .e-date-header-wrap
+  table
+  col {
+  width: 200px;
+  height: 100px;
+}
+
+.schedule-cell-dimension.e-schedule .e-month-view .e-work-cells {
+  height: 50px;
 }
 
 .template-wrap {
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  font-size: 20px;
-  font-weight: 400;
+  height: 100%;
+  white-space: normal;
 }
 
-.new {
-  color: #ffdea2;
+.time {
+  text-align: center;
+}
+
+.reg {
+  height: 20px;
+  margin-top: -40px;
+}
+
+.e-schedule .e-month-view .e-appointment .e-appointment-details {
+  text-align: center;
+  display: block;
+  flex-direction: start;
+  justify-content: center;
+  align-items: center;
+  line-height: 10px;
+  /* border-radius: 5px;
+  border: 1px solid #f4eded; */
+}
+
+.e-schedule
+  .e-vertical-view
+  .e-all-day-appointment-wrapper
+  .e-appointment
+  .e-appointment-details {
+  display: block;
+  padding: 0;
 }

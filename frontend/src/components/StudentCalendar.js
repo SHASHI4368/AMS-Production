@@ -46,13 +46,42 @@ const getColor = (status) => {
   }
 };
 
+const getTime = (value) => {
+  const date = new Date(value);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const formattedHours = String(hours).padStart(2, "0");
+  const formattedMinutes = String(minutes).padStart(2, "0");
+  const formattedTime = `${formattedHours}:${formattedMinutes}`;
+  console.log(formattedTime);
+  if (formattedTime === "NaN:NaN") {
+    return "";
+  } else {
+    return formattedTime;
+  }
+};
+
+const getTimeString = (start, end) => {
+  const startTime = getTime(start);
+  const endTime = getTime(end);
+  if (startTime === "" && endTime === "") {
+    return "";
+  } else {
+    return `Time : ${startTime} - ${endTime}`;
+  }
+};
 const eventTemplate = (e) => {
+  const secondaryColor = { background: e.Color };
+  const primaryColor_1 = { background: e.Color };
+  const primaryColor_2 = { background: e.Color };
   return (
-    <div
-      className="template-wrap"
-      style={{ background: getColor(e.EventType) }}
-    >
-      {e.Subject}
+    <div className="template-wrap" style={secondaryColor}>
+      <div className="subject" style={primaryColor_1}>
+        {e.Subject}
+      </div>
+      <div className="time" style={primaryColor_2}>
+        {getTimeString(e.StartTime, e.EndTime)}
+      </div>
     </div>
   );
 };
@@ -104,7 +133,13 @@ const StudentCalendar = () => {
         setAppointments({
           dataSource: data.map((item) => ({
             Id: item.Id,
-            Subject: item.Subject || "No title is provided",
+            Subject:
+              item.Student_reg ===
+              JSON.parse(sessionStorage.getItem("regNumber"))
+                ? item.Subject
+                : item.Subject === "Blocked"
+                ? "Blocked"
+                : "Reserverd",
             EventType: item.Apt_status,
             StartTime: new Date(item.StartTime),
             EndTime: new Date(item.EndTime),
@@ -114,6 +149,7 @@ const StudentCalendar = () => {
               JSON.parse(sessionStorage.getItem("regNumber"))
                 ? false
                 : true,
+            Color: getColor(item.Apt_status),
           })),
           fields: {
             subject: { default: "No title is provided" },
@@ -324,6 +360,7 @@ const StudentCalendar = () => {
           e.data.EndTime,
           e.data.EventType
         );
+        window.location.reload();
       } else if (
         e.data !== null &&
         selectedAptId !== undefined &&
@@ -337,6 +374,7 @@ const StudentCalendar = () => {
           e.data.EventType,
           selectedAptId
         );
+        window.location.reload();
       }
     } else {
       console.log(true);
@@ -345,6 +383,7 @@ const StudentCalendar = () => {
 
   const onPopupOpen = (e) => {
     setSelectedAptId(e.data.Id);
+    console.log(e);
   };
 
   const deleteAppointment = async (Id) => {
@@ -383,6 +422,7 @@ const StudentCalendar = () => {
             dataSource: appointments.dataSource,
             fields: appointments.fields,
             template: eventTemplate,
+            enableMaxHeight: true,
           }}
           dragStart={onDragStart}
           dragStop={onDragStop}
@@ -391,6 +431,8 @@ const StudentCalendar = () => {
           editorTemplate={ediitorWindowTemplate}
           popupClose={onPopupClose}
           popupOpen={onPopupOpen}
+          allowMultiCellSelection={false}
+          allowMultiRowSelection={false}
         >
           <ViewsDirective>
             <ViewDirective
@@ -400,7 +442,7 @@ const StudentCalendar = () => {
               interval={3}
               displayName="3 Days"
             />
-            <ViewDirective option="Week" />
+            <ViewDirective option="Week" startHour="08:00" endHour="16:00" />
           </ViewsDirective>
           <Inject
             services={[

@@ -80,9 +80,9 @@ const Header = () => {
     history.push("/student/department");
   };
 
-  const handleStaffCalendar = (e) => {
-    e.preventDefault();
+  const handleStaffCalendar = () => {
     history.push("/staff/calendar");
+    window.location.reload();
   }
 
   return (

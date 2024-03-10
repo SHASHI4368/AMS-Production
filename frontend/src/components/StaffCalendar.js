@@ -18,7 +18,10 @@ import {
 } from "@syncfusion/ej2-react-schedule";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
+import { Internationalization } from "@syncfusion/ej2-base";
+
 import { L10n } from "@syncfusion/ej2-base";
+import ColorCode from "./helpers/ColorCode";
 
 L10n.load({
   "en-US": {
@@ -34,6 +37,7 @@ L10n.load({
 const getColor = (status) => {
   switch (status) {
     case "New":
+      console.log("New");
       return "#FFD700";
     case "Blocked":
       return "#FF6347";
@@ -46,20 +50,74 @@ const getColor = (status) => {
   }
 };
 
+// const eventTemplate = (e) => {
+//   return (
+//     <div
+//       className="template-wrap"
+//       style={{
+//         background: getColor(e.EventType),
+//         height: "100%",
+//         width: "100%",
+//       }}
+//     >
+//       {e.Subject}
+//     </div>
+//   );
+// };
+
+const getTime = (value) => {
+  const date = new Date(value);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const formattedHours = String(hours).padStart(2, "0");
+  const formattedMinutes = String(minutes).padStart(2, "0");
+  const formattedTime = `${formattedHours}:${formattedMinutes}`;
+  console.log(formattedTime);
+  if (formattedTime === "NaN:NaN") {
+    return "";
+  } else {
+    return formattedTime;
+  }
+};
+
+const getTimeString = (start, end) => {
+  const startTime = getTime(start);
+  const endTime = getTime(end);
+  if (startTime === "" && endTime === "") {
+    return "";
+  } else {
+    return `Time : ${startTime} - ${endTime}`;
+  }
+};
 const eventTemplate = (e) => {
+  const secondaryColor = { background: e.Color };
+  const primaryColor_1 = { background: e.Color };
+  const primaryColor_2 = { background: e.Color };
   return (
-    <div
-      className="template-wrap"
-      style={{ background: getColor(e.EventType) }}
-    >
-      {e.Subject}
+    <div className="template-wrap" style={secondaryColor}>
+      <div className="subject" style={primaryColor_1}>
+        {e.Subject}
+      </div>
+      <div className="time" style={primaryColor_2}>
+        {getTimeString(e.StartTime, e.EndTime)}
+      </div>
+      <div className="reg" style={primaryColor_2}>
+        {<div className="time" style={primaryColor_2}>
+        {e.StdReg ? `Student: ${e.StdReg}` : ""}
+      </div>}
+      </div>
     </div>
   );
 };
 
+const getDate = (date) => {
+  // const intl = new Internationalization();
+  // return intl.formatDate(date, { type: "date", skeleton: "short" });
+};
+
 const StaffCalendar = () => {
-  const [selectedStaff, setSelectedStaff] = useState(
-    JSON.parse(sessionStorage.getItem("selectedStaff"))
+  const [selectedStaffEmail, setSelectedStaffEmail] = useState(
+    JSON.parse(sessionStorage.getItem("selectedStaffEmail"))
   );
 
   const [blocked, setBlocked] = useState();
@@ -102,7 +160,7 @@ const StaffCalendar = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getAllAppointments(selectedStaff.Email);
+        const data = await getAllAppointments(selectedStaffEmail);
         setAppointments({
           dataSource: data.map((item) => ({
             Id: item.Id,
@@ -111,6 +169,8 @@ const StaffCalendar = () => {
             StartTime: new Date(item.StartTime),
             EndTime: new Date(item.EndTime),
             Description: item.Description,
+            Color: getColor(item.Apt_status),
+            StdReg: item.Student_reg,
           })),
           fields: {
             subject: { default: "No title is provided" },
@@ -127,7 +187,7 @@ const StaffCalendar = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getAllAppointments(selectedStaff.Email);
+        const data = await getAllAppointments(selectedStaffEmail);
         setAppointments({
           dataSource: data.map((item) => ({
             Id: item.Id,
@@ -340,7 +400,7 @@ const StaffCalendar = () => {
         console.log(lastId);
         addAppointment(
           lastId + 1,
-          selectedStaff.Email,
+          selectedStaffEmail,
           JSON.parse(sessionStorage.getItem("regNumber"))
             ? JSON.parse(sessionStorage.getItem("regNumber"))
             : null,
@@ -398,13 +458,16 @@ const StaffCalendar = () => {
           <p className="long-name">{getDepName()}</p>
         </div>
         <div className="staff-detail">
-          <img src={selectedStaff.Picture_URL} alt="" className="staff-img" />
+          <img src={selectedStaffEmail.Picture_URL} alt="" className="staff-img" />
           <div className="details">
-            <p className="staff-name">{`${selectedStaff.First_name} ${selectedStaff.Last_name}`}</p>
-            <p className="staff-email">{selectedStaff.Email}</p>
+            <p className="staff-name">{`${selectedStaffEmail.First_name} ${selectedStaffEmail.Last_name}`}</p>
+            <p className="staff-email">{selectedStaffEmail.Email}</p>
           </div>
         </div>
       </div> */}
+      <div>
+        <ColorCode />
+      </div>
       <div className="calendar">
         <ScheduleComponent
           currentView="Day"
@@ -412,6 +475,7 @@ const StaffCalendar = () => {
             dataSource: appointments.dataSource,
             fields: appointments.fields,
             template: eventTemplate,
+            ignoreWhitespace: true,
           }}
           cellTemplate={eventTemplate}
           dragStart={onDragStart}
@@ -421,6 +485,8 @@ const StaffCalendar = () => {
           editorTemplate={ediitorWindowTemplate}
           popupClose={onPopupClose}
           popupOpen={onPopupOpen}
+          cssClass="schedule-cell-dimension"
+          rowAutoHeight={true}
         >
           <ViewsDirective>
             <ViewDirective
@@ -434,7 +500,7 @@ const StaffCalendar = () => {
             <ViewDirective
               option="Month"
               // isSelected={true}
-              showWeekNumber={true}
+              showWeekNumber={false}
               showWeekend={false}
             />
             <ViewDirective option="Agenda" />
