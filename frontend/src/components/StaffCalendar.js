@@ -59,7 +59,7 @@ const eventTemplate = (e) => {
 
 const StaffCalendar = () => {
   const [selectedStaff, setSelectedStaff] = useState(
-    JSON.parse(sessionStorage.getItem("selectedStaffEmail"))
+    JSON.parse(sessionStorage.getItem("selectedStaff"))
   );
 
   const [blocked, setBlocked] = useState();
@@ -89,20 +89,20 @@ const StaffCalendar = () => {
     }
   };
 
-  useEffect(() => {
-    const getAllAppointments = async (Lecturer_mail) => {
-      try {
-        const url = `http://localhost:8080/db/appointments/${Lecturer_mail}`;
-        const response = await axios.get(url);
-        return response.data;
-      } catch (err) {
-        console.log(err);
-      }
-    };
+  const getAllAppointments = async (Lecturer_mail) => {
+    try {
+      const url = `http://localhost:8080/db/appointments/${Lecturer_mail}`;
+      const response = await axios.get(url);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getAllAppointments(selectedStaff);
+        const data = await getAllAppointments(selectedStaff.Email);
         setAppointments({
           dataSource: data.map((item) => ({
             Id: item.Id,
@@ -124,20 +124,10 @@ const StaffCalendar = () => {
     fetchData();
   }, []);
 
-
   useEffect(() => {
-    const getAllAppointments = async (Lecturer_mail) => {
-      try {
-        const url = `http://localhost:8080/db/appointments/${Lecturer_mail}`;
-        const response = await axios.get(url);
-        return response.data;
-      } catch (err) {
-        console.log(err);
-      }
-    };
     const fetchData = async () => {
       try {
-        const data = await getAllAppointments(selectedStaff);
+        const data = await getAllAppointments(selectedStaff.Email);
         setAppointments({
           dataSource: data.map((item) => ({
             Id: item.Id,

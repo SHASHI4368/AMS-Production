@@ -207,7 +207,8 @@ const handleStaffLogin = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-};
+
+}
 
 const getStudentRegNumber = (req, res) => {
   const { Email } = req.params;
@@ -349,10 +350,11 @@ const handleStaffLogout = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-};
+
+}
 
 const addStaff = async (req, res) => {
-  const { First_name, Last_name, Department, Email, Picture_URL, Password } =
+  const { First_name, Last_name, Department, Email, Picture_URL, Password} =
     req.body;
   const sql = `insert into LECTURER(First_name, Last_name, Department, Email, Picture_URL, Password, Original_password) values(?,?,?,?,?,?,?)`;
   try {
