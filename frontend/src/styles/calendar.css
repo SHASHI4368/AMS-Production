@@ -157,3 +157,11 @@
   display: block;
   padding: 0;
 }
+
+.e-schedule
+  .e-vertical-view
+  .e-all-day-appointment-wrapper
+  .e-appointment
+  .e-appointment-details {
+  line-height: 12px;
+}

@@ -102,9 +102,11 @@ const eventTemplate = (e) => {
         {getTimeString(e.StartTime, e.EndTime)}
       </div>
       <div className="reg" style={primaryColor_2}>
-        {<div className="time" style={primaryColor_2}>
-        {e.StdReg ? `Student: ${e.StdReg}` : ""}
-      </div>}
+        {
+          <div className="time" style={primaryColor_2}>
+            {e.StdReg ? `Student: ${e.StdReg}` : ""}
+          </div>
+        }
       </div>
     </div>
   );
@@ -413,6 +415,7 @@ const StaffCalendar = () => {
           e.data.EventType
         );
         setBlocked(true);
+        window.location.reload();
       } else if (
         e.data !== null &&
         selectedAptId !== undefined &&
@@ -426,6 +429,7 @@ const StaffCalendar = () => {
           e.data.EventType,
           selectedAptId
         );
+        window.location.reload();
       }
     } else {
       console.log(true);
@@ -496,7 +500,7 @@ const StaffCalendar = () => {
               interval={3}
               displayName="3 Days"
             />
-            <ViewDirective option="Week" />
+            <ViewDirective option="Week" startHour="08:00" endHour="16:00" />
             <ViewDirective
               option="Month"
               // isSelected={true}
@@ -504,8 +508,6 @@ const StaffCalendar = () => {
               showWeekend={false}
             />
             <ViewDirective option="Agenda" />
-            <ViewDirective option="TimelineDay" />
-            <ViewDirective option="TimelineWeek" />
           </ViewsDirective>
           <Inject
             services={[
