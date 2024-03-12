@@ -88,8 +88,6 @@ const StudentSignUpForm = (
     getAllTempUsers();
   }, []);
 
-  
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (stdEmail === "") {

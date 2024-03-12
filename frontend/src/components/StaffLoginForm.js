@@ -44,6 +44,34 @@ const StaffLoginForm = () => {
     }
   };
 
+  useEffect(() => {
+    const getStaffPassword = async (Email) => {
+      try {
+        const url = `http://localhost:8080/db/staff/password/${Email}`;
+        const response = await axios.get(url);
+        return response.data[0].Original_password;
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    const handleLogin = async (e) => {
+if (JSON.parse(sessionStorage.getItem("isAuthed")) !== null) {
+      sessionStorage.setItem("isAuthed", JSON.stringify(false));
+      const password = await getStaffPassword(
+        JSON.parse(sessionStorage.getItem("selectedStaffEmail"))
+      );
+      handleStaffLogin(
+        JSON.parse(sessionStorage.getItem("selectedStaffEmail")),
+        password
+      );
+    }
+    };
+    if (JSON.parse(sessionStorage.getItem("isAuthed")) !== null) {
+      handleLogin();
+    }
+    
+  }, []);
+
   const handleLogin = (e) => {
     e.preventDefault();
     console.log(email);

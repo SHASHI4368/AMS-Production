@@ -481,7 +481,6 @@ const StaffCalendar = () => {
             template: eventTemplate,
             ignoreWhitespace: true,
           }}
-          cellTemplate={eventTemplate}
           dragStart={onDragStart}
           dragStop={onDragStop}
           resizeStart={onResizeStart}
