@@ -296,6 +296,7 @@ const StudentCalendar = () => {
         EndTime,
         selectedStaff.Email
       );
+      window.location.reload();
     } catch (err) {
       if (err.response) {
         console.log(err.response.data.message);
@@ -381,7 +382,7 @@ const StudentCalendar = () => {
           e.data.EventType,
           selectedAptId
         );
-        window.location.reload();
+        // window.location.reload();
       }
     } else {
       console.log(true);
@@ -403,15 +404,15 @@ const StudentCalendar = () => {
     }
   };
 
-const getStudentDetails = async (Reg_number) => {
-  try {
-    const url = `http://localhost:8080/db/student/details/${Reg_number}`;
-    const { data } = await axios.get(url, Reg_number);
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
-};
+  const getStudentDetails = async (Reg_number) => {
+    try {
+      const url = `http://localhost:8080/db/student/details/${Reg_number}`;
+      const { data } = await axios.get(url, Reg_number);
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const getDate = (value) => {
     const date = new Date(value);
@@ -448,7 +449,7 @@ const getStudentDetails = async (Reg_number) => {
         <p>Time: ${getTime(from)} - ${getTime(to)}</p>
         <p>Description: ${description}</p>
       `;
-      const { data } = await axios.post(url, { lecMail, content});
+      const { data } = await axios.post(url, { lecMail, content });
       console.log(data);
     } catch (err) {
       console.log(err);
@@ -485,6 +486,8 @@ const getStudentDetails = async (Reg_number) => {
           }}
           dragStart={onDragStart}
           dragStop={onDragStop}
+          allowDragAndDrop={false}
+          allowResizing={false}
           resizeStart={onResizeStart}
           resizeStop={onResizeStop}
           editorTemplate={ediitorWindowTemplate}

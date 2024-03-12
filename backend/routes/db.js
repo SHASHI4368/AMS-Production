@@ -101,8 +101,6 @@ module.exports = dbRouter;
 //     primary key(Email)
 // );
 
-
-
 // const sqlite = require("sqlite3").verbose();
 
 // const sql = `drop table APPOINTMENT;`
