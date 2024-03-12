@@ -452,23 +452,6 @@ const StaffCalendar = () => {
 
   return (
     <main>
-      {/* <div className="description">
-        <div className="dep-name">
-          <p className="abbr-name">
-            {JSON.parse(sessionStorage.getItem("department")) === "Computer"
-              ? "COM"
-              : JSON.parse(sessionStorage.getItem("department"))}
-          </p>
-          <p className="long-name">{getDepName()}</p>
-        </div>
-        <div className="staff-detail">
-          <img src={selectedStaffEmail.Picture_URL} alt="" className="staff-img" />
-          <div className="details">
-            <p className="staff-name">{`${selectedStaffEmail.First_name} ${selectedStaffEmail.Last_name}`}</p>
-            <p className="staff-email">{selectedStaffEmail.Email}</p>
-          </div>
-        </div>
-      </div> */}
       <div>
         <ColorCode />
       </div>

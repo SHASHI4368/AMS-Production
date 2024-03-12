@@ -340,7 +340,14 @@ const StudentCalendar = () => {
         EndTime,
         Apt_status,
       });
-      console.log(response.data);
+      sendAppointmentChangeMail(
+        Subject,
+        Description,
+        StartTime,
+        EndTime,
+        selectedStaff.Email
+      );
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }
@@ -368,7 +375,6 @@ const StudentCalendar = () => {
           e.data.EndTime,
           e.data.EventType
         );
-        // window.location.reload();
       } else if (
         e.data !== null &&
         selectedAptId !== undefined &&
@@ -382,7 +388,6 @@ const StudentCalendar = () => {
           e.data.EventType,
           selectedAptId
         );
-        // window.location.reload();
       }
     } else {
       console.log(true);
@@ -445,6 +450,40 @@ const StudentCalendar = () => {
         <p>Batch: ${student[0].Batch}</p>
         <br>
         <h2>Appointment Description:</h2>
+        <p>Date: ${getDate(from)}</p>
+        <p>Time: ${getTime(from)} - ${getTime(to)}</p>
+        <p>Description: ${description}</p>
+      `;
+      const { data } = await axios.post(url, { lecMail, content });
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const sendAppointmentChangeMail = async (
+    subject,
+    description,
+    from,
+    to,
+    lecMail
+  ) => {
+    const student = await getStudentDetails(
+      JSON.parse(sessionStorage.getItem("regNumber"))
+    );
+    try {
+      const url = `http://localhost:8080/mail/student/request/appointment`;
+      const content = `
+        <h1>Unable to attend the appointment</h1>
+        <h2>Student Details:</h2>
+        <p>Reg Number: ${student[0].Reg_number}</p>
+        <p>Name: ${student[0].First_name} ${student[0].Last_name}</p>
+        <p>Department: ${student[0].Department}</p>
+        <p>Email: ${student[0].Email}</p>
+        <p>Batch: ${student[0].Batch}</p>
+        <br>
+        <h2>Appointment Description:</h2>
+        <p>Subject: ${subject}</p>
         <p>Date: ${getDate(from)}</p>
         <p>Time: ${getTime(from)} - ${getTime(to)}</p>
         <p>Description: ${description}</p>
