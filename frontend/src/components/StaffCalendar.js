@@ -28,7 +28,7 @@ L10n.load({
       saveButton: "Add",
       cancelButton: "Close",
       deleteButton: "Remove",
-      newEvent: "Add Event",
+      newEvent: "Appointment Details",
     },
   },
 });
@@ -238,6 +238,21 @@ const StaffCalendar = () => {
     );
   };
 
+  const selectDropdown = (e) => {
+    switch (e.EventType) {
+      case "New":
+        return ["Unable", "Confirmed"];
+      case "Blocked":
+        return ["Blocked"];
+      case "Unable":
+        return ["Unable", "Confirmed"];
+      case "Confirmed":
+        return ["Confirmed", "Unable"];
+      default:
+        return ["Blocked"];
+    }
+  };
+
   const ediitorWindowTemplate = (e) => {
     return (
       <table className="custom-event-editor" style={{ width: "100%" }}>
@@ -263,13 +278,7 @@ const StaffCalendar = () => {
                 data-name="EventType"
                 className="e-field"
                 // dataSource={["New", "Blocked", "Unable", "Confirmed"]}
-                dataSource={
-                  e.EventType === "Blocked"
-                    ? ["Blocked"]
-                    : e.EventType === "New" || e.EventType === "Unable"
-                    ? ["Unable", "Confirmed"]
-                    : ["Blocked"]
-                }
+                dataSource={selectDropdown(e)}
                 value="Blocked"
               />
             </td>
@@ -384,12 +393,7 @@ const StaffCalendar = () => {
         Apt_status,
       });
       if (StdReg !== null) {
-        sendAppointmentChangeMail(
-          StartTime,
-          EndTime,
-          staffDetails.Email,
-          StdReg
-        );
+        sendAppointmentChangeMail(StartTime, EndTime, StdReg, Apt_status);
       }
       sessionStorage.setItem("isDragged", JSON.stringify(false));
       setIsResized(false);
@@ -417,7 +421,17 @@ const StaffCalendar = () => {
     return formattedDate;
   };
 
-  const sendAppointmentChangeMail = async (from, to, lecMail, StdReg) => {
+  const getAppointment = async (Id) => {
+    try {
+      const url = `http://localhost:8080/db/appointment/${Id}`;
+      const response = await axios.get(url);
+      return response.data[0];
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const sendAppointmentChangeMail = async (from, to, StdReg, Apt_status) => {
     if (JSON.parse(sessionStorage.getItem("isDragged")) === true) {
       try {
         const student = await getStudentDetails(StdReg);
@@ -426,8 +440,64 @@ const StaffCalendar = () => {
         const subject = "Change of appointment time";
         const content = `
         <p>Dear student,</p>
-        <p>Your appointment with ${lecMail} has been changed.</p>
+        <p>Your appointment with ${staffDetails.First_name} ${
+          staffDetails.Last_name
+        } has been changed.</p>
         <h2>New Appointment Details:</h2>
+        <p>Date: ${getDate(from)}</p>
+        <p>Time: ${getTime(from)} - ${getTime(to)}</p>
+        <br>
+        <p>${staffDetails.First_name} ${staffDetails.Last_name}</p>
+        <p>${staffDetails.Email}</p>
+        <p>${staffDetails.Department}</p>
+      `;
+        const { data } = await axios.post(url, { stdMail, subject, content });
+        window.location.reload();
+      } catch (err) {
+        console.log(err);
+      }
+    } else if (Apt_status === "Confirmed") {
+      console.log("confirmed");
+      try {
+        const appointment = await getAppointment(selectedAptId);
+        const student = await getStudentDetails(appointment.Student_reg);
+        console.log(appointment.Student_reg);
+        const stdMail = student[0].Email;
+        const url = `http://localhost:8080/mail/student/update/appointment`;
+        const subject = "Appointment confirmed";
+        const content = `
+        <p>Dear student,</p>
+        <p>Your appointment with ${staffDetails.First_name} ${
+          staffDetails.Last_name
+        } has been confirmed.</p>
+        <h2>Appointment Details:</h2>
+        <p>Date: ${getDate(from)}</p>
+        <p>Time: ${getTime(from)} - ${getTime(to)}</p>
+        <br>
+        <p>${staffDetails.First_name} ${staffDetails.Last_name}</p>
+        <p>${staffDetails.Email}</p>
+        <p>${staffDetails.Department}</p>
+      `;
+        const { data } = await axios.post(url, { stdMail, subject, content });
+        window.location.reload();
+      } catch (err) {
+        console.log(err);
+      }
+    } else if (Apt_status === "Unable") {
+      console.log("confirmed");
+      try {
+        const appointment = await getAppointment(selectedAptId);
+        const student = await getStudentDetails(appointment.Student_reg);
+        console.log(appointment.Student_reg);
+        const stdMail = student[0].Email;
+        const url = `http://localhost:8080/mail/student/update/appointment`;
+        const subject = "Appointment cancelled";
+        const content = `
+        <p>Dear student,</p>
+        <p>Your appointment with ${staffDetails.First_name} ${
+          staffDetails.Last_name
+        } has been cancelled.</p>
+        <h2>Appointment Details:</h2>
         <p>Date: ${getDate(from)}</p>
         <p>Time: ${getTime(from)} - ${getTime(to)}</p>
         <br>
@@ -477,7 +547,7 @@ const StaffCalendar = () => {
         selectedAptId !== undefined &&
         e.type === "Editor"
       ) {
-        console.log(e.data.StdReg);
+        const appointment = await getAppointment(selectedAptId);
         updateAppointment(
           e.data.Subject,
           e.data.Description,
@@ -486,7 +556,9 @@ const StaffCalendar = () => {
           e.data.EventType,
           e.data.StdReg
         );
-        window.location.reload();
+        if (appointment.Student_reg === null) {
+          window.location.reload();
+        }
       }
     } else {
       console.log(true);
@@ -495,6 +567,7 @@ const StaffCalendar = () => {
 
   const onPopupOpen = (e) => {
     setSelectedAptId(e.data.Id);
+    console.log(e);
   };
 
   const deleteAppointment = async (Id) => {
@@ -530,6 +603,7 @@ const StaffCalendar = () => {
           popupOpen={onPopupOpen}
           cssClass="schedule-cell-dimension"
           rowAutoHeight={true}
+          quickInfoOnSelectionEnd={true}
         >
           <ViewsDirective>
             <ViewDirective

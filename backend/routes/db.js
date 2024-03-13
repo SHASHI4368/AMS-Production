@@ -24,6 +24,7 @@ const {
   handleStaffLogout,
   getStaffPassword,
   getStudentDetails,
+  getAppointment,
 } = require("../controllers/dbController");
 const dbRouter = require("express").Router();
 
@@ -54,6 +55,7 @@ dbRouter.put("/appointment", updateAppointment);
 dbRouter.delete("/appointment/:Id", deleteAppointment);
 dbRouter.get("/staff/:Email", getStaffByEmail);
 dbRouter.get("/staff/password/:Email", getStaffPassword);
+dbRouter.get("/appointment/:Id", getAppointment);
 // dbRouter.use(verifyJWT);
 
 module.exports = dbRouter;

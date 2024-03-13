@@ -26,7 +26,7 @@ L10n.load({
       saveButton: "Add",
       cancelButton: "Close",
       deleteButton: "Remove",
-      newEvent: "Add Event",
+      newEvent: "Appointment Details",
     },
   },
 });

@@ -669,6 +669,23 @@ const deleteAppointment = (req, res) => {
   }
 };
 
+const getAppointment = (req, res) => {
+  const { Id } = req.params;
+  const sql = `select * from APPOINTMENT where Id = ?`;
+  try {
+    db.all(sql, [Id], (err, rows) => {
+      if (err) {
+        res.status(500).json(err.message);
+        res.send(400).json(err.message);
+      } else {
+        return res.json(rows);
+      }
+    });
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
 module.exports = {
   getStudents,
   addStudent,
@@ -695,4 +712,5 @@ module.exports = {
   handleStaffLogout,
   getStaffPassword,
   getStudentDetails,
+  getAppointment,
 };
