@@ -1,60 +1,60 @@
-const nodemailer = require('nodemailer');
-const MailGen = require('mailgen');
-const {EMAIL, PASSWORD} = require('./credendials')
+const nodemailer = require("nodemailer");
+const MailGen = require("mailgen");
+const { EMAIL, PASSWORD } = require("./credendials");
 
 const sendMail = (req, res) => {
- const { user, code } = req.body;
- let config = {
-   service: "gmail",
-   auth: {
-     user: EMAIL,
-     pass: PASSWORD,
-   },
- };
+  const { user, code } = req.body;
+  let config = {
+    service: "gmail",
+    auth: {
+      user: EMAIL,
+      pass: PASSWORD,
+    },
+  };
 
- let transporter = nodemailer.createTransport(config);
- const mailGenerator = new MailGen({
-  theme: 'default',
-  product: {
-   name: 'AMS',
-   link: 'https://mailgen.js/'
-  }
- });
+  let transporter = nodemailer.createTransport(config);
+  const mailGenerator = new MailGen({
+    theme: "default",
+    product: {
+      name: "AMS",
+      link: "https://mailgen.js/",
+    },
+  });
 
- let response = {
-  body: {
-   name: user.name,
-   intro: 'Your verification code is',
-   table: {
-    data: [
-     {
-      item: 'Verification Code',
-      code: code
-     }
-    ]
-   },
-   outro: 'Please enter this code to verify your account'
-  }
- };
+  let response = {
+    body: {
+      name: user.name,
+      intro: "Your verification code is",
+      table: {
+        data: [
+          {
+            item: "Verification Code",
+            code: code,
+          },
+        ],
+      },
+      outro: "Please enter this code to verify your account",
+    },
+  };
 
- let mail = mailGenerator.generate(response);
- let message = {
-  from: EMAIL,
-  to: user.email,
-  subject: 'Verification Code for AMS Ruhuna',
-  html: mail
- };
+  let mail = mailGenerator.generate(response);
+  let message = {
+    from: EMAIL,
+    to: user.email,
+    subject: "Verification Code for AMS Ruhuna",
+    html: mail,
+  };
 
- transporter.sendMail(message, (err) => {
-   if (err) {
-     res.status(500).json(err.message);
-   } else {
-     res.status(201).json({
-       msg: "Verification code sent successfully",
-     });
-   }
- });
-}
+  transporter.sendMail(message, (err) => {
+    if (err) {
+      res.status(500).json(err.message);
+    } else {
+      res.status(201).json({
+        msg: "Verification code sent successfully",
+      });
+    }
+  });
+};
 
 const sendVerificationMail = (req, res) => {
   const { email, code } = req.body;
@@ -90,7 +90,7 @@ const sendVerificationMail = (req, res) => {
 };
 
 const sendAppointmentAddedMail = (req, res) => {
-  const {lecMail, content} = req.body;
+  const { lecMail, subject, content } = req.body;
   let config = {
     service: "gmail",
     auth: {
@@ -102,7 +102,7 @@ const sendAppointmentAddedMail = (req, res) => {
   let message = {
     from: EMAIL,
     to: lecMail,
-    subject: "Request for an appointment",
+    subject: subject,
     html: content,
   };
 
@@ -115,10 +115,39 @@ const sendAppointmentAddedMail = (req, res) => {
       });
     }
   });
-}
+};
+
+const sendAppointmentUpdateMail = (req, res) => {
+  const { stdMail, subject, content } = req.body;
+  let config = {
+    service: "gmail",
+    auth: {
+      user: EMAIL,
+      pass: PASSWORD,
+    },
+  };
+  let transporter = nodemailer.createTransport(config);
+  let message = {
+    from: EMAIL,
+    to: stdMail,
+    subject: subject,
+    html: content,
+  };
+
+  transporter.sendMail(message, (err) => {
+    if (err) {
+      res.status(500).json(err.message);
+    } else {
+      res.status(201).json({
+        msg: "Request sent successfully",
+      });
+    }
+  });
+};
 
 module.exports = {
- sendMail,
- sendVerificationMail,
-  sendAppointmentAddedMail
-}
+  sendMail,
+  sendVerificationMail,
+  sendAppointmentAddedMail,
+  sendAppointmentUpdateMail,
+};

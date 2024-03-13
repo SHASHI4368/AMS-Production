@@ -220,7 +220,8 @@ const StudentCalendar = () => {
                 placeholder="Choose status"
                 data-name="EventType"
                 className="e-field"
-                dataSource={["New", "Unable"]}
+                // dataSource={["New", "Unable"]}
+                dataSource={e.EventType === "Unable" ? ["Unable"] : ["New", "Unable"]}
                 value="New"
               />
             </td>
@@ -290,13 +291,11 @@ const StudentCalendar = () => {
         Apt_status,
       });
       sendAppointmentAddedMail(
-        Subject,
         Description,
         StartTime,
         EndTime,
         selectedStaff.Email
       );
-      window.location.reload();
     } catch (err) {
       if (err.response) {
         console.log(err.response.data.message);
@@ -340,14 +339,14 @@ const StudentCalendar = () => {
         EndTime,
         Apt_status,
       });
+      console.log(selectedStaff.Email);
       sendAppointmentChangeMail(
-        Subject,
         Description,
         StartTime,
         EndTime,
         selectedStaff.Email
       );
-      window.location.reload();
+      
     } catch (err) {
       console.log(err);
     }
@@ -429,7 +428,6 @@ const StudentCalendar = () => {
   };
 
   const sendAppointmentAddedMail = async (
-    subject,
     description,
     from,
     to,
@@ -440,6 +438,7 @@ const StudentCalendar = () => {
     );
     try {
       const url = `http://localhost:8080/mail/student/request/appointment`;
+      const subject = "Request for an appointment";
       const content = `
         <h1>${subject}</h1>
         <h2>Student Details:</h2>
@@ -454,15 +453,14 @@ const StudentCalendar = () => {
         <p>Time: ${getTime(from)} - ${getTime(to)}</p>
         <p>Description: ${description}</p>
       `;
-      const { data } = await axios.post(url, { lecMail, content });
-      console.log(data);
+      const { data } = await axios.post(url, { lecMail, subject, content });
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }
   };
 
   const sendAppointmentChangeMail = async (
-    subject,
     description,
     from,
     to,
@@ -473,8 +471,8 @@ const StudentCalendar = () => {
     );
     try {
       const url = `http://localhost:8080/mail/student/request/appointment`;
+      const subject = "Unable to attend the appointment";
       const content = `
-        <h1>Unable to attend the appointment</h1>
         <h2>Student Details:</h2>
         <p>Reg Number: ${student[0].Reg_number}</p>
         <p>Name: ${student[0].First_name} ${student[0].Last_name}</p>
@@ -488,8 +486,8 @@ const StudentCalendar = () => {
         <p>Time: ${getTime(from)} - ${getTime(to)}</p>
         <p>Description: ${description}</p>
       `;
-      const { data } = await axios.post(url, { lecMail, content });
-      console.log(data);
+      const { data } = await axios.post(url, { lecMail, subject, content });
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }

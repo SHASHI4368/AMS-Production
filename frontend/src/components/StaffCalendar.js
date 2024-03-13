@@ -18,7 +18,6 @@ import {
 } from "@syncfusion/ej2-react-schedule";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
-import { Internationalization } from "@syncfusion/ej2-base";
 
 import { L10n } from "@syncfusion/ej2-base";
 import ColorCode from "./helpers/ColorCode";
@@ -37,7 +36,6 @@ L10n.load({
 const getColor = (status) => {
   switch (status) {
     case "New":
-      console.log("New");
       return "#FFD700";
     case "Blocked":
       return "#FF6347";
@@ -50,21 +48,6 @@ const getColor = (status) => {
   }
 };
 
-// const eventTemplate = (e) => {
-//   return (
-//     <div
-//       className="template-wrap"
-//       style={{
-//         background: getColor(e.EventType),
-//         height: "100%",
-//         width: "100%",
-//       }}
-//     >
-//       {e.Subject}
-//     </div>
-//   );
-// };
-
 const getTime = (value) => {
   const date = new Date(value);
   const hours = date.getHours();
@@ -72,7 +55,6 @@ const getTime = (value) => {
   const formattedHours = String(hours).padStart(2, "0");
   const formattedMinutes = String(minutes).padStart(2, "0");
   const formattedTime = `${formattedHours}:${formattedMinutes}`;
-  console.log(formattedTime);
   if (formattedTime === "NaN:NaN") {
     return "";
   } else {
@@ -89,6 +71,7 @@ const getTimeString = (start, end) => {
     return `Time : ${startTime} - ${endTime}`;
   }
 };
+
 const eventTemplate = (e) => {
   const secondaryColor = { background: e.Color };
   const primaryColor_1 = { background: e.Color };
@@ -112,11 +95,6 @@ const eventTemplate = (e) => {
   );
 };
 
-const getDate = (date) => {
-  // const intl = new Internationalization();
-  // return intl.formatDate(date, { type: "date", skeleton: "short" });
-};
-
 const StaffCalendar = () => {
   const [selectedStaffEmail, setSelectedStaffEmail] = useState(
     JSON.parse(sessionStorage.getItem("selectedStaffEmail"))
@@ -132,22 +110,10 @@ const StaffCalendar = () => {
   });
 
   const [selectedAptId, setSelectedAptId] = useState(0);
+  const [isDragged, setIsDragged] = useState(false);
+  const [isResized, setIsResized] = useState(false);
 
-  const getDepName = () => {
-    const dep = JSON.parse(sessionStorage.getItem("department"));
-    switch (dep) {
-      case "DCEE":
-        return "Department of Civil and Environmental Engineering";
-      case "DEIE":
-        return "Department of Electrical and Information Engineering";
-      case "DMME":
-        return "Department of Mechanical and Manufacturing Engineering";
-      case "MENA":
-        return "Department of Metallurgical and Materials Engineering";
-      case "Computer":
-        return "Department of Computer Science and Engineering";
-    }
-  };
+  const [staffDetails, setStaffDetails] = useState({});
 
   const getAllAppointments = async (Lecturer_mail) => {
     try {
@@ -160,6 +126,17 @@ const StaffCalendar = () => {
   };
 
   useEffect(() => {
+    sessionStorage.setItem("isDragged", JSON.stringify(false));
+    const getStaffDetails = async () => {
+      try {
+        const url = `http://localhost:8080/db//staff/${selectedStaffEmail}`;
+        const response = await axios.get(url);
+        setStaffDetails(response.data[0]);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getStaffDetails();
     const fetchData = async () => {
       try {
         const data = await getAllAppointments(selectedStaffEmail);
@@ -173,6 +150,7 @@ const StaffCalendar = () => {
             Description: item.Description,
             Color: getColor(item.Apt_status),
             StdReg: item.Student_reg,
+            lecMail: item.Lecturer_mail,
           })),
           fields: {
             subject: { default: "No title is provided" },
@@ -187,6 +165,17 @@ const StaffCalendar = () => {
   }, []);
 
   useEffect(() => {
+    sessionStorage.setItem("isDragged", JSON.stringify(false));
+    const getStaffDetails = async () => {
+      try {
+        const url = `http://localhost:8080/db//staff/${selectedStaffEmail}`;
+        const response = await axios.get(url);
+        setStaffDetails(response.data[0]);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getStaffDetails();
     const fetchData = async () => {
       try {
         const data = await getAllAppointments(selectedStaffEmail);
@@ -198,6 +187,9 @@ const StaffCalendar = () => {
             StartTime: new Date(item.StartTime),
             EndTime: new Date(item.EndTime),
             Description: item.Description,
+            StdReg: item.Student_reg,
+            lecMail: item.Lecturer_mail,
+            Color: getColor(item.Apt_status),
           })),
           fields: {
             subject: { default: "No title is provided" },
@@ -218,13 +210,14 @@ const StaffCalendar = () => {
   };
 
   const onDragStop = (e) => {
+    sessionStorage.setItem("isDragged", JSON.stringify(true));
     updateAppointment(
       e.data.Subject,
       e.data.Description,
       e.data.StartTime,
       e.data.EndTime,
       e.data.EventType,
-      selectedAptId
+      e.data.StdReg
     );
   };
 
@@ -234,6 +227,7 @@ const StaffCalendar = () => {
   };
 
   const onResizeStop = (e) => {
+    setIsResized(true);
     updateAppointment(
       e.data.Subject,
       e.data.Description,
@@ -268,7 +262,14 @@ const StaffCalendar = () => {
                 placeholder="Choose status"
                 data-name="EventType"
                 className="e-field"
-                dataSource={["New", "Blocked", "Unable", "Confirmed"]}
+                // dataSource={["New", "Blocked", "Unable", "Confirmed"]}
+                dataSource={
+                  e.EventType === "Blocked"
+                    ? ["Blocked"]
+                    : e.EventType === "New" || e.EventType === "Unable"
+                    ? ["Unable", "Confirmed"]
+                    : ["Blocked"]
+                }
                 value="Blocked"
               />
             </td>
@@ -369,7 +370,8 @@ const StaffCalendar = () => {
     Description,
     StartTime,
     EndTime,
-    Apt_status
+    Apt_status,
+    StdReg
   ) => {
     try {
       const url = `http://localhost:8080/db/appointment`;
@@ -381,9 +383,63 @@ const StaffCalendar = () => {
         EndTime,
         Apt_status,
       });
-      console.log(response.data);
+      if (StdReg !== null) {
+        sendAppointmentChangeMail(
+          StartTime,
+          EndTime,
+          staffDetails.Email,
+          StdReg
+        );
+      }
+      sessionStorage.setItem("isDragged", JSON.stringify(false));
+      setIsResized(false);
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const getStudentDetails = async (Reg_number) => {
+    try {
+      const url = `http://localhost:8080/db/student/details/${Reg_number}`;
+      const { data } = await axios.get(url);
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getDate = (value) => {
+    const date = new Date(value);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const formattedDate = `${day}/${month}/${year}`;
+    return formattedDate;
+  };
+
+  const sendAppointmentChangeMail = async (from, to, lecMail, StdReg) => {
+    if (JSON.parse(sessionStorage.getItem("isDragged")) === true) {
+      try {
+        const student = await getStudentDetails(StdReg);
+        const stdMail = student[0].Email;
+        const url = `http://localhost:8080/mail/student/update/appointment`;
+        const subject = "Change of appointment time";
+        const content = `
+        <p>Dear student,</p>
+        <p>Your appointment with ${lecMail} has been changed.</p>
+        <h2>New Appointment Details:</h2>
+        <p>Date: ${getDate(from)}</p>
+        <p>Time: ${getTime(from)} - ${getTime(to)}</p>
+        <br>
+        <p>${staffDetails.First_name} ${staffDetails.Last_name}</p>
+        <p>${staffDetails.Email}</p>
+        <p>${staffDetails.Department}</p>
+      `;
+        const { data } = await axios.post(url, { stdMail, subject, content });
+        window.location.reload();
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -421,13 +477,14 @@ const StaffCalendar = () => {
         selectedAptId !== undefined &&
         e.type === "Editor"
       ) {
+        console.log(e.data.StdReg);
         updateAppointment(
           e.data.Subject,
           e.data.Description,
           e.data.StartTime,
           e.data.EndTime,
           e.data.EventType,
-          selectedAptId
+          e.data.StdReg
         );
         window.location.reload();
       }
