@@ -85,6 +85,10 @@ const Header = () => {
     window.location.reload();
   }
 
+  const handleAppointments = () => {
+    history.push("/staff/appointments");
+  }
+
   return (
     <div className="header">
       <img className="logo" alt="Logo" src={Logo} onClick={navigateHome} />
@@ -117,7 +121,7 @@ const Header = () => {
             <button className="loginbtn" onClick={handleLogoutButton}>
               HOME
             </button>
-            <button className="loginbtn" id="appointments">
+            <button className="loginbtn" id="appointments" onClick={handleAppointments} >
               APPOINTMENTS
             </button>
             <button

@@ -207,8 +207,7 @@ const handleStaffLogin = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-
-}
+};
 
 const getStudentRegNumber = (req, res) => {
   const { Email } = req.params;
@@ -350,11 +349,10 @@ const handleStaffLogout = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-
-}
+};
 
 const addStaff = async (req, res) => {
-  const { First_name, Last_name, Department, Email, Picture_URL, Password} =
+  const { First_name, Last_name, Department, Email, Picture_URL, Password } =
     req.body;
   const sql = `insert into LECTURER(First_name, Last_name, Department, Email, Picture_URL, Password, Original_password) values(?,?,?,?,?,?,?)`;
   try {
@@ -438,7 +436,6 @@ const getStudentDetails = (req, res) => {
   } catch (err) {
     res.status(500).json(err.message);
   }
-
 };
 
 const addTempUser = (req, res) => {
@@ -627,6 +624,23 @@ const getAllAppointments = (req, res) => {
   }
 };
 
+const getAllConfirmedAppointments = (req, res) => {
+  const { Lecturer_mail } = req.params;
+  const sql = `SELECT * FROM APPOINTMENT WHERE Lecturer_mail = ? AND Apt_status = "Confirmed" ORDER BY StartTime`;
+  try {
+    db.all(sql, [Lecturer_mail], (err, rows) => {
+      if (err) {
+        res.status(500).json(err.message);
+        res.send(400).json(err.message);
+      } else {
+        return res.json(rows);
+      }
+    });
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
 const updateAppointment = (req, res) => {
   const { Id, Subject, Description, StartTime, EndTime, Apt_status } = req.body;
   const sql = `update APPOINTMENT set Subject = ?, Description = ?, StartTime = ?, EndTime = ?, Apt_status = ? where Id = ?`;
@@ -713,4 +727,5 @@ module.exports = {
   getStaffPassword,
   getStudentDetails,
   getAppointment,
+  getAllConfirmedAppointments,
 };

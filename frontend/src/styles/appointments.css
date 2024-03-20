@@ -1,0 +1,30 @@
+.appointment-page {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
+  align-items: stretch;
+  min-height: 100vh;
+}
+
+.list-view {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  background-color: rgb(220, 237, 237);
+}
+
+/* .detailed-view {
+  width: 40%;
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+} */
+
+.apt-heading {
+  text-transform: uppercase;
+  font-size: 30px;
+  margin-bottom: 30px;
+}

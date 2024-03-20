@@ -18,6 +18,7 @@ import Department from "./components/Department";
 import StaffHome from "./components/StaffHome";
 import StudentCalendar from "./components/StudentCalendar";
 import StaffCalendar from "./components/StaffCalendar";
+import StaffAppointments from "./components/StaffAppointments";
 
 function App() {
   const [authorized, setAuthorized] = useState(false);
@@ -96,7 +97,7 @@ function App() {
         </Route>
         <Route exact path="/student/home" component={StudentHome} />
         <Route exact path="/student/department">
-          <Department staffList={staffList} />
+          <Department />
         </Route>
         <Route exact path="/student/calendar">
           <StudentCalendar />
@@ -106,6 +107,9 @@ function App() {
         </Route>
         <Route exact path="/staff/home">
           <StaffHome />
+        </Route>
+        <Route exact path="/staff/appointments">
+          <StaffAppointments />
         </Route>
       </Switch>
       <Footer />

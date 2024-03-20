@@ -1,0 +1,34 @@
+.appointment-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.appointment-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.appointment-table td:first-child {
+  width: 150px;
+  font-weight: bold;
+  color: #333;
+}
+
+.appointment-table strong {
+  font-weight: bold;
+}
+
+.apt-description {
+  width: 600px;
+  height: 250px;
+  margin-top: 20px;
+  border: 2px solid #afa3a3;
+  border-radius: 10px;
+  padding: 10px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.apt-description:hover {
+  border-color: #333131;
+  box-shadow: 0 0 30px rgba(170, 179, 188, 0.3);
+}

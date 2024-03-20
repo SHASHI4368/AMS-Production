@@ -25,6 +25,7 @@ const {
   getStaffPassword,
   getStudentDetails,
   getAppointment,
+  getAllConfirmedAppointments,
 } = require("../controllers/dbController");
 const dbRouter = require("express").Router();
 
@@ -50,6 +51,7 @@ dbRouter.get("/appointment/count/:Lecturer_mail", getAppointmentCount);
 dbRouter.get("/appointment/last", getLastAppointment);
 dbRouter.post("/appointment/add", addAppointment);
 dbRouter.get("/appointments/:Lecturer_mail", getAllAppointments);
+dbRouter.get("/appointments/confirmed/:Lecturer_mail", getAllConfirmedAppointments);
 dbRouter.get("/student/regnumber/:Email", getStudentRegNumber);
 dbRouter.put("/appointment", updateAppointment);
 dbRouter.delete("/appointment/:Id", deleteAppointment);

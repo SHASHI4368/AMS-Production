@@ -106,6 +106,12 @@ if (JSON.parse(sessionStorage.getItem("isAuthed")) !== null) {
     window.open("http://localhost:8080/auth/google", "_self");
   };
 
+  const handleEmailChange = (e) => {
+    e.preventDefault();
+    setEmail(e.target.value);
+    sessionStorage.setItem("selectedStaffEmail", JSON.stringify(e.target.value));
+  }
+
   return (
     <main className="login">
       <div className="back-img">
@@ -124,7 +130,7 @@ if (JSON.parse(sessionStorage.getItem("isAuthed")) !== null) {
                 ? JSON.parse(sessionStorage.getItem("selectedStaffEmail"))
                 : " "
             }
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleEmailChange}
           />
           <label htmlFor="password">Email</label>
           <input
