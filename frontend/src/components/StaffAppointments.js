@@ -11,7 +11,8 @@ const StaffAppointments = () => {
     try {
       const url = `http://localhost:8080/db/appointments/confirmed/${Lecturer_mail}`;
       const response = await axios.get(url);
-      return response.data;
+      console.log(response.data);
+      sessionStorage.setItem("appointments", JSON.stringify(response.data));
     } catch (err) {
       console.log(err);
     }

@@ -25,6 +25,42 @@ function App() {
 
   const [staffList, setStaffList] = useState([]);
 
+  const [selectedStaffEmail, setSelectedStaffEmail] = useState(
+    JSON.parse(sessionStorage.getItem("selectedStaffEmail"))
+  );
+
+  const [appointmentsCount, setAppointmentsCount] = useState(0);
+
+  const getAllAppointments = async (Lecturer_mail) => {
+    try {
+      const url = `http://localhost:8080/db/appointments/${Lecturer_mail}`;
+      const response = await axios.get(url);
+      return response.data.length;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedStaffEmail !== null) {
+      if (JSON.parse(sessionStorage.getItem("count")) === null) {
+        sessionStorage.setItem(
+          "count",
+          JSON.stringify(getAllAppointments(selectedStaffEmail))
+        );
+      } else {
+        const newCount = getAllAppointments(selectedStaffEmail);
+        if (newCount > JSON.parse(sessionStorage.getItem("count"))) {
+          sessionStorage.setItem(
+            "count",
+            JSON.stringify(getAllAppointments(selectedStaffEmail))
+          );
+          console.log(newCount);
+        }
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const getAllStaff = async () => {
       try {
