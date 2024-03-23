@@ -95,7 +95,7 @@ const eventTemplate = (e) => {
   );
 };
 
-const StaffCalendar = () => {
+const StaffCalendar = ({socket}) => {
   const [selectedStaffEmail, setSelectedStaffEmail] = useState(
     JSON.parse(sessionStorage.getItem("selectedStaffEmail"))
   );

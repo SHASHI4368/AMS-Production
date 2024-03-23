@@ -139,6 +139,7 @@ const handleStdLogin = async (req, res) => {
           return res.status(500).json({ error: err.message });
         }
       });
+
       res.cookie("jwt", refreshToken, {
         httpOnly: true,
         sameSite: "none",
@@ -147,6 +148,7 @@ const handleStdLogin = async (req, res) => {
       });
       // res.json({ accessToken: accessToken });
       res.json({ Status: "Success" });
+      
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -166,7 +168,6 @@ const handleStaffLogin = async (req, res) => {
       if (rows.length === 0) {
         return res.status(404).json({ message: "No user found" });
       }
-
       const foundStaff = rows[0];
       const isMatch = await bcrypt.compare(
         Original_password,
@@ -202,7 +203,7 @@ const handleStaffLogin = async (req, res) => {
         maxAge: 1000 * 60 * 60 * 24,
       });
       // res.json({ accessToken: accessToken });
-      res.json({ Status: "Success" });
+      res.json({ Status: "Success", refreshToken: refreshToken});
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -268,6 +269,50 @@ const handleStdRefreshToken = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+const handleStaffRefreshToken = async (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies.jwt) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const RefreshToken = cookies.jwt;
+  //---------------------------------------------------------
+  const sql = `select * from LECTURER where RefreshToken = ?`;
+
+  try {
+    db.all(sql, [RefreshToken], async (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (rows.length === 0) {
+        return res.status(404).json({ message: "No user found" });
+      }
+
+      const foundStaff = rows[0];
+
+      //evaluate the refresh token
+      jwt.verify(
+        RefreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        (err, decoded) => {
+          if (err || foundStaff.Email !== decoded.Email) {
+            return res.status(403).json({ message: "Invalid refresh token" });
+          }
+          const accessToken = jwt.sign(
+            { Email: foundStaff.Email },
+            process.env.ACCESS_TOKEN_SECRET,
+            { expiresIn: "60s" }
+          );
+          return res.json({ accessToken: accessToken });
+        }
+      );
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+  
 
 const handleStdLogout = async (req, res) => {
   const cookies = req.cookies;
@@ -728,4 +773,5 @@ module.exports = {
   getStudentDetails,
   getAppointment,
   getAllConfirmedAppointments,
+  handleStaffRefreshToken,
 };

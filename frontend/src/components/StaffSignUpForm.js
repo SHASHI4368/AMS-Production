@@ -16,6 +16,23 @@ const StaffSignUpForm = () => {
   const [lName, setLName] = useState("");
   const history = useHistory();
 
+  const handleStaffLogin = async (Email, Original_password) => {
+    try {
+      const url = `http://localhost:8080/db/staff/login`;
+      const response = await axios.post(url, { Email, Original_password });
+      if (response.data.Status === "Success") {
+        sessionStorage.setItem("authorized", JSON.stringify(true));
+        console.log("Login successful");
+        history.push("/staff/home");
+      } else {
+        setMessage("Invalid email or password");
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+
   useEffect(() => {
     const clearCookies = async () => {
       try {

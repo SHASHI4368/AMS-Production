@@ -3,6 +3,7 @@ import "../styles/leclogin.css";
 import { FaGoogle } from "react-icons/fa";
 import Uni from "../resources/University.jpg";
 import axios from "axios";
+import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -12,6 +13,8 @@ const StaffLoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+
+  const cookies = new Cookies();
 
   useEffect(() => {
     setEmail(JSON.parse(sessionStorage.getItem("selectedStaffEmail")));
@@ -31,7 +34,6 @@ const StaffLoginForm = () => {
     try {
       const url = `http://localhost:8080/db/staff/login`;
       const response = await axios.post(url, { Email, Original_password });
-      console.log(response);
       if (response.data.Status === "Success") {
         sessionStorage.setItem("authorized", JSON.stringify(true));
         console.log("Login successful");
@@ -55,27 +57,24 @@ const StaffLoginForm = () => {
       }
     };
     const handleLogin = async (e) => {
-if (JSON.parse(sessionStorage.getItem("isAuthed")) !== null) {
-      sessionStorage.setItem("isAuthed", JSON.stringify(false));
-      const password = await getStaffPassword(
-        JSON.parse(sessionStorage.getItem("selectedStaffEmail"))
-      );
-      handleStaffLogin(
-        JSON.parse(sessionStorage.getItem("selectedStaffEmail")),
-        password
-      );
-    }
+      if (JSON.parse(sessionStorage.getItem("isAuthed")) !== null) {
+        sessionStorage.setItem("isAuthed", JSON.stringify(false));
+        const password = await getStaffPassword(
+          JSON.parse(sessionStorage.getItem("selectedStaffEmail"))
+        );
+        handleStaffLogin(
+          JSON.parse(sessionStorage.getItem("selectedStaffEmail")),
+          password
+        );
+      }
     };
     if (JSON.parse(sessionStorage.getItem("isAuthed")) !== null) {
       handleLogin();
     }
-    
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log(email);
-    console.log(password);
     handleStaffLogin(
       JSON.parse(sessionStorage.getItem("selectedStaffEmail")),
       password
@@ -109,8 +108,11 @@ if (JSON.parse(sessionStorage.getItem("isAuthed")) !== null) {
   const handleEmailChange = (e) => {
     e.preventDefault();
     setEmail(e.target.value);
-    sessionStorage.setItem("selectedStaffEmail", JSON.stringify(e.target.value));
-  }
+    sessionStorage.setItem(
+      "selectedStaffEmail",
+      JSON.stringify(e.target.value)
+    );
+  };
 
   return (
     <main className="login">

@@ -85,7 +85,7 @@ const eventTemplate = (e) => {
   );
 };
 
-const StudentCalendar = () => {
+const StudentCalendar = ({ socket }) => {
   const [selectedStaff, setSelectedStaff] = useState(
     JSON.parse(sessionStorage.getItem("selectedStaff"))
   );
@@ -221,7 +221,9 @@ const StudentCalendar = () => {
                 data-name="EventType"
                 className="e-field"
                 // dataSource={["New", "Unable"]}
-                dataSource={e.EventType === "Unable" ? ["Unable"] : ["New", "Unable"]}
+                dataSource={
+                  e.EventType === "Unable" ? ["Unable"] : ["New", "Unable"]
+                }
                 value="New"
               />
             </td>
@@ -346,7 +348,6 @@ const StudentCalendar = () => {
         EndTime,
         selectedStaff.Email
       );
-      
     } catch (err) {
       console.log(err);
     }
@@ -427,12 +428,7 @@ const StudentCalendar = () => {
     return formattedDate;
   };
 
-  const sendAppointmentAddedMail = async (
-    description,
-    from,
-    to,
-    lecMail
-  ) => {
+  const sendAppointmentAddedMail = async (description, from, to, lecMail) => {
     const student = await getStudentDetails(
       JSON.parse(sessionStorage.getItem("regNumber"))
     );
@@ -454,18 +450,15 @@ const StudentCalendar = () => {
         <p>Description: ${description}</p>
       `;
       const { data } = await axios.post(url, { lecMail, subject, content });
-      window.location.reload();
+      // window.location.reload();
+      console.log(student[0].Reg_number);
+      socket.emit("add appointment", lecMail);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const sendAppointmentChangeMail = async (
-    description,
-    from,
-    to,
-    lecMail
-  ) => {
+  const sendAppointmentChangeMail = async (description, from, to, lecMail) => {
     const student = await getStudentDetails(
       JSON.parse(sessionStorage.getItem("regNumber"))
     );

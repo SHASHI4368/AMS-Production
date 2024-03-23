@@ -26,6 +26,7 @@ const {
   getStudentDetails,
   getAppointment,
   getAllConfirmedAppointments,
+  handleStaffRefreshToken,
 } = require("../controllers/dbController");
 const dbRouter = require("express").Router();
 
@@ -44,8 +45,9 @@ dbRouter.get("/staffList", getStaffList);
 dbRouter.post("/staff", addStaff);
 dbRouter.post("/student/login", handleStdLogin);
 dbRouter.post("/staff/login", handleStaffLogin);
-dbRouter.get("staff/logout", handleStaffLogout);
+dbRouter.get("/staff/logout", handleStaffLogout);
 dbRouter.get("/student/refresh", handleStdRefreshToken);
+dbRouter.get("/staff/refresh", handleStaffRefreshToken);
 dbRouter.get("/student/logout", handleStdLogout);
 dbRouter.get("/appointment/count/:Lecturer_mail", getAppointmentCount);
 dbRouter.get("/appointment/last", getLastAppointment);

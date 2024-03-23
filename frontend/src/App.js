@@ -19,47 +19,22 @@ import StaffHome from "./components/StaffHome";
 import StudentCalendar from "./components/StudentCalendar";
 import StaffCalendar from "./components/StaffCalendar";
 import StaffAppointments from "./components/StaffAppointments";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:8080");
 
 function App() {
+  useEffect(() => {
+    socket.on("add appointment", (apt) => {
+      if ((apt = JSON.parse(sessionStorage.getItem("selectedStaffEmail")))) {
+        alert("New appointment added");
+      }
+    });
+  }, []);
+
   const [authorized, setAuthorized] = useState(false);
 
   const [staffList, setStaffList] = useState([]);
-
-  const [selectedStaffEmail, setSelectedStaffEmail] = useState(
-    JSON.parse(sessionStorage.getItem("selectedStaffEmail"))
-  );
-
-  const [appointmentsCount, setAppointmentsCount] = useState(0);
-
-  const getAllAppointments = async (Lecturer_mail) => {
-    try {
-      const url = `http://localhost:8080/db/appointments/${Lecturer_mail}`;
-      const response = await axios.get(url);
-      return response.data.length;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    if (selectedStaffEmail !== null) {
-      if (JSON.parse(sessionStorage.getItem("count")) === null) {
-        sessionStorage.setItem(
-          "count",
-          JSON.stringify(getAllAppointments(selectedStaffEmail))
-        );
-      } else {
-        const newCount = getAllAppointments(selectedStaffEmail);
-        if (newCount > JSON.parse(sessionStorage.getItem("count"))) {
-          sessionStorage.setItem(
-            "count",
-            JSON.stringify(getAllAppointments(selectedStaffEmail))
-          );
-          console.log(newCount);
-        }
-      }
-    }
-  }, []);
 
   useEffect(() => {
     const getAllStaff = async () => {
@@ -83,25 +58,49 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const getToken = async () => {
+    const getStdToken = async () => {
+      console.log("Getting token");
       try {
         const url = `http://localhost:8080/db/student/refresh`;
         const response = await axios.get(url, {
           withCredentials: true,
         });
+        console.log(response.data.accessToken);
         const accessToken = response.data.accessToken;
         setAuthorized(true);
         return accessToken;
       } catch (err) {
-        // setAuthorized(false);
-        // sessionStorage.setItem("authorized", JSON.stringify(false));
+        setAuthorized(false);
         console.log(err);
       }
     };
 
-    if (getToken() !== undefined) {
-      setAuthorized(true);
-      // sessionStorage.setItem("authorized", JSON.stringify(true));
+    const getStaffToken = async () => {
+      console.log("Getting token");
+      try {
+        const url = `http://localhost:8080/db/staff/refresh`;
+        const response = await axios.get(url, {
+          withCredentials: true,
+        });
+        console.log(response.data.accessToken);
+        const accessToken = response.data.accessToken;
+        setAuthorized(true);
+        return accessToken;
+      } catch (err) {
+        setAuthorized(false);
+        console.log(err);
+      }
+    };
+    if (JSON.parse(sessionStorage.getItem("userType")) === "Student") {
+      if (getStdToken() !== undefined) {
+        setAuthorized(true);
+        // sessionStorage.setItem("authorized", JSON.stringify(true));
+      }
+    }else if(JSON.parse(sessionStorage.getItem("userType")) === "Staff"){
+      if (getStaffToken() !== undefined) {
+        setAuthorized(true);
+        // sessionStorage.setItem("authorized", JSON.stringify(true));
+      }
     }
   }, []);
 
@@ -111,10 +110,10 @@ function App() {
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/login/student">
-          <StudentLoginForm />
+          <StudentLoginForm socket={socket} />
         </Route>
         <Route exact path="/login/staff">
-          <StaffLoginForm />
+          <StaffLoginForm socket={socket} />
         </Route>
         <Route exact path="/signup/staff">
           <StaffSignUpForm />
@@ -136,7 +135,7 @@ function App() {
           <Department />
         </Route>
         <Route exact path="/student/calendar">
-          <StudentCalendar />
+          <StudentCalendar socket={socket} />
         </Route>
         <Route exact path="/staff/calendar">
           <StaffCalendar />

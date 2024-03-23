@@ -52,10 +52,12 @@ const Header = () => {
 
   const handleStaffLogout = async () => {
     try {
-      const url = `http://localhost:8080/auth/logout`;
-      await axios.get(url, {
+      const url = `http://localhost:8080/db/staff/logout`;
+      const response = await axios.get(url, {
         withCredentials: true,
       });
+      const accessToken = response.data.accessToken;
+      return accessToken;
     } catch (err) {
       console.log(err);
     }

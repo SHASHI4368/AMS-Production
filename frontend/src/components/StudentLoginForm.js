@@ -25,7 +25,7 @@ const StudentLoginForm = () => {
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   const handleLogin = async (Email, Password) => {
     try {
