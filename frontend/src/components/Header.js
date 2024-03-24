@@ -6,7 +6,7 @@ import { useState } from "react";
 import axios from "axios";
 import DropdownButton from "./helpers/DropdownButton";
 
-const Header = () => {
+const Header = ({ socket }) => {
   const [userType, setUserType] = useState(
     JSON.parse(sessionStorage.getItem("userType")) || "Student"
   );
@@ -43,6 +43,7 @@ const Header = () => {
       const response = await axios.get(url, {
         withCredentials: true,
       });
+      socket.disconnect();
       const accessToken = response.data.accessToken;
       return accessToken;
     } catch (err) {
@@ -56,6 +57,7 @@ const Header = () => {
       const response = await axios.get(url, {
         withCredentials: true,
       });
+      socket.disconnect();
       const accessToken = response.data.accessToken;
       return accessToken;
     } catch (err) {
@@ -69,7 +71,7 @@ const Header = () => {
       sessionStorage.setItem("authorized", JSON.stringify(false));
       sessionStorage.setItem("selectedStaffEmail", JSON.stringify(""));
       history.push("/login/staff");
-    } else {
+    } else if (userType === "Student") {
       handleStdLogout();
       sessionStorage.setItem("authorized", JSON.stringify(false));
       sessionStorage.setItem("regNumber", JSON.stringify(""));
@@ -85,11 +87,11 @@ const Header = () => {
   const handleStaffCalendar = () => {
     history.push("/staff/calendar");
     window.location.reload();
-  }
+  };
 
   const handleAppointments = () => {
     history.push("/staff/appointments");
-  }
+  };
 
   return (
     <div className="header">
@@ -123,7 +125,11 @@ const Header = () => {
             <button className="loginbtn" onClick={handleLogoutButton}>
               HOME
             </button>
-            <button className="loginbtn" id="appointments" onClick={handleAppointments} >
+            <button
+              className="loginbtn"
+              id="appointments"
+              onClick={handleAppointments}
+            >
               APPOINTMENTS
             </button>
             <button

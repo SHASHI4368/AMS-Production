@@ -162,6 +162,17 @@ const StudentCalendar = ({ socket }) => {
     };
 
     fetchData();
+    socket.on("add appointment", (msg) => {
+      if (
+        (msg.reg = JSON.parse(sessionStorage.getItem("regNumber"))) &&
+        JSON.parse(sessionStorage.getItem("userType")) === "Student"
+      ) {
+        fetchData();
+      }
+    });
+    socket.on("block time slot", () => {
+      fetchData();
+    });
   }, []);
 
   const onDragStart = (e) => {
@@ -452,7 +463,9 @@ const StudentCalendar = ({ socket }) => {
       const { data } = await axios.post(url, { lecMail, subject, content });
       // window.location.reload();
       console.log(student[0].Reg_number);
-      socket.emit("add appointment", lecMail);
+      const reg = student[0].Reg_number;
+      const msg = { lecMail, reg };
+      socket.emit("add appointment", msg);
     } catch (err) {
       console.log(err);
     }

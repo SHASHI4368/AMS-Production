@@ -5,7 +5,7 @@ import { FaGoogle } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 
-const StaffSignUpForm = () => {
+const StaffSignUpForm = ({ socket }) => {
   const [staff, setStaff] = useState(null);
   const [allStaff, setAllStaff] = useState([]);
   const [message, setMessage] = useState("");
@@ -15,23 +15,6 @@ const StaffSignUpForm = () => {
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
   const history = useHistory();
-
-  const handleStaffLogin = async (Email, Original_password) => {
-    try {
-      const url = `http://localhost:8080/db/staff/login`;
-      const response = await axios.post(url, { Email, Original_password });
-      if (response.data.Status === "Success") {
-        sessionStorage.setItem("authorized", JSON.stringify(true));
-        console.log("Login successful");
-        history.push("/staff/home");
-      } else {
-        setMessage("Invalid email or password");
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
 
   useEffect(() => {
     const clearCookies = async () => {
@@ -75,6 +58,36 @@ const StaffSignUpForm = () => {
   }, [staff]);
 
   useEffect(() => {
+    const getStaffPassword = async (Email) => {
+      try {
+        const url = `http://localhost:8080/db/staff/password/${Email}`;
+        const response = await axios.get(url);
+        return response.data[0].Original_password;
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    const handleStaffLogin = async (Email, Original_password) => {
+      try {
+        const url = `http://localhost:8080/db/staff/login`;
+        const body = { Email, Original_password };
+        const response = await axios.post(url, body, {
+          withCredentials: true,
+        });
+        if (response.data.Status === "Success") {
+          sessionStorage.setItem("authorized", JSON.stringify(true));
+          console.log("Login successful");
+          socket.connect();
+          history.push("/staff/home");
+        } else {
+          setMessage("Invalid email or password");
+        }
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+
     const checkStaffIsThere = async () => {
       try {
         const url = `http://localhost:8080/db/staff/${JSON.parse(
@@ -82,10 +95,15 @@ const StaffSignUpForm = () => {
         )}`;
         const response = await axios.get(url);
         if (response.data[0] !== undefined) {
-          sessionStorage.setItem("selectedStaffEmail", JSON.stringify(response.data[0].Email));
+          sessionStorage.setItem(
+            "selectedStaffEmail",
+            JSON.stringify(response.data[0].Email)
+          );
           sessionStorage.setItem("staffEmail", JSON.stringify(""));
           sessionStorage.setItem("isAuthed", JSON.stringify(true));
-          history.push("/login/staff");
+          const password = await getStaffPassword(response.data[0].Email);
+          handleStaffLogin(response.data[0].Email, password);
+          // history.push("/login/staff");
         }
       } catch (err) {
         console.log(err);

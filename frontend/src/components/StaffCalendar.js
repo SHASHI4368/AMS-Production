@@ -95,7 +95,7 @@ const eventTemplate = (e) => {
   );
 };
 
-const StaffCalendar = ({socket}) => {
+const StaffCalendar = ({ socket }) => {
   const [selectedStaffEmail, setSelectedStaffEmail] = useState(
     JSON.parse(sessionStorage.getItem("selectedStaffEmail"))
   );
@@ -162,6 +162,17 @@ const StaffCalendar = ({socket}) => {
     };
 
     fetchData();
+    
+    socket.on("add appointment", (msg) => {
+      if (
+        (msg.lecMail = JSON.parse(
+          sessionStorage.getItem("selectedStaffEmail")
+        )) &&
+        JSON.parse(sessionStorage.getItem("userType")) === "Staff"
+      ) {
+        fetchData();
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -199,6 +210,9 @@ const StaffCalendar = ({socket}) => {
         console.log(err);
       }
     };
+    socket.on("block time slot", () => {
+      fetchData();
+    });
 
     fetchData();
     setBlocked(false);
@@ -541,7 +555,8 @@ const StaffCalendar = ({socket}) => {
           e.data.EventType
         );
         setBlocked(true);
-        window.location.reload();
+        socket.emit("block time slot");
+        // window.location.reload();
       } else if (
         e.data !== null &&
         selectedAptId !== undefined &&

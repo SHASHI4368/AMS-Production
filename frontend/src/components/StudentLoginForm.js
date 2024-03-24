@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 import Uni from "../resources/University.jpg";
 
-const StudentLoginForm = () => {
+const StudentLoginForm = ({ socket }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -36,6 +36,7 @@ const StudentLoginForm = () => {
         sessionStorage.setItem("authorized", JSON.stringify(true));
         getRegNumber(Email);
         console.log("Login successful");
+        socket.connect();
         history.push("/student/home");
       } else {
         setMessage("Invalid email or password");

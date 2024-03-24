@@ -5,7 +5,6 @@ const passport = require("passport");
 const cookieSession = require("cookie-session");
 const passportStrategy = require("./passport");
 const authRoute = require("./routes/auth");
-const loginRoute = require("./routes/login");
 const mailRouter = require("./routes/mail");
 const dbRouter = require("./routes/db");
 const bodyParser = require("body-parser");
@@ -49,21 +48,9 @@ app.get("/clearCookies", (req, res) => {
   res.send("Cookies cleared successfully.");
 });
 
-app.use("/login", loginRoute);
 app.use("/auth", authRoute);
 app.use("/mail", mailRouter);
 app.use("/db", dbRouter);
-
-app.post("/setRefreshToken", (req, res) => {
-  const refreshToken = req.body.refreshToken;
-  res.cookie("jwt", refreshToken, {
-    httpOnly: true,
-    sameSite: "none",
-    secure: true,
-    maxAge: 1000 * 60 * 60 * 24,
-  });
-  res.send("Refresh token set successfully");
-});
 
 app.get("/db/students", (req, res) => {
   const sql = `select * from STUDENT`;
@@ -93,6 +80,9 @@ io.on("connection", (socket) => {
   socket.on("add appointment", (apt) => {
     io.emit("add appointment", apt); // Broadcast message to all connected clients
   });
+  socket.on("block time slot", ()=>{
+    io.emit("block time slot");
+  })
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });

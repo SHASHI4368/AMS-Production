@@ -21,13 +21,41 @@ import StaffCalendar from "./components/StaffCalendar";
 import StaffAppointments from "./components/StaffAppointments";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:8080");
+const URL = "http://localhost:8080";
+const socket = io(URL, {
+  autoConnect: false,
+});
 
 function App() {
+  const notify = () => {
+    if ("Notification" in window) {
+      console.log("Notifications supported");
+      if (Notification.permission === "granted") {
+        new Notification("New appointment added");
+      } else {
+        Notification.requestPermission().then((res) => {
+          if (res === "granted") {
+            new Notification("New appointment added");
+          } else if (res === "denied") {
+            console.log("Access denied");
+          } else if (res === "default") {
+            console.log("Notification permission not given");
+          }
+        });
+      }
+    } else {
+      console.log("Notifications not supported");
+    }
+  };
   useEffect(() => {
-    socket.on("add appointment", (apt) => {
-      if ((apt = JSON.parse(sessionStorage.getItem("selectedStaffEmail")))) {
-        alert("New appointment added");
+    socket.on("add appointment", (msg) => {
+      if (
+        (msg.lecMail = JSON.parse(
+          sessionStorage.getItem("selectedStaffEmail")
+        )) &&
+        JSON.parse(sessionStorage.getItem("userType")) === "Staff"
+      ) {
+        notify();
       }
     });
   }, []);
@@ -53,7 +81,6 @@ function App() {
         }
       }
     };
-
     getAllStaff();
   }, []);
 
@@ -65,8 +92,11 @@ function App() {
         const response = await axios.get(url, {
           withCredentials: true,
         });
-        console.log(response.data.accessToken);
+
         const accessToken = response.data.accessToken;
+        if (accessToken !== undefined) {
+          socket.connect();
+        }
         setAuthorized(true);
         return accessToken;
       } catch (err) {
@@ -76,14 +106,15 @@ function App() {
     };
 
     const getStaffToken = async () => {
-      console.log("Getting token");
       try {
         const url = `http://localhost:8080/db/staff/refresh`;
         const response = await axios.get(url, {
           withCredentials: true,
         });
-        console.log(response.data.accessToken);
         const accessToken = response.data.accessToken;
+        if (accessToken !== undefined) {
+          socket.connect();
+        }
         setAuthorized(true);
         return accessToken;
       } catch (err) {
@@ -96,7 +127,7 @@ function App() {
         setAuthorized(true);
         // sessionStorage.setItem("authorized", JSON.stringify(true));
       }
-    }else if(JSON.parse(sessionStorage.getItem("userType")) === "Staff"){
+    } else if (JSON.parse(sessionStorage.getItem("userType")) === "Staff") {
       if (getStaffToken() !== undefined) {
         setAuthorized(true);
         // sessionStorage.setItem("authorized", JSON.stringify(true));
@@ -106,7 +137,7 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
+      <Header socket={socket} />
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/login/student">
@@ -116,7 +147,7 @@ function App() {
           <StaffLoginForm socket={socket} />
         </Route>
         <Route exact path="/signup/staff">
-          <StaffSignUpForm />
+          <StaffSignUpForm socket={socket} />
         </Route>
         <Route exact path="/signup/student">
           <StudentSignUpForm />
@@ -138,7 +169,7 @@ function App() {
           <StudentCalendar socket={socket} />
         </Route>
         <Route exact path="/staff/calendar">
-          <StaffCalendar />
+          <StaffCalendar socket={socket} />
         </Route>
         <Route exact path="/staff/home">
           <StaffHome />

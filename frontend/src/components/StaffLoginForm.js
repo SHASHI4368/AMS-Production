@@ -3,40 +3,25 @@ import "../styles/leclogin.css";
 import { FaGoogle } from "react-icons/fa";
 import Uni from "../resources/University.jpg";
 import axios from "axios";
-import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-const StaffLoginForm = () => {
+const StaffLoginForm = ({ socket }) => {
   const history = useHistory();
   const [staff, setStaff] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const cookies = new Cookies();
-
-  useEffect(() => {
-    setEmail(JSON.parse(sessionStorage.getItem("selectedStaffEmail")));
-    const getStaffPassword = async (Email) => {
-      try {
-        const url = `http://localhost:8080/db/staff/password/${Email}`;
-        const response = await axios.get(url);
-        setPassword(response.data[0].Original_password);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getStaffPassword(JSON.parse(sessionStorage.getItem("selectedStaffEmail")));
-  }, []);
-
   const handleStaffLogin = async (Email, Original_password) => {
     try {
       const url = `http://localhost:8080/db/staff/login`;
-      const response = await axios.post(url, { Email, Original_password });
+      const body = { Email, Original_password };
+      const response = await axios.post(url, body, { withCredentials: true });
       if (response.data.Status === "Success") {
         sessionStorage.setItem("authorized", JSON.stringify(true));
         console.log("Login successful");
+        socket.connect();
         history.push("/staff/home");
       } else {
         setMessage("Invalid email or password");
@@ -46,39 +31,16 @@ const StaffLoginForm = () => {
     }
   };
 
-  useEffect(() => {
-    const getStaffPassword = async (Email) => {
-      try {
-        const url = `http://localhost:8080/db/staff/password/${Email}`;
-        const response = await axios.get(url);
-        return response.data[0].Original_password;
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    const handleLogin = async (e) => {
-      if (JSON.parse(sessionStorage.getItem("isAuthed")) !== null) {
-        sessionStorage.setItem("isAuthed", JSON.stringify(false));
-        const password = await getStaffPassword(
-          JSON.parse(sessionStorage.getItem("selectedStaffEmail"))
-        );
-        handleStaffLogin(
-          JSON.parse(sessionStorage.getItem("selectedStaffEmail")),
-          password
-        );
-      }
-    };
-    if (JSON.parse(sessionStorage.getItem("isAuthed")) !== null) {
-      handleLogin();
-    }
-  }, []);
-
   const handleLogin = async (e) => {
     e.preventDefault();
-    handleStaffLogin(
-      JSON.parse(sessionStorage.getItem("selectedStaffEmail")),
-      password
-    );
+    if (email !== "" || password !== "") {
+      handleStaffLogin(
+        JSON.parse(sessionStorage.getItem("selectedStaffEmail")),
+        password
+      );
+    } else {
+      setMessage("Please fill all the fields");
+    }
   };
 
   useEffect(() => {
