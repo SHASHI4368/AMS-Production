@@ -27,28 +27,30 @@ const StaffAppointments = () => {
   }, []);
 
   return (
-    <main className="appointment-page">
-      <h1 className="apt-heading">Upcomming appointments</h1>
-
-      <div className="list-view">
-        {appointments &&
-          JSON.parse(sessionStorage.getItem("appointments"))
-            .filter((appointment) => {
-              // Extract the date from the appointment
-              const appointmentDate = new Date(appointment.StartTime);
-              // Get the current date
-              const currentDate = new Date();
-              // Return true if the appointment date is on or before the current date
-              return appointmentDate <= currentDate;
-            })
-            .map((appointment, index) => (
-              <ListAppointment appointment={appointment} key={index} />
-            ))}
+    <div className="appointments">
+      <div className="appointment-header">
+        <div className="apt-number heading">
+          <span>No.</span>
+        </div>
+        <div className="apt-student heading">
+          <span>Student</span>
+        </div>
+        <div className="apt-reason heading">
+          <span>Reason</span>
+        </div>
+        <div className="apt-details heading">
+          <span>Appointment</span>
+        </div>
+        <div className="apt-status heading">
+          <span>Status</span>
+        </div>
       </div>
-      {/* <div className="detailed-view">
-        <h1>Appointment details</h1>
-      </div> */}
-    </main>
+      {JSON.parse(sessionStorage.getItem("appointments")).map(
+        (appointment, index) => (
+          <ListAppointment key={index} appointment={appointment} />
+        )
+      )}
+    </div>
   );
 };
 

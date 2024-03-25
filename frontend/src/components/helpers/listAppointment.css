@@ -1,34 +1,81 @@
-.appointment-table {
-  width: 100%;
-  border-collapse: collapse;
+.apt-description .appointment-header {
+  background-color: #ebf171;
+  font-weight: 400;
+  transition: all 0.5s ease;
 }
 
-.appointment-table td {
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
+.apt-description .appointment-header:hover {
+  box-shadow: #333 0px 0px 10px;
 }
 
-.appointment-table td:first-child {
-  width: 150px;
-  font-weight: bold;
+.apt-description .apt-number-val {
+  font-weight: 400;
+  font-size: 18px;
   color: #333;
+  background-color: aliceblue;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.appointment-table strong {
-  font-weight: bold;
+.apt-description .apt-number {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.apt-description {
-  width: 600px;
-  height: 250px;
-  margin-top: 20px;
-  border: 2px solid #afa3a3;
-  border-radius: 10px;
-  padding: 10px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+.apt-description .apt-student div {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  margin-left: 10px;
+  font-weight: 400;
+  text-transform: capitalize;
+  font-size: 18px;
+  justify-content: center;
 }
 
-.apt-description:hover {
-  border-color: #333131;
-  box-shadow: 0 0 30px rgba(170, 179, 188, 0.3);
+.apt-description .apt-reason div {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  margin-left: 10px;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 18px;
+  justify-content: center;
+}
+
+.apt-description .apt-reason .subject {
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  text-transform: capitalize;
+}
+
+.apt-description .apt-details div {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 18px;
+  justify-content: center;
+  align-items: center;
+}
+
+.apt-description .apt-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+  text-transform: capitalize;
+  font-size: 18px;
+  text-align: center;
 }
