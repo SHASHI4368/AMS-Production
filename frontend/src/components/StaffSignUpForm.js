@@ -203,12 +203,12 @@ const StaffSignUpForm = ({ socket }) => {
     e.preventDefault();
     if (staffEmail === "") {
       setMessage("Email is required");
-      console.log(message);
+    }else if (!staffEmail.includes("eng.ruh.ac.lk")) {
+      setMessage("Please enter a valid email");
     } else {
       const code = `${Math.floor(Math.random() * 10)}${Math.floor(
         Math.random() * 10
       )}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}`;
-      // setPassCode(code);
       const lec = allStaff.find((stf) => stf.Email === staffEmail);
       const tempUser = tempUsers.find((temp) => temp.Email === staffEmail);
       if (!lec && (!tempUser || !tempUser.Verified)) {
@@ -219,7 +219,6 @@ const StaffSignUpForm = ({ socket }) => {
         if (tempUser && !tempUser.Verified) {
           updateVerificationCode(staffEmail, code);
         }
-        // sessionStorage.setItem("stdEmail", JSON.stringify(stdEmail));
         history.push("/signup/verify");
       } else {
         setMessage("Email already exists");

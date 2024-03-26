@@ -1,6 +1,6 @@
 const router = require("express").Router();
 require("dotenv").config();
-require('../passport');
+require("../passport");
 const passport = require("passport");
 
 router.get("/login/success", (req, res) => {
@@ -31,7 +31,6 @@ router.get(
     failureRedirect: "/login/failed",
   })
 );
-
 
 router.get("/logout", (req, res) => {
   req.logout();

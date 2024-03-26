@@ -92,15 +92,12 @@ const StudentSignUpForm = (
     e.preventDefault();
     if (stdEmail === "") {
       setMessage("Email is required");
-      console.log(message);
     } else if (!stdEmail.includes("engug.ruh.ac.lk")) {
       setMessage("Please enter a valid email");
-      console.log(message);
     } else {
       const code = `${Math.floor(Math.random() * 10)}${Math.floor(
         Math.random() * 10
       )}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}`;
-      // setPassCode(code);
       const student = students.find((student) => student.Email === stdEmail);
       const tempUser = tempUsers.find(
         (tempUser) => tempUser.Email === stdEmail

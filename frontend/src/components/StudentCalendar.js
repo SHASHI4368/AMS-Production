@@ -173,6 +173,9 @@ const StudentCalendar = ({ socket }) => {
     socket.on("block time slot", () => {
       fetchData();
     });
+    socket.on("delete appointment", () => {
+      fetchData();
+    });
   }, []);
 
   const onDragStart = (e) => {
@@ -370,6 +373,7 @@ const StudentCalendar = ({ socket }) => {
     if (e.data != null) {
       if (e.type === "DeleteAlert") {
         deleteAppointment(selectedAptId);
+        
       } else if (
         e.data.Subject !== "No title is provided" &&
         selectedAptId === undefined
@@ -414,7 +418,7 @@ const StudentCalendar = ({ socket }) => {
     try {
       const url = `http://localhost:8080/db/appointment/${Id}`;
       const response = await axios.delete(url);
-      console.log(response.data);
+      socket.emit("delete appointment");
     } catch (err) {
       console.log(err);
     }
@@ -461,7 +465,6 @@ const StudentCalendar = ({ socket }) => {
         <p>Description: ${description}</p>
       `;
       const { data } = await axios.post(url, { lecMail, subject, content });
-      // window.location.reload();
       console.log(student[0].Reg_number);
       const reg = student[0].Reg_number;
       const msg = { lecMail, reg };

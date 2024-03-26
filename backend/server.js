@@ -83,6 +83,9 @@ io.on("connection", (socket) => {
   socket.on("block time slot", ()=>{
     io.emit("block time slot");
   })
+  socket.on("delete appointment", () => {
+    io.emit("delete appointment");
+  });
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
