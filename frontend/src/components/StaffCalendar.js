@@ -162,7 +162,7 @@ const StaffCalendar = ({ socket }) => {
     };
 
     fetchData();
-    
+
     socket.on("add appointment", (msg) => {
       if (
         (msg.lecMail = JSON.parse(
@@ -172,6 +172,9 @@ const StaffCalendar = ({ socket }) => {
       ) {
         fetchData();
       }
+    });
+    socket.on("delete appointment", () => {
+      fetchData();
     });
   }, []);
 
@@ -210,9 +213,12 @@ const StaffCalendar = ({ socket }) => {
         console.log(err);
       }
     };
-    socket.on("block time slot", () => {
+    socket.on("delete appointment", () => {
       fetchData();
     });
+    // socket.on("block time slot", () => {
+    //   fetchData();
+    // });
 
     fetchData();
     setBlocked(false);
@@ -555,7 +561,7 @@ const StaffCalendar = ({ socket }) => {
           e.data.EventType
         );
         setBlocked(true);
-        socket.emit("block time slot");
+        // socket.emit("block time slot");
         // window.location.reload();
       } else if (
         e.data !== null &&
@@ -589,7 +595,7 @@ const StaffCalendar = ({ socket }) => {
     try {
       const url = `http://localhost:8080/db/appointment/${Id}`;
       const response = await axios.delete(url);
-      console.log(response.data);
+      socket.emit("delete appointment");
     } catch (err) {
       console.log(err);
     }

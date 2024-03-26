@@ -170,7 +170,7 @@ const StudentCalendar = ({ socket }) => {
         fetchData();
       }
     });
-    socket.on("block time slot", () => {
+    socket.on("delete appointment", () => {
       fetchData();
     });
   }, []);
