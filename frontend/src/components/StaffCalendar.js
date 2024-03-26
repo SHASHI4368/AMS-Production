@@ -4,6 +4,7 @@ import axios from "axios";
 import {
   Inject,
   ScheduleComponent,
+  ButtonComponent,
   Day,
   Week,
   Month,
@@ -17,7 +18,7 @@ import {
 } from "@syncfusion/ej2-react-schedule";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
-import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
+
 import { L10n } from "@syncfusion/ej2-base";
 import ColorCode from "./helpers/ColorCode";
 
@@ -161,7 +162,7 @@ const StaffCalendar = ({ socket }) => {
     };
 
     fetchData();
-
+    
     socket.on("add appointment", (msg) => {
       if (
         (msg.lecMail = JSON.parse(
@@ -171,10 +172,6 @@ const StaffCalendar = ({ socket }) => {
       ) {
         fetchData();
       }
-    });
-
-    socket.on("delete appointment", () => {
-      fetchData();
     });
   }, []);
 
@@ -213,17 +210,6 @@ const StaffCalendar = ({ socket }) => {
         console.log(err);
       }
     };
-    socket.on("add appointment", (msg) => {
-      if (
-        (msg.lecMail = JSON.parse(
-          sessionStorage.getItem("selectedStaffEmail")
-        )) &&
-        JSON.parse(sessionStorage.getItem("userType")) === "Staff"
-      ) {
-        fetchData();
-      }
-    });
-
     socket.on("block time slot", () => {
       fetchData();
     });
@@ -375,7 +361,7 @@ const StaffCalendar = ({ socket }) => {
         EndTime,
         Apt_status,
       });
-      socket.emit("block time slot");
+      console.log(response.data);
     } catch (err) {
       if (err.response) {
         console.log(err.response.data.message);
@@ -391,6 +377,7 @@ const StaffCalendar = ({ socket }) => {
     try {
       const url = `http://localhost:8080/db/appointment/last`;
       const response = await axios.get(url);
+      console.log(response.data);
       if (response.data.length === 0) {
         return 1;
       } else {
@@ -542,11 +529,15 @@ const StaffCalendar = ({ socket }) => {
 
   const onPopupClose = async (e) => {
     console.log(e.type);
+    console.log(e.data);
     if (e.data != null) {
       if (e.type === "DeleteAlert") {
         deleteAppointment(selectedAptId);
-        socket.emit("delete appointment");
-      } else if (selectedAptId === undefined && e.type === "Editor") {
+      } else if (
+        // e.data.Subject !== "No title is provided" &&
+        selectedAptId === undefined &&
+        e.type === "Editor"
+      ) {
         const lastId = await getLastAppointment();
         console.log(lastId);
         addAppointment(
@@ -563,8 +554,9 @@ const StaffCalendar = ({ socket }) => {
           e.data.EndTime,
           e.data.EventType
         );
-        socket.emit("block time slot");
         setBlocked(true);
+        socket.emit("block time slot");
+        // window.location.reload();
       } else if (
         e.data !== null &&
         selectedAptId !== undefined &&
@@ -590,19 +582,17 @@ const StaffCalendar = ({ socket }) => {
 
   const onPopupOpen = (e) => {
     setSelectedAptId(e.data.Id);
+    console.log(e);
   };
 
   const deleteAppointment = async (Id) => {
     try {
       const url = `http://localhost:8080/db/appointment/${Id}`;
       const response = await axios.delete(url);
+      console.log(response.data);
     } catch (err) {
       console.log(err);
     }
-  };
-
-  const onDeleteClick = () => {
-    console.log("Delete");
   };
 
   return (
@@ -611,9 +601,6 @@ const StaffCalendar = ({ socket }) => {
         <ColorCode />
       </div>
       <div className="calendar">
-        <ButtonComponent id="delete" title="Delete" onClick={onDeleteClick}>
-          Delete
-        </ButtonComponent>
         <ScheduleComponent
           currentView="Day"
           eventSettings={{
