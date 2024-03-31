@@ -2,6 +2,8 @@ const nodemailer = require("nodemailer");
 const MailGen = require("mailgen");
 const { EMAIL, PASSWORD } = require("./credendials");
 
+const proxy = "http://192.168.49.1:8282";
+
 const sendMail = (req, res) => {
   const { user, code } = req.body;
   let config = {
@@ -10,6 +12,8 @@ const sendMail = (req, res) => {
       user: EMAIL,
       pass: PASSWORD,
     },
+    secure: true,
+    proxy: proxy,
   };
 
   let transporter = nodemailer.createTransport(config);
@@ -64,6 +68,8 @@ const sendVerificationMail = (req, res) => {
       user: EMAIL,
       pass: PASSWORD,
     },
+    secure: true,
+    proxy: proxy,
   };
 
   let transporter = nodemailer.createTransport(config);
@@ -97,6 +103,8 @@ const sendAppointmentAddedMail = (req, res) => {
       user: EMAIL,
       pass: PASSWORD,
     },
+    secure: true,
+    proxy: proxy,
   };
   let transporter = nodemailer.createTransport(config);
   let message = {
@@ -125,6 +133,8 @@ const sendAppointmentUpdateMail = (req, res) => {
       user: EMAIL,
       pass: PASSWORD,
     },
+    secure: true,
+    proxy: proxy,
   };
   let transporter = nodemailer.createTransport(config);
   let message = {
