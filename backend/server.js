@@ -80,10 +80,11 @@ io.on("connection", (socket) => {
   socket.on("add appointment", (apt) => {
     io.emit("add appointment", apt); 
   });
-  // socket.on("block time slot", ()=>{
-  //   io.emit("block time slot");
-  // })
+  socket.on("block time slot", ()=>{
+    io.emit("block time slot");
+  })
   socket.on("delete appointment", (apt) => {
+    
     io.emit("delete appointment", apt); 
   });
   socket.on("disconnect", () => {

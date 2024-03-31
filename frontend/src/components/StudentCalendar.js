@@ -127,40 +127,38 @@ const StudentCalendar = ({ socket }) => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getAllAppointments(selectedStaff.Email);
-        setAppointments({
-          dataSource: data.map((item) => ({
-            Id: item.Id,
-            Subject:
-              item.Student_reg ===
-              JSON.parse(sessionStorage.getItem("regNumber"))
-                ? item.Subject
-                : item.Subject === "Blocked"
-                ? "Blocked"
-                : "Reserverd",
-            EventType: item.Apt_status,
-            StartTime: new Date(item.StartTime),
-            EndTime: new Date(item.EndTime),
-            Description: item.Description,
-            IsBlock:
-              item.Student_reg ===
-              JSON.parse(sessionStorage.getItem("regNumber"))
-                ? false
-                : true,
-            Color: getColor(item.Apt_status),
-          })),
-          fields: {
-            subject: { default: "No title is provided" },
-          },
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const data = await getAllAppointments(selectedStaff.Email);
+      setAppointments({
+        dataSource: data.map((item) => ({
+          Id: item.Id,
+          Subject:
+            item.Student_reg === JSON.parse(sessionStorage.getItem("regNumber"))
+              ? item.Subject
+              : item.Subject === "Blocked"
+              ? "Blocked"
+              : "Reserverd",
+          EventType: item.Apt_status,
+          StartTime: new Date(item.StartTime),
+          EndTime: new Date(item.EndTime),
+          Description: item.Description,
+          IsBlock:
+            item.Student_reg === JSON.parse(sessionStorage.getItem("regNumber"))
+              ? false
+              : true,
+          Color: getColor(item.Apt_status),
+        })),
+        fields: {
+          subject: { default: "No title is provided" },
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
     socket.on("add appointment", (msg) => {
       if (
@@ -174,6 +172,12 @@ const StudentCalendar = ({ socket }) => {
       fetchData();
     });
   }, []);
+
+  useEffect(() => {
+    socket.on("block time slot", () => {
+      fetchData();
+    });
+  }, [socket]);
 
   const onDragStart = (e) => {
     e.interval = 10;
@@ -352,7 +356,6 @@ const StudentCalendar = ({ socket }) => {
         EndTime,
         Apt_status,
       });
-      console.log(selectedStaff.Email);
       sendAppointmentChangeMail(
         Description,
         StartTime,
@@ -369,7 +372,14 @@ const StudentCalendar = ({ socket }) => {
     console.log(e.data);
     if (e.data != null) {
       if (e.type === "DeleteAlert") {
-        deleteAppointment(selectedAptId);
+        deleteAppointment(
+          e.data.Subject,
+          e.data.Description,
+          e.data.StartTime,
+          e.data.EndTime,
+          e.data.EventType,
+          selectedAptId
+        );
       } else if (
         e.data.Subject !== "No title is provided" &&
         selectedAptId === undefined
@@ -410,11 +420,16 @@ const StudentCalendar = ({ socket }) => {
     console.log(e);
   };
 
-  const deleteAppointment = async (Id) => {
+  const deleteAppointment = async (Description, StartTime, EndTime) => {
     try {
-      const url = `http://localhost:8080/db/appointment/${Id}`;
+      const url = `http://localhost:8080/db/appointment/${selectedAptId}`;
       const response = await axios.delete(url);
-      console.log(response.data);
+      sendAppointmentDeleteMail(
+        Description,
+        StartTime,
+        EndTime,
+        selectedStaff.Email
+      );
     } catch (err) {
       console.log(err);
     }
@@ -461,7 +476,6 @@ const StudentCalendar = ({ socket }) => {
         <p>Description: ${description}</p>
       `;
       const { data } = await axios.post(url, { lecMail, subject, content });
-      // window.location.reload();
       console.log(student[0].Reg_number);
       const reg = student[0].Reg_number;
       const msg = { lecMail, reg };
@@ -494,6 +508,34 @@ const StudentCalendar = ({ socket }) => {
       `;
       const { data } = await axios.post(url, { lecMail, subject, content });
       window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const sendAppointmentDeleteMail = async (description, from, to, lecMail) => {
+    const student = await getStudentDetails(
+      JSON.parse(sessionStorage.getItem("regNumber"))
+    );
+    try {
+      const url = `http://localhost:8080/mail/student/request/appointment`;
+      const subject = "Student removed the appointment";
+      const content = `
+        <h2>Student Details:</h2>
+        <p>Reg Number: ${student[0].Reg_number}</p>
+        <p>Name: ${student[0].First_name} ${student[0].Last_name}</p>
+        <p>Department: ${student[0].Department}</p>
+        <p>Email: ${student[0].Email}</p>
+        <p>Batch: ${student[0].Batch}</p>
+        <br>
+        <h2>Appointment Description:</h2>
+        <p>Subject: ${subject}</p>
+        <p>Date: ${getDate(from)}</p>
+        <p>Time: ${getTime(from)} - ${getTime(to)}</p>
+        <p>Description: ${description}</p>
+      `;
+      const { data } = await axios.post(url, { lecMail, subject, content });
+      socket.emit("delete appointment");
     } catch (err) {
       console.log(err);
     }

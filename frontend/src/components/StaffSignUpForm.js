@@ -204,6 +204,8 @@ const StaffSignUpForm = ({ socket }) => {
     if (staffEmail === "") {
       setMessage("Email is required");
       console.log(message);
+    } else if (!staffEmail.includes("eng.ruh.ac.lk")) {
+      setMessage("Please enter a valid email");
     } else {
       const code = `${Math.floor(Math.random() * 10)}${Math.floor(
         Math.random() * 10

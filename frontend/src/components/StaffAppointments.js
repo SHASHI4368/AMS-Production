@@ -12,7 +12,7 @@ const StaffAppointments = () => {
       const url = `http://localhost:8080/db/appointments/confirmed/${Lecturer_mail}`;
       const response = await axios.get(url);
       console.log(response.data);
-      sessionStorage.setItem("appointments", JSON.stringify(response.data));
+      setAppointments(response.data);
     } catch (err) {
       console.log(err);
     }
@@ -45,10 +45,12 @@ const StaffAppointments = () => {
           <span>Status</span>
         </div>
       </div>
-      {JSON.parse(sessionStorage.getItem("appointments")).map(
-        (appointment, index) => (
+      {appointments !== null && appointments.length > 0 ? (
+        appointments.map((appointment, index) => (
           <ListAppointment key={index} appointment={appointment} />
-        )
+        ))
+      ) : (
+        <div className="no-appointments">No appointments</div>
       )}
     </div>
   );

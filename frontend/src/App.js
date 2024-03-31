@@ -27,15 +27,14 @@ const socket = io(URL, {
 });
 
 function App() {
-  const notify = () => {
+  const notify = (msg) => {
     if ("Notification" in window) {
-      console.log("Notifications supported");
       if (Notification.permission === "granted") {
-        new Notification("New appointment added");
+        new Notification(msg);
       } else {
         Notification.requestPermission().then((res) => {
           if (res === "granted") {
-            new Notification("New appointment added");
+            new Notification(msg);
           } else if (res === "denied") {
             console.log("Access denied");
           } else if (res === "default") {
@@ -55,7 +54,19 @@ function App() {
         )) &&
         JSON.parse(sessionStorage.getItem("userType")) === "Staff"
       ) {
-        notify();
+        notify("New appointment added!");
+      }
+    });
+
+    socket.on("delete appointment", (msg) => {
+      if (
+        (msg.lecMail = JSON.parse(
+          sessionStorage.getItem("selectedStaffEmail")
+        )) &&
+        JSON.parse(sessionStorage.getItem("userType")) === "Staff" &&
+        msg.EventType !== "Blocked"
+      ) {
+        notify("Appointment deleted!");
       }
     });
   }, []);
