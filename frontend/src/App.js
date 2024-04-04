@@ -19,6 +19,8 @@ import StaffHome from "./components/StaffHome";
 import StudentCalendar from "./components/StudentCalendar";
 import StaffCalendar from "./components/StaffCalendar";
 import StaffAppointments from "./components/StaffAppointments";
+import { message } from "antd";
+
 import { io } from "socket.io-client";
 
 const URL = "http://localhost:8080";
@@ -28,6 +30,7 @@ const socket = io(URL, {
 
 function App() {
   const notify = (msg) => {
+    message.success(msg);
     if ("Notification" in window) {
       if (Notification.permission === "granted") {
         new Notification(msg);
@@ -46,6 +49,7 @@ function App() {
       console.log("Notifications not supported");
     }
   };
+
   useEffect(() => {
     socket.on("add appointment", (msg) => {
       if (
@@ -69,7 +73,18 @@ function App() {
         notify("Appointment deleted!");
       }
     });
-  }, []);
+
+    socket.on("change appointment", (msg) => {
+      if (
+        (msg.lecMail = JSON.parse(
+          sessionStorage.getItem("selectedStaffEmail")
+        )) &&
+        JSON.parse(sessionStorage.getItem("userType")) === "Staff"
+      ) {
+        notify("Appointment changed!");
+      }
+    });
+  }, [socket]);
 
   const [authorized, setAuthorized] = useState(false);
 
@@ -186,7 +201,7 @@ function App() {
           <StaffHome />
         </Route>
         <Route exact path="/staff/appointments">
-          <StaffAppointments />
+          <StaffAppointments socket={socket} />
         </Route>
       </Switch>
       <Footer />

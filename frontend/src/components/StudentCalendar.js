@@ -160,6 +160,12 @@ const StudentCalendar = ({ socket }) => {
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    socket.on("block time slot", () => {
+      fetchData();
+    });
     socket.on("add appointment", (msg) => {
       if (
         (msg.reg = JSON.parse(sessionStorage.getItem("regNumber"))) &&
@@ -171,10 +177,8 @@ const StudentCalendar = ({ socket }) => {
     socket.on("delete appointment", () => {
       fetchData();
     });
-  }, []);
 
-  useEffect(() => {
-    socket.on("block time slot", () => {
+    socket.on("change appointment", (msg) => {
       fetchData();
     });
   }, [socket]);
@@ -373,12 +377,10 @@ const StudentCalendar = ({ socket }) => {
     if (e.data != null) {
       if (e.type === "DeleteAlert") {
         deleteAppointment(
-          e.data.Subject,
           e.data.Description,
           e.data.StartTime,
           e.data.EndTime,
-          e.data.EventType,
-          selectedAptId
+          e.data.EventType
         );
       } else if (
         e.data.Subject !== "No title is provided" &&
@@ -420,7 +422,12 @@ const StudentCalendar = ({ socket }) => {
     console.log(e);
   };
 
-  const deleteAppointment = async (Description, StartTime, EndTime) => {
+  const deleteAppointment = async (
+    Description,
+    StartTime,
+    EndTime,
+    EventType
+  ) => {
     try {
       const url = `http://localhost:8080/db/appointment/${selectedAptId}`;
       const response = await axios.delete(url);
@@ -428,7 +435,8 @@ const StudentCalendar = ({ socket }) => {
         Description,
         StartTime,
         EndTime,
-        selectedStaff.Email
+        selectedStaff.Email,
+        EventType
       );
     } catch (err) {
       console.log(err);
@@ -455,6 +463,7 @@ const StudentCalendar = ({ socket }) => {
   };
 
   const sendAppointmentAddedMail = async (description, from, to, lecMail) => {
+    console.log("Sending email");
     const student = await getStudentDetails(
       JSON.parse(sessionStorage.getItem("regNumber"))
     );
@@ -486,6 +495,7 @@ const StudentCalendar = ({ socket }) => {
   };
 
   const sendAppointmentChangeMail = async (description, from, to, lecMail) => {
+    console.log("Sending email");
     const student = await getStudentDetails(
       JSON.parse(sessionStorage.getItem("regNumber"))
     );
@@ -507,13 +517,21 @@ const StudentCalendar = ({ socket }) => {
         <p>Description: ${description}</p>
       `;
       const { data } = await axios.post(url, { lecMail, subject, content });
-      window.location.reload();
+      // const reg = student[0].Reg_number;
+      const msg = { lecMail };
+      socket.emit("change appointment", msg);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const sendAppointmentDeleteMail = async (description, from, to, lecMail) => {
+  const sendAppointmentDeleteMail = async (
+    description,
+    from,
+    to,
+    lecMail,
+    EventType
+  ) => {
     const student = await getStudentDetails(
       JSON.parse(sessionStorage.getItem("regNumber"))
     );
@@ -535,7 +553,8 @@ const StudentCalendar = ({ socket }) => {
         <p>Description: ${description}</p>
       `;
       const { data } = await axios.post(url, { lecMail, subject, content });
-      socket.emit("delete appointment");
+      const msg = { lecMail, EventType };
+      socket.emit("delete appointment", msg);
     } catch (err) {
       console.log(err);
     }

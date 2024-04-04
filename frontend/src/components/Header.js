@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Logo from "../resources/Logo.png";
+import Logo from "../resources/Logo2.png";
 import "../styles/header.css";
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
@@ -93,13 +93,21 @@ const Header = ({ socket }) => {
     history.push("/staff/appointments");
   };
 
+  const handleStudentHomeButton = () => {
+    history.push("/student/home");
+  };
+
+  const handleStaffHomeButton = () => {
+    history.push("/staff/home");
+  };
+
   return (
     <div className="header">
       <img className="logo" alt="Logo" src={Logo} onClick={navigateHome} />
       {JSON.parse(sessionStorage.getItem("authorized")) === true &&
         JSON.parse(sessionStorage.getItem("userType")) === "Student" && (
           <div className="buttons">
-            <button className="loginbtn" onClick={handleLogoutButton}>
+            <button className="loginbtn" onClick={handleStudentHomeButton}>
               HOME
             </button>
             <DropdownButton
@@ -122,7 +130,7 @@ const Header = ({ socket }) => {
       {JSON.parse(sessionStorage.getItem("authorized")) === true &&
         JSON.parse(sessionStorage.getItem("userType")) === "Staff" && (
           <div className="buttons">
-            <button className="loginbtn" onClick={handleLogoutButton}>
+            <button className="loginbtn" onClick={handleStaffHomeButton}>
               HOME
             </button>
             <button

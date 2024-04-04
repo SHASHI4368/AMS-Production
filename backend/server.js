@@ -84,9 +84,13 @@ io.on("connection", (socket) => {
     io.emit("block time slot");
   })
   socket.on("delete appointment", (apt) => {
-    
     io.emit("delete appointment", apt); 
   });
+
+  socket.on("change appointment", (apt) => {
+    io.emit("change appointment", apt); 
+  });
+
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });

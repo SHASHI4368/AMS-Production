@@ -3,39 +3,42 @@ const passport = require("passport");
 
 /* When using proxy */
 
-var strategy = new GoogleStrategy(
-  {
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "/auth/google/callback",
-    scope: ["profile", "email"],
-  },
-  function (accessToken, refreshToken, profile, callback) {
-    callback(null, profile);
-  }
-);
+// const myProxy = "http://192.168.49.1:8282";
+// const myProxy = "http://10.50.225.222:3128";
 
-var {HttpsProxyAgent} = require("https-proxy-agent");
-  var proxy = new HttpsProxyAgent("http://192.168.49.1:8282");
-  strategy._oauth2.setAgent(proxy);
+// var strategy = new GoogleStrategy(
+//   {
+//     clientID: process.env.CLIENT_ID,
+//     clientSecret: process.env.CLIENT_SECRET,
+//     callbackURL: "/auth/google/callback",
+//     scope: ["profile", "email"],
+//   },
+//   function (accessToken, refreshToken, profile, callback) {
+//     callback(null, profile);
+//   }
+// );
 
-passport.use(strategy);
+// var {HttpsProxyAgent} = require("https-proxy-agent");
+//   var proxy = new HttpsProxyAgent(myProxy);
+//   strategy._oauth2.setAgent(proxy);
+
+// passport.use(strategy);
 
 
 /*When not using proxy*/
-// passport.use(
-//   new GoogleStrategy(
-//     {
-//       clientID: process.env.CLIENT_ID,
-//       clientSecret: process.env.CLIENT_SECRET,
-//       callbackURL: "/auth/google/callback",
-//       scope: ["profile", "email"],
-//     },
-//     function (accessToken, refreshToken, profile, callback) {
-//       callback(null, profile);
-//     }
-//   )
-// );
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      callbackURL: "/auth/google/callback",
+      scope: ["profile", "email"],
+    },
+    function (accessToken, refreshToken, profile, callback) {
+      callback(null, profile);
+    }
+  )
+);
 
 passport.serializeUser((user, done) => {
   done(null, user);

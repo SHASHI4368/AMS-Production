@@ -4,7 +4,7 @@ import { useState } from "react";
 import axios, { all } from "axios";
 import ListAppointment from "./helpers/ListAppointment";
 
-const StaffAppointments = () => {
+const StaffAppointments = ({ socket }) => {
   const [appointments, setAppointments] = useState([]);
 
   const getAllAppointments = async (Lecturer_mail) => {
@@ -25,6 +25,29 @@ const StaffAppointments = () => {
       )
     );
   }, []);
+
+  useEffect(() => {
+    const mail = JSON.parse(sessionStorage.getItem("selectedStaffEmail"));
+    socket.on("block time slot", () => {
+      setAppointments(getAllAppointments(mail));
+    });
+    socket.on("add appointment", (msg) => {
+      if (
+        (msg.lecMail = JSON.parse(
+          sessionStorage.getItem("selectedStaffEmail")
+        )) &&
+        JSON.parse(sessionStorage.getItem("userType")) === "Staff"
+      ) {
+        setAppointments(getAllAppointments(mail));
+      }
+    });
+    socket.on("delete appointment", () => {
+      setAppointments(getAllAppointments(mail));
+    });
+    socket.on("change appointment", (msg) => {
+      setAppointments(getAllAppointments(mail));
+    });
+  }, [socket]);
 
   return (
     <div className="appointments">
