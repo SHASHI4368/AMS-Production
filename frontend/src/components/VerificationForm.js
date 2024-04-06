@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Uni from "../resources/University.jpg";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import ip from "../ip.js";
 
 const VerificationForm = () => {
   const [passCode, setPassCode] = useState("");
@@ -16,7 +17,7 @@ const VerificationForm = () => {
 
   const getPasscode = async (Email) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/tempUser/${Email}`;
+      const url = `${ip}:8080/db/tempUser/${Email}`;
       const response = await axios.get(url, {
         withCredentials: true,
       });

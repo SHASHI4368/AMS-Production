@@ -4,6 +4,7 @@ import Uni from "../resources/University.jpg";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
+import ip from "../ip.js";
 
 const StudentDetailForm = () => {
 
@@ -50,7 +51,7 @@ const StudentDetailForm = () => {
     Password
   ) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/students`;
+      const url = `${ip}:8080/db/students`;
       const response = await axios.post(url, {
         Reg_number,
         First_name,
@@ -79,7 +80,7 @@ const StudentDetailForm = () => {
 
   const deleteTempUser = async (Email) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/tempUser/${Email}`;
+      const url = `${ip}:8080/db/tempUser/${Email}`;
       const response = await axios.delete(url);
       console.log(response.data);
     } catch (err) {

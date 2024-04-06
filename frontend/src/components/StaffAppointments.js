@@ -3,13 +3,14 @@ import "../styles/appointments.css";
 import { useState } from "react";
 import axios, { all } from "axios";
 import ListAppointment from "./helpers/ListAppointment";
+import ip from "../ip.js";
 
 const StaffAppointments = ({ socket }) => {
   const [appointments, setAppointments] = useState([]);
 
   const getAllAppointments = async (Lecturer_mail) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/appointments/confirmed/${Lecturer_mail}`;
+      const url = `${ip}:8080/db/appointments/confirmed/${Lecturer_mail}`;
       const response = await axios.get(url);
       console.log(response.data);
       setAppointments(response.data);

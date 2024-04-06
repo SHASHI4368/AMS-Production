@@ -4,6 +4,7 @@ import Uni from "../resources/University.jpg";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import ip from "../ip.js";
 
 const StaffDetailForm = () => {
   const [email, setEmail] = useState("");
@@ -21,7 +22,7 @@ const StaffDetailForm = () => {
     const Email = JSON.parse(sessionStorage.getItem("staffEmail"));
     const getUser = async () => {
       try {
-        const url = `http://54.87.167.89.nip.io:8080/db/tempUser/${Email}`;
+        const url = `${ip}:8080/db/tempUser/${Email}`;
         const response = await axios.get(url, {
           withCredentials: true,
         });
@@ -40,7 +41,7 @@ const StaffDetailForm = () => {
 
   const deleteTempUser = async (Email) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/tempUser/${Email}`;
+      const url = `${ip}:8080/db/tempUser/${Email}`;
       const response = await axios.delete(url);
       console.log(response.data);
     } catch (err) {
@@ -57,7 +58,7 @@ const StaffDetailForm = () => {
     Password
   ) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/staff`;
+      const url = `${ip}:8080/db/staff`;
       const response = await axios.post(url, {
         First_name,
         Last_name,

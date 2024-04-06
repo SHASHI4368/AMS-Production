@@ -20,10 +20,11 @@ import StudentCalendar from "./components/StudentCalendar";
 import StaffCalendar from "./components/StaffCalendar";
 import StaffAppointments from "./components/StaffAppointments";
 import { message } from "antd";
+import ip from "./ip.js";
 
 import { io } from "socket.io-client";
 
-const URL = "http://172.31.45.195:8080";
+const URL = `${ip}:8080`;
 const socket = io(URL, {
   autoConnect: false,
 });
@@ -93,7 +94,7 @@ function App() {
   useEffect(() => {
     const getAllStaff = async () => {
       try {
-        const url = `http://172.31.45.195:8080/db/staffList`;
+        const url = `${ip}:8080/db/staffList`;
         const response = await axios.get(url);
         setStaffList(response.data);
         sessionStorage.setItem("staffList", JSON.stringify(response.data));
@@ -114,7 +115,7 @@ function App() {
     const getStdToken = async () => {
       console.log("Getting token");
       try {
-        const url = `http://172.31.45.195:8080/db/student/refresh`;
+        const url = `${ip}:8080/db/student/refresh`;
         const response = await axios.get(url, {
           withCredentials: true,
         });
@@ -133,7 +134,7 @@ function App() {
 
     const getStaffToken = async () => {
       try {
-        const url = `http://172.31.45.195:8080/db/staff/refresh`;
+        const url = `${ip}:8080/db/staff/refresh`;
         const response = await axios.get(url, {
           withCredentials: true,
         });

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../styles/calendar.css";
 import axios from "axios";
+import ip from "../ip.js";
 import {
   Inject,
   ScheduleComponent,
@@ -119,7 +120,7 @@ const StudentCalendar = ({ socket }) => {
 
   const getAllAppointments = async (Lecturer_mail) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/appointments/${Lecturer_mail}`;
+      const url = `${ip}:8080/db/appointments/${Lecturer_mail}`;
       const response = await axios.get(url);
       return response.data;
     } catch (err) {
@@ -300,7 +301,7 @@ const StudentCalendar = ({ socket }) => {
     Apt_status
   ) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/appointment/add`;
+      const url = `${ip}:8080/db/appointment/add`;
       const response = await axios.post(url, {
         Id,
         Lecturer_mail,
@@ -330,7 +331,7 @@ const StudentCalendar = ({ socket }) => {
 
   const getLastAppointment = async (Lecturer_mail) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/appointment/last`;
+      const url = `${ip}:8080/db/appointment/last`;
       const response = await axios.get(url);
       console.log(response.data);
       if (response.data.length === 0) {
@@ -351,7 +352,7 @@ const StudentCalendar = ({ socket }) => {
     Apt_status
   ) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/appointment`;
+      const url = `${ip}:8080/db/appointment`;
       const response = await axios.put(url, {
         Id: selectedAptId,
         Subject,
@@ -429,7 +430,7 @@ const StudentCalendar = ({ socket }) => {
     EventType
   ) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/appointment/${selectedAptId}`;
+      const url = `${ip}:8080/db/appointment/${selectedAptId}`;
       const response = await axios.delete(url);
       sendAppointmentDeleteMail(
         Description,
@@ -445,7 +446,7 @@ const StudentCalendar = ({ socket }) => {
 
   const getStudentDetails = async (Reg_number) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/student/details/${Reg_number}`;
+      const url = `${ip}:8080/db/student/details/${Reg_number}`;
       const { data } = await axios.get(url, Reg_number);
       return data;
     } catch (err) {
@@ -468,7 +469,7 @@ const StudentCalendar = ({ socket }) => {
       JSON.parse(sessionStorage.getItem("regNumber"))
     );
     try {
-      const url = `http://54.87.167.89.nip.io:8080/mail/student/request/appointment`;
+      const url = `${ip}:8080/mail/student/request/appointment`;
       const subject = "Request for an appointment";
       const content = `
         <h1>${subject}</h1>
@@ -500,7 +501,7 @@ const StudentCalendar = ({ socket }) => {
       JSON.parse(sessionStorage.getItem("regNumber"))
     );
     try {
-      const url = `http://54.87.167.89.nip.io:8080/mail/student/request/appointment`;
+      const url = `${ip}:8080/mail/student/request/appointment`;
       const subject = "Unable to attend the appointment";
       const content = `
         <h2>Student Details:</h2>
@@ -536,7 +537,7 @@ const StudentCalendar = ({ socket }) => {
       JSON.parse(sessionStorage.getItem("regNumber"))
     );
     try {
-      const url = `http://54.87.167.89.nip.io:8080/mail/student/request/appointment`;
+      const url = `${ip}:8080/mail/student/request/appointment`;
       const subject = "Student removed the appointment";
       const content = `
         <h2>Student Details:</h2>

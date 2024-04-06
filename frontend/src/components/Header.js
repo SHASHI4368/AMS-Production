@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import DropdownButton from "./helpers/DropdownButton";
+import ip from '../ip.js';
 
 const Header = ({ socket }) => {
   const [userType, setUserType] = useState(
@@ -39,7 +40,7 @@ const Header = ({ socket }) => {
 
   const handleStdLogout = async () => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/student/logout`;
+      const url = `${ip}:8080/db/student/logout`;
       const response = await axios.get(url, {
         withCredentials: true,
       });
@@ -53,7 +54,7 @@ const Header = ({ socket }) => {
 
   const handleStaffLogout = async () => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/staff/logout`;
+      const url = `${ip}:8080/db/staff/logout`;
       const response = await axios.get(url, {
         withCredentials: true,
       });

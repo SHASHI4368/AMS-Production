@@ -5,6 +5,7 @@ import Uni from "../resources/University.jpg";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import ip from "../ip.js";
 
 const StaffLoginForm = ({ socket }) => {
   const history = useHistory();
@@ -15,7 +16,7 @@ const StaffLoginForm = ({ socket }) => {
 
   const handleStaffLogin = async (Email, Original_password) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/staff/login`;
+      const url = `${ip}:8080/db/staff/login`;
       const body = { Email, Original_password };
       const response = await axios.post(url, body, { withCredentials: true });
       if (response.data.Status === "Success") {
@@ -46,7 +47,7 @@ const StaffLoginForm = ({ socket }) => {
   useEffect(() => {
     const getStaff = async () => {
       try {
-        const url = `http://54.87.167.89.nip.io:8080/login/login/success`;
+        const url = `${ip}:8080/login/login/success`;
         const { data } = await axios.get(url, { withCredentials: true });
         console.log(data.user._json.email);
         // handleLogin(data.user._json.email);
@@ -64,7 +65,7 @@ const StaffLoginForm = ({ socket }) => {
 
   const handleGoogleAuth = (e) => {
     e.preventDefault();
-    window.open("http://54.87.167.89.nip.io:8080/auth/google", "_self");
+    window.open("${ip}:8080/auth/google", "_self");
   };
 
   const handleEmailChange = (e) => {

@@ -4,6 +4,7 @@ import Uni from "../resources/University.jpg";
 import { FaGoogle } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import ip from "../ip.js";
 
 const StaffSignUpForm = ({ socket }) => {
   const [staff, setStaff] = useState(null);
@@ -19,7 +20,7 @@ const StaffSignUpForm = ({ socket }) => {
   useEffect(() => {
     const clearCookies = async () => {
       try {
-        const url = `http://54.87.167.89.nip.io:8080/clearCookies`;
+        const url = `${ip}:8080/clearCookies`;
         const response = await axios.get(url, { withCredentials: true });
         if (response.ok) {
           console.log("Cookies cleared successfully");
@@ -33,7 +34,7 @@ const StaffSignUpForm = ({ socket }) => {
 
     const getStaff = async () => {
       try {
-        const url = `http://54.87.167.89.nip.io:8080/auth/login/success`;
+        const url = `${ip}:8080/auth/login/success`;
         const { data } = await axios.get(url, { withCredentials: true });
         sessionStorage.setItem(
           "staffEmail",
@@ -60,7 +61,7 @@ const StaffSignUpForm = ({ socket }) => {
   useEffect(() => {
     const getStaffPassword = async (Email) => {
       try {
-        const url = `http://54.87.167.89.nip.io:8080/db/staff/password/${Email}`;
+        const url = `${ip}:8080/db/staff/password/${Email}`;
         const response = await axios.get(url);
         return response.data[0].Original_password;
       } catch (err) {
@@ -70,7 +71,7 @@ const StaffSignUpForm = ({ socket }) => {
 
     const handleStaffLogin = async (Email, Original_password) => {
       try {
-        const url = `http://54.87.167.89.nip.io:8080/db/staff/login`;
+        const url = `${ip}:8080/db/staff/login`;
         const body = { Email, Original_password };
         const response = await axios.post(url, body, {
           withCredentials: true,
@@ -90,7 +91,7 @@ const StaffSignUpForm = ({ socket }) => {
 
     const checkStaffIsThere = async () => {
       try {
-        const url = `http://54.87.167.89.nip.io:8080/db/staff/${JSON.parse(
+        const url = `${ip}:8080/db/staff/${JSON.parse(
           sessionStorage.getItem("staffEmail")
         )}`;
         const response = await axios.get(url);
@@ -115,7 +116,7 @@ const StaffSignUpForm = ({ socket }) => {
 
   const handleGoogleAuth = (e) => {
     e.preventDefault();
-    window.open("http://54.87.167.89.nip.io:8080/auth/google", "_self");
+    window.open("${ip}:8080/auth/google", "_self");
   };
 
   const sendVerificationMail = async (email, code) => {
@@ -123,7 +124,7 @@ const StaffSignUpForm = ({ socket }) => {
     // sessionStorage.setItem("passCode", JSON.stringify(code));
     sessionStorage.setItem("staffEmail", JSON.stringify(staffEmail));
     try {
-      const url = `http://54.87.167.89.nip.io:8080/mail/student/verify`;
+      const url = `${ip}:8080/mail/student/verify`;
       const { data } = await axios.post(url, { email, code });
       console.log(data);
     } catch (err) {
@@ -133,7 +134,7 @@ const StaffSignUpForm = ({ socket }) => {
 
   const updateVerificationCode = async (Email, Verification_Code) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/tempUser`;
+      const url = `${ip}:8080/db/tempUser`;
       const { data } = await axios.put(url, { Email, Verification_Code });
       console.log(data);
     } catch (err) {
@@ -149,7 +150,7 @@ const StaffSignUpForm = ({ socket }) => {
     Picture_URL
   ) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/tempUser`;
+      const url = `${ip}:8080/db/tempUser`;
       const { data } = await axios.post(url, {
         Email,
         Verification_Code,
@@ -166,7 +167,7 @@ const StaffSignUpForm = ({ socket }) => {
   useEffect(() => {
     const getAllStaff = async () => {
       try {
-        const url = `http://54.87.167.89.nip.io:8080/db/staffList`;
+        const url = `${ip}:8080/db/staffList`;
         const response = await axios.get(url);
         setAllStaff(response.data);
       } catch (err) {
@@ -182,7 +183,7 @@ const StaffSignUpForm = ({ socket }) => {
 
     const getAllTempUsers = async () => {
       try {
-        const url = `http://54.87.167.89.nip.io:8080/db/tempUsers`;
+        const url = `${ip}:8080/db/tempUsers`;
         const response = await axios.get(url);
         setTempUsers(response.data);
       } catch (err) {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import Uni from "../resources/University.jpg";
+import ip from "../ip.js";
 
 const StudentLoginForm = ({ socket }) => {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ const StudentLoginForm = ({ socket }) => {
 
   const getRegNumber = async (Email) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/student/regnumber/${Email}`;
+      const url = `${ip}:8080/db/student/regnumber/${Email}`;
       const response = await axios.get(url);
       console.log(response.data[0].Reg_number);
       sessionStorage.setItem(
@@ -29,7 +30,7 @@ const StudentLoginForm = ({ socket }) => {
 
   const handleLogin = async (Email, Password) => {
     try {
-      const url = `http://54.87.167.89.nip.io:8080/db/student/login`;
+      const url = `${ip}:8080/db/student/login`;
       const response = await axios.post(url, { Email, Password });
       console.log(response);
       if (response.data.Status === "Success") {
