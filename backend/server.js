@@ -33,7 +33,7 @@ app.use(passport.session());
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "http://54.87.167.89.nip.io:3000",
     credentials: true,
     methods: "GET, PUT, POST, DELETE",
   })
@@ -70,7 +70,7 @@ app.get("/db/students", (req, res) => {
 
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000", // Adjust this to match your React client's origin
+    origin: "http://54.87.167.89.nip.io:3000", // Adjust this to match your React client's origin
     methods: ["GET", "POST"],
   },
 });
