@@ -40,7 +40,7 @@ const Header = ({ socket }) => {
 
   const handleStdLogout = async () => {
     try {
-      const url = `http://10.50.227.7:8080/db/student/logout`;
+      const url = `http://3.87.50.108:8080/db/student/logout`;
       const response = await axios.get(url, {
         withCredentials: true,
       });
@@ -54,7 +54,7 @@ const Header = ({ socket }) => {
 
   const handleStaffLogout = async () => {
     try {
-      const url = `http://10.50.227.7:8080/db/staff/logout`;
+      const url = `http://3.87.50.108:8080/db/staff/logout`;
       const response = await axios.get(url, {
         withCredentials: true,
       });

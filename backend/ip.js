@@ -1,1 +1,1 @@
-const ip = "http://10.50.227.7.nip.io";
+const ip = "http://3.87.50.108.nip.io";

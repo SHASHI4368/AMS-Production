@@ -22,7 +22,7 @@ const StaffDetailForm = () => {
     const Email = JSON.parse(sessionStorage.getItem("staffEmail"));
     const getUser = async () => {
       try {
-        const url = `http://10.50.227.7:8080/db/tempUser/${Email}`;
+        const url = `http://3.87.50.108:8080/db/tempUser/${Email}`;
         const response = await axios.get(url, {
           withCredentials: true,
         });
@@ -41,7 +41,7 @@ const StaffDetailForm = () => {
 
   const deleteTempUser = async (Email) => {
     try {
-      const url = `http://10.50.227.7:8080/db/tempUser/${Email}`;
+      const url = `http://3.87.50.108:8080/db/tempUser/${Email}`;
       const response = await axios.delete(url);
       console.log(response.data);
     } catch (err) {
@@ -58,7 +58,7 @@ const StaffDetailForm = () => {
     Password
   ) => {
     try {
-      const url = `http://10.50.227.7:8080/db/staff`;
+      const url = `http://3.87.50.108:8080/db/staff`;
       const response = await axios.post(url, {
         First_name,
         Last_name,

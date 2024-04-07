@@ -17,7 +17,7 @@ const VerificationForm = () => {
 
   const getPasscode = async (Email) => {
     try {
-      const url = `http://10.50.227.7:8080/db/tempUser/${Email}`;
+      const url = `http://3.87.50.108:8080/db/tempUser/${Email}`;
       const response = await axios.get(url, {
         withCredentials: true,
       });
