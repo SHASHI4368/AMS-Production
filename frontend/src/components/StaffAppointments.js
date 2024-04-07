@@ -10,7 +10,7 @@ const StaffAppointments = ({ socket }) => {
 
   const getAllAppointments = async (Lecturer_mail) => {
     try {
-      const url = `${ip}:8080/db/appointments/confirmed/${Lecturer_mail}`;
+      const url = `http://10.50.227.7:8080/db/appointments/confirmed/${Lecturer_mail}`;
       const response = await axios.get(url);
       console.log(response.data);
       setAppointments(response.data);

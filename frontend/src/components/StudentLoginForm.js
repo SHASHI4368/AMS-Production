@@ -16,7 +16,7 @@ const StudentLoginForm = ({ socket }) => {
 
   const getRegNumber = async (Email) => {
     try {
-      const url = `${ip}:8080/db/student/regnumber/${Email}`;
+      const url = `http://10.50.227.7:8080/db/student/regnumber/${Email}`;
       const response = await axios.get(url);
       console.log(response.data[0].Reg_number);
       sessionStorage.setItem(
@@ -30,7 +30,7 @@ const StudentLoginForm = ({ socket }) => {
 
   const handleLogin = async (Email, Password) => {
     try {
-      const url = `${ip}:8080/db/student/login`;
+      const url = `http://10.50.227.7:8080/db/student/login`;
       const response = await axios.post(url, { Email, Password });
       console.log(response);
       if (response.data.Status === "Success") {

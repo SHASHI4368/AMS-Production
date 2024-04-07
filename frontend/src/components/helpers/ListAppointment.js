@@ -44,7 +44,7 @@ const ListAppointment = ({ appointment, key }) => {
   useEffect(() => {
     const getStudentDetails = async (Reg_number) => {
       try {
-        const url = `http://localhost:8080/db/student/details/${Reg_number}`;
+        const url = `http://10.50.227.7:8080/db/student/details/${Reg_number}`;
         const { data } = await axios.get(url, Reg_number);
         return data;
       } catch (err) {
