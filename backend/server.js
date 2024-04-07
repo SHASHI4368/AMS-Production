@@ -11,6 +11,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const http = require("http");
 const socketIo = require("socket.io");
+const ip = require("./ip");
 
 const app = express();
 const server = http.createServer(app);
@@ -29,11 +30,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-
 app.use(
   cors({
-    origin: "http://54.87.167.89.nip.io:3000",
+    origin: `${ip}:3000`,
     credentials: true,
     methods: "GET, PUT, POST, DELETE",
   })
@@ -70,7 +69,7 @@ app.get("/db/students", (req, res) => {
 
 const io = socketIo(server, {
   cors: {
-    origin: "http://54.87.167.89.nip.io:3000", // Adjust this to match your React client's origin
+    origin: `${ip}:3000`, // Adjust this to match your React client's origin
     methods: ["GET", "POST"],
   },
 });
@@ -78,17 +77,17 @@ const io = socketIo(server, {
 io.on("connection", (socket) => {
   console.log("A user connected");
   socket.on("add appointment", (apt) => {
-    io.emit("add appointment", apt); 
+    io.emit("add appointment", apt);
   });
-  socket.on("block time slot", ()=>{
+  socket.on("block time slot", () => {
     io.emit("block time slot");
-  })
+  });
   socket.on("delete appointment", (apt) => {
-    io.emit("delete appointment", apt); 
+    io.emit("delete appointment", apt);
   });
 
   socket.on("change appointment", (apt) => {
-    io.emit("change appointment", apt); 
+    io.emit("change appointment", apt);
   });
 
   socket.on("disconnect", () => {
@@ -97,4 +96,6 @@ io.on("connection", (socket) => {
 });
 
 const port = process.env.PORT || 8080;
-server.listen(port, () => console.log(`Server up and running on port ${port} !`));
+server.listen(port, () =>
+  console.log(`Server up and running on port ${port} !`)
+);
