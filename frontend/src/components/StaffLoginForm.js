@@ -18,10 +18,11 @@ const StaffLoginForm = ({ socket }) => {
     try {
       const url = `http://10.50.227.7:8080/db/staff/login`;
       const body = { Email, Original_password };
-      const response = await axios.post(url, body);
+      const response = await axios.post(url, body, { withCredentials: true });
       if (response.data.Status === "Success") {
         sessionStorage.setItem("authorized", JSON.stringify(true));
         console.log("Login successful");
+        sessionStorage.setItem("logged", JSON.stringify(true));
         socket.connect();
         history.push("/staff/home");
       } else {

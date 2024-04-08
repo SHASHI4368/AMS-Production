@@ -124,6 +124,9 @@ function App() {
         if (accessToken !== undefined) {
           socket.connect();
         }
+        if(JSON.parse(sessionStorage.getItem("logged")) === true){
+          socket.connect();
+        }
         setAuthorized(true);
         return accessToken;
       } catch (err) {
@@ -140,6 +143,9 @@ function App() {
         });
         const accessToken = response.data.accessToken;
         if (accessToken !== undefined) {
+          socket.connect();
+        }
+        if (JSON.parse(sessionStorage.getItem("logged")) === true) {
           socket.connect();
         }
         setAuthorized(true);

@@ -44,6 +44,7 @@ const Header = ({ socket }) => {
       const response = await axios.get(url, {
         withCredentials: true,
       });
+      sessionStorage.setItem("logged", JSON.stringify(false));
       socket.disconnect();
       const accessToken = response.data.accessToken;
       return accessToken;
@@ -58,6 +59,7 @@ const Header = ({ socket }) => {
       const response = await axios.get(url, {
         withCredentials: true,
       });
+      sessionStorage.setItem("logged", JSON.stringify(false));
       socket.disconnect();
       const accessToken = response.data.accessToken;
       return accessToken;

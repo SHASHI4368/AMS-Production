@@ -37,6 +37,7 @@ const StudentLoginForm = ({ socket }) => {
         sessionStorage.setItem("authorized", JSON.stringify(true));
         getRegNumber(Email);
         console.log("Login successful");
+        sessionStorage.setItem("logged", JSON.stringify(true));
         socket.connect();
         history.push("/student/home");
       } else {
