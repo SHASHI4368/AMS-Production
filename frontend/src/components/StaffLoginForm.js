@@ -16,7 +16,7 @@ const StaffLoginForm = ({ socket }) => {
 
   const handleStaffLogin = async (Email, Original_password) => {
     try {
-      const url = `http://3.87.50.108:8080/db/staff/login`;
+      const url = `http://10.50.227.7:8080/db/staff/login`;
       const body = { Email, Original_password };
       const response = await axios.post(url, body, { withCredentials: true });
       if (response.data.Status === "Success") {
@@ -47,7 +47,7 @@ const StaffLoginForm = ({ socket }) => {
   useEffect(() => {
     const getStaff = async () => {
       try {
-        const url = `http://3.87.50.108:8080/login/login/success`;
+        const url = `http://10.50.227.7:8080/login/login/success`;
         const { data } = await axios.get(url, { withCredentials: true });
         console.log(data.user._json.email);
         // handleLogin(data.user._json.email);
@@ -65,7 +65,7 @@ const StaffLoginForm = ({ socket }) => {
 
   const handleGoogleAuth = (e) => {
     e.preventDefault();
-    window.open("http://3.87.50.108:8080/auth/google", "_self");
+    window.open("http://10.50.227.7:8080/auth/google", "_self");
   };
 
   const handleEmailChange = (e) => {

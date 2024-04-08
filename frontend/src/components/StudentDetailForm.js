@@ -51,7 +51,7 @@ const StudentDetailForm = () => {
     Password
   ) => {
     try {
-      const url = `http://3.87.50.108:8080/db/students`;
+      const url = `http://10.50.227.7:8080/db/students`;
       const response = await axios.post(url, {
         Reg_number,
         First_name,
@@ -80,7 +80,7 @@ const StudentDetailForm = () => {
 
   const deleteTempUser = async (Email) => {
     try {
-      const url = `http://3.87.50.108:8080/db/tempUser/${Email}`;
+      const url = `http://10.50.227.7:8080/db/tempUser/${Email}`;
       const response = await axios.delete(url);
       console.log(response.data);
     } catch (err) {
